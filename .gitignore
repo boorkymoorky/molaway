@@ -1,0 +1,33 @@
+# SwiftPM / Xcode build products
+.build/
+build/
+dist/
+DerivedData/
+*.xcodeproj
+
+# Release artifacts
+*.zip
+*.dmg
+
+# macOS
+.DS_Store
+
+# Claude Code local settings
+.claude/
+
+# Local/private data must never enter the publication copy
+settings.json
+statistics.json
+*.log
+*.dSYM/
+*.p12
+*.pfx
+*.pem
+*.key
+.env
+.env.*
+.codex/
+.agents/
+
+__pycache__/
+*.pyc

@@ -1,0 +1,28 @@
+name: Verify
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: macos-26
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          persist-credentials: false
+      - name: Toolchain
+        run: swift --version
+      - name: Source security guard
+        run: python3 Scripts/verify-security.py
+      - name: Publication guard
+        run: python3 Scripts/verify-publication.py
+      - name: Tests
+        run: swift test
+      - name: Local signed build
+        run: bash Scripts/build-app.sh
+      - name: Verify signature
+        run: codesign --verify --deep --strict build/Molaway.app
