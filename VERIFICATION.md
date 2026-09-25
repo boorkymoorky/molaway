@@ -1,5 +1,12 @@
 # Verification
 
+## Public release review — 2026-09-25
+
+- At commit `cc101b6`, the curated tree contained 87 files. Targeted privacy checks also covered all 137 unique historical file blobs and the six uploaded 2.2.2–2.2.4 app/source ZIPs. No matching credentials, personal home paths, private email addresses, or private network addresses were found. All commit author/committer email addresses use GitHub noreply.
+- [Verify run #6](https://github.com/boorkymoorky/molaway/actions/runs/36186975860) passed on the GitHub macOS runner, including the new isolated installer checks.
+- MIT notices, upstream links, English installation guidance, synthetic screenshots, unsigned-publisher limitations and manual-update behavior were reviewed. The release ZIP digests matched the values displayed by GitHub.
+- Public availability does not change the unverified device, accessibility and long-term energy scenarios listed below. These checks are not an independent security audit.
+
 ## 2.2.4 local checks — 2026-09-25
 
 - 114 tests in 10 suites passed. New regressions first reproduced early merging of an explicit snooze and short sleep counted as work; both passed after the fixes.

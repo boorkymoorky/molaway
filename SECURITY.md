@@ -16,7 +16,9 @@ The operating system, apps chosen by the user and the user's account are outside
 
 ## Reporting a vulnerability
 
-When this repository becomes public, the owner must enable GitHub Private Vulnerability Reporting and verify the private “Report a vulnerability” link. That feature is available for public repositories. Until then, do not publish vulnerability details; there is no advertised public reporting channel. Once enabled, use that private channel for details. Do not put credentials, personal data or unpatched exploit details in a public issue. No contact email is invented or embedded in this repository.
+Use **Security → Advisories → Report a vulnerability** on this repository to send a private report to the maintainer. Include the affected version, a minimal reproduction with synthetic data, the expected impact, and any suggested fix. Do not include real credentials or personal files.
+
+If the private reporting button is unavailable, do not post exploit details in a public issue. A public issue may ask the maintainer to enable private reporting, without disclosing the vulnerability. There is no published contact email. This is a personal project; response times are not guaranteed.
 
 The current 2.2 release line is the intended maintained line. Support begins when the repository/release is actually published. Earlier local builds have no promised maintenance window.
 
