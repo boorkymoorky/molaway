@@ -1,5 +1,11 @@
 # Verification
 
+## GitHub verification — 2026-09-25
+
+- [Verify run #2](https://github.com/boorkymoorky/molaway/actions/runs/36090875946) succeeded for code commit `a8027c8` on the macOS 26 runner using Swift 6.3.3.
+- The workflow passed source/publication guards, tests, release build, and signature verification. The link requires repository access while the project remains private.
+- The first run encountered a Swift compiler crash while converting an actor-isolated method to a binding setter. An explicit closure resolved it; no test was removed or disabled.
+
 ## 2.2.1 local checks — 2026-09-24
 
 - 100 tests in 9 suites passed, covering timers, idle rollback, natural/manual breaks, settings validation, data retention, hostile file inputs, calendar validation, and chart snapshots.
@@ -29,7 +35,6 @@
 - Long-term use, battery/GPU/WindowServer impact, every accessibility contrast and VoiceOver flow.
 - All monitor/Space arrangements, physical sleep/lock/restart scenarios, all cameras/meeting apps, and available shared Focus configurations.
 - Intel and every supported macOS version.
-- A successful run of the supplied workflow on the actual GitHub repository, until its result is observed.
 - Apple Developer ID signing and notarization. Current packages are ad hoc signed.
 
 No identifying machine inventory, personal usage data, raw logs, local file paths, credentials, or signing materials are included in this report.
