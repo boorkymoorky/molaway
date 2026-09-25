@@ -31,3 +31,5 @@ statistics.json
 
 __pycache__/
 *.pyc
+
+build.noindex/

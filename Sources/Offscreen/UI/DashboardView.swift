@@ -101,10 +101,10 @@ struct TimerCard: View {
             }
             Spacer(minLength: 2)
             VStack(alignment: .trailing, spacing: 3) {
-                Text(inRest ? Format.clock(engine.breakRemaining) : engine.timeUntilBreak <= 0 ? L("Now") : Format.clock(engine.timeUntilBreak))
+                Text(inRest ? Format.clock(engine.breakRemaining) : engine.timeUntilReminder <= 0 ? L("Now") : Format.clock(engine.timeUntilReminder))
                     .font(.system(size: 20, weight: .medium, design: .rounded)).monospacedDigit()
                     .foregroundStyle(engine.timeUntilBreak <= 0 && !inRest ? Theme.amber : .primary)
-                Text(inRest ? L("left") : L("until break")).font(.system(size: 10)).foregroundStyle(.secondary)
+                Text(inRest ? L("left") : L(engine.timeUntilBreak <= 0 ? "until reminder" : "until break")).font(.system(size: 10)).foregroundStyle(.secondary)
             }
         }.padding(15)
             .background(color.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))

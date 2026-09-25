@@ -30,6 +30,8 @@ final class BreakEngine {
     // MARK: Derived
 
     var timeUntilBreak: Double { Double(timing.workSeconds) - workAccrued }
+    /// Active time to the next reminder, including a deliberate or automatic deferral.
+    var timeUntilReminder: Double { max(0, timeUntilBreak, nextReminderAccrued - workAccrued) }
     var breakRemaining: Double { max(0, breakDuration - breakElapsed) }
     var breakProgress: Double { breakDuration > 0 ? breakRemaining / breakDuration : 0 }
     var snoozesRemaining: Int { max(0, timing.snoozeLimitPerCycle - snoozesThisCycle) }
@@ -372,6 +374,13 @@ final class BreakEngine {
     func accountForNaturalRest(_ seconds: Double) {
         guard seconds >= Double(timing.shortBreakSeconds) else { return }
         resetCycle(afterCompleted: .short)
+    }
+
+    func restartWorkCycle() {
+        activeBreak = nil
+        breakElapsed = 0
+        resetCycle(afterCompleted: nil)
+        setPhase(.working)
     }
 
     func cancelBreakKeepingProgress() {

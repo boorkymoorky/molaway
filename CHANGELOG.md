@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.2.2 — 2026-09-25
+
+- Show a live countdown to deferred reminders instead of leaving timers on “Now”.
+- Explicit Continue starts a fresh interval; automatic early return keeps work progress with a five-minute deferral. Unfinished rests do not count as completed.
+- Clear stale queued reminders after natural rest and sleep; end an active rest safely when the display/session suspends.
+- Do not treat manual rest as provisional work; a return on the completion tick completes the break.
+- Add deterministic app lifecycle regression tests with isolated settings/statistics.
+- Add a terminal source installer with no administrator access, downloads, or security overrides.
+- Place build bundles in `build.noindex` to reduce duplicate Spotlight results.
+- Remove the unused upstream website, external font/icon loads, and unrelated installation/signing claims. Upstream attribution and MIT license remain intact.
+- Document unnotarized distribution honestly, with Apple's app-specific first-launch instructions.
+
+
 ## 2.2.1 — 2026-09-24
 
 - Use an explicit weekly-summary binding closure for compatibility with the CI Swift compiler.

@@ -1,5 +1,16 @@
 # Verification
 
+## 2.2.2 local checks — 2026-09-25
+
+- 108 tests in 10 suites passed, including eight new lifecycle regressions using isolated local test data.
+- Covered: due while away, automatic return, explicit Continue, uncounted manual-rest rollback, return on the completion tick, and sleep without an intervening timer tick.
+- The installed release opened successfully; the manual break → Continue flow visibly restarted the eye timer at 20:00.
+- The local source installer was exercised. Signature verification passed and the installed sandbox probe returned `networkDenied=true`.
+- Publication review covered tracked files, all 90 unique historical file blobs before this update, commit authors, scripts, permissions, and image metadata. No credentials, private email addresses, local home paths, or private network addresses were found by the targeted checks. Commit email uses GitHub noreply.
+- Historical icon EXIF contained only color-space and image dimensions. The current source PNG has that metadata removed. The unused upstream website and icon are removed from the current tree; they remain in historical commits and contain no identified personal secrets.
+- Build bundles are excluded from Spotlight indexing; old test/distribution bundles were removed and one installed Molaway remained in the Spotlight query.
+- These results do not replace independent review or real-world testing of every sleep/video/monitor combination.
+
 ## GitHub verification — 2026-09-25
 
 - [Verify run #2](https://github.com/boorkymoorky/molaway/actions/runs/36090875946) succeeded for code commit `a8027c8` on the macOS 26 runner using Swift 6.3.3.

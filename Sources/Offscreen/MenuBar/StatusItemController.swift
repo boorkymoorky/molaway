@@ -43,10 +43,10 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         let text: String
         if paused { text = "" }
         else if model.activeRest != nil { text = Format.clock(engine.breakRemaining) }
-        else { text = engine.timeUntilBreak > 0 ? Format.clock(engine.timeUntilBreak) : "Molaway" }
+        else { text = engine.timeUntilReminder > 0 ? Format.clock(engine.timeUntilReminder) : "Molaway" }
         let title = MenuTitle.make(show: model.config.showCountdownInMenuBar, paused: paused, countdown: text)
         if button.title != title { button.title = title }
-        let hint = model.statusText + "\n" + L("Eye break") + ": " + Format.clock(model.eyes.timeUntilBreak) + " · " + L("Movement break") + ": " + Format.clock(model.movement.timeUntilBreak)
+        let hint = model.statusText + "\n" + L("Eye break") + ": " + Format.clock(model.eyes.timeUntilReminder) + " · " + L("Movement break") + ": " + Format.clock(model.movement.timeUntilReminder)
         if button.toolTip != hint { button.toolTip = hint; button.setAccessibilityValue(hint) }
         let label = L("Molaway · eye and movement breaks")
         if button.accessibilityLabel() != label { button.setAccessibilityLabel(label) }

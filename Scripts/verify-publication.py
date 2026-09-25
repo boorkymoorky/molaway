@@ -3,11 +3,12 @@
 from pathlib import Path
 import re
 import sys
+import subprocess
 
 ROOT_FILES = {'.gitignore', 'Package.swift', 'LICENSE', 'README.md', 'CHANGELOG.md',
               'CONTRIBUTING.md', 'SECURITY.md', 'UPSTREAM.md', 'THIRD_PARTY_NOTICES.md', 'VERIFICATION.md'}
 DIRECTORIES = {'Sources', 'Tests', 'docs', '.github'}
-SCRIPT_FILES = {'build-app.sh', 'make-icon.sh', 'make-icon.swift', 'make-sounds.py', 'verify-security.py', 'verify-publication.py'}
+SCRIPT_FILES = {'build-app.sh', 'install-local.sh', 'make-icon.sh', 'make-icon.swift', 'make-sounds.py', 'verify-security.py', 'verify-publication.py'}
 RESOURCE_FILES = {'Info.plist', 'Mola.entitlements', 'AppIcon.icns', 'AppIcon.png'}
 
 
@@ -24,7 +25,7 @@ def publication_files(root):
         yield from sorted((root / 'Resources' / name).rglob('*'))
 
 
-def check(root):
+def check(root, tracked=False):
     errors = []
     patterns = [r'/Users/[A-Za-z0-9_.-]+/', r'/home/[A-Za-z0-9_.-]+/',
                 r'gh[pousr]_[A-Za-z0-9]{30,}', r'github_pat_[A-Za-z0-9_]{30,}',
@@ -46,6 +47,8 @@ def check(root):
             errors.append(f'Private or generated file: {rel}')
         data = path.read_bytes()
         if path.suffix in binary:
+            if any(re.search(pattern, data.decode('latin-1')) for pattern in patterns):
+                errors.append(f'Review private information in binary: {rel}')
             # Only screenshots are expected here; reject EXIF/XMP or JPEG comments.
             if path.suffix == '.jpg' and any(x in data for x in [b'Exif\x00\x00', b'http://ns.adobe.com/xap/', b'\xff\xfe']):
                 errors.append(f'Screenshot metadata: {rel}')
@@ -58,11 +61,18 @@ def check(root):
             if re.search(pattern, content):
                 errors.append(f'Review private information: {rel}')
                 break
+    if tracked:
+        expected = {str(p.relative_to(root)) for p in publication_files(root) if p.is_file()}
+        result = subprocess.run(['git', '-C', str(root), 'ls-files', '-z'], check=True, capture_output=True)
+        actual = set(result.stdout.decode().rstrip('\0').split('\0'))
+        for extra in sorted(actual - expected):
+            errors.append(f'Unexpected tracked file: {extra}')
     if errors:
         print('\n'.join(errors)); return False
     print(f'Publication guard passed for {count} curated files. Manually review screenshots and git commit metadata too.')
     return True
 
 if __name__ == '__main__':
-    root = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parents[1]
-    sys.exit(0 if check(root) else 1)
+    args = [arg for arg in sys.argv[1:] if arg != '--tracked']
+    root = Path(args[0]).resolve() if args else Path(__file__).resolve().parents[1]
+    sys.exit(0 if check(root, tracked='--tracked' in sys.argv) else 1)

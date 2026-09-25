@@ -19,10 +19,10 @@ jobs:
       - name: Source security guard
         run: python3 Scripts/verify-security.py
       - name: Publication guard
-        run: python3 Scripts/verify-publication.py
+        run: python3 Scripts/verify-publication.py --tracked
       - name: Tests
         run: swift test
       - name: Local signed build
         run: bash Scripts/build-app.sh
       - name: Verify signature
-        run: codesign --verify --deep --strict build/Molaway.app
+        run: codesign --verify --deep --strict build.noindex/Molaway.app

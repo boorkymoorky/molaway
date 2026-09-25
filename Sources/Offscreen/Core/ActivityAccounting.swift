@@ -35,7 +35,7 @@ struct ActivityAccounting {
     mutating func clearProvisional() { provisional = 0 }
 
     mutating func step(now: Double, idle: Double, video: Bool, locked: Bool,
-                       paused: Bool = false, threshold: Double = 120) -> ActivityDecision {
+                       paused: Bool = false, resting: Bool = false, threshold: Double = 120) -> ActivityDecision {
         guard now.isFinite, idle.isFinite, idle >= 0 else {
             lastTime = nil
             lastState = .starting
@@ -77,8 +77,8 @@ struct ActivityAccounting {
             lastIdle = effectiveIdle
             return ActivityDecision(state: .starting, restCredit: restCredit)
         }
-        let counted = (lastState == .active || lastState == .video) ? delta : 0
-        if video || effectiveIdle < lastIdle || effectiveIdle < 1 {
+        let counted = !resting && (lastState == .active || lastState == .video) ? delta : 0
+        if resting || video || effectiveIdle < lastIdle || effectiveIdle < 1 {
             provisional = 0
         } else {
             provisional += counted

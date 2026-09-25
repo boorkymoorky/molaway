@@ -25,7 +25,9 @@ Molaway is a personal, non-commercial project shared as open source. My version 
 4. Open Molaway and click its two-ring icon in the menu bar.
 5. Choose your eye and movement intervals. Everything works locally.
 
-**Current distribution status:** the local build is ad hoc signed, not Apple Developer ID signed or notarized. A public downloadable release is not yet available. Do not disable Gatekeeper or remove quarantine attributes to install it. See the [installation guide](docs/INSTALL.md) for the current limits, updates, and removal.
+**Signing:** Molaway is locally (ad hoc) signed, **not Apple Developer ID signed or notarized**. macOS may ask you to approve the app. Follow the app-specific steps in the [installation guide](docs/INSTALL.md); keep Gatekeeper enabled. While this repository is private, downloads require repository access.
+
+**Terminal alternative:** [build and install locally](docs/INSTALL.md#terminal-install-from-source). No paid Apple Developer membership is needed. There is no official Homebrew package.
 
 **Windows: coming soon — planned, with no release date yet.** No Windows build is available.
 
@@ -36,7 +38,8 @@ Molaway is a personal, non-commercial project shared as open source. My version 
 - Independent eye and movement intervals and rest durations; type values directly or use steppers.
 - **Outer ring = eyes; inner ring = movement**, consistently labeled in the dashboard and settings.
 - Automatic idle pause and return detection; no key contents are read.
-- Natural breaks can satisfy either or both targets; one absence counts once in the total.
+- Natural breaks can satisfy either or both targets once the idle threshold is reached; one absence counts once in the total.
+- **Continue** during a break starts a fresh interval for that timer without counting an unfinished break. Automatic early return preserves progress and shows a five-minute reminder countdown.
 - Continue counting during detected video playback, across apps that expose a supported signal.
 - Watching mode: 5–240 minutes, with extend and end controls.
 - Manual pause, instant breaks, optional login launch, and optional menu bar countdown.
@@ -108,7 +111,7 @@ python3 Scripts/verify-security.py
 python3 Scripts/verify-publication.py
 ```
 
-The app is created at `build/Molaway.app`. [Contributing](CONTRIBUTING.md) explains checks and privacy requirements. [Changelog](CHANGELOG.md) lists changes.
+The app is created at `build.noindex/Molaway.app`. [Contributing](CONTRIBUTING.md) explains checks and privacy requirements. [Changelog](CHANGELOG.md) lists changes.
 
 ## Credits and license
 

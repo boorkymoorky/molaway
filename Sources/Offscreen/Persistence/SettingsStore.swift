@@ -16,8 +16,10 @@ final class SettingsStore {
         .appendingPathComponent("Mola", isDirectory: true)
     static let fileURL = directoryURL.appendingPathComponent("settings.json")
 
-    init() {
-        settings = Self.load()
+    private let url: URL
+    init(url: URL = SettingsStore.fileURL) {
+        self.url = url
+        settings = Self.load(url)
     }
 
     func addListener(_ listener: @escaping (AppSettings) -> Void) {
@@ -42,11 +44,11 @@ final class SettingsStore {
         )
     }
 
-    func flush() { saveTask?.cancel(); Self.write(settings) }
+    func flush() { saveTask?.cancel(); Self.write(settings, to: url) }
 
     // MARK: Persistence
 
-    private static func load() -> AppSettings {
+    private static func load(_ fileURL: URL) -> AppSettings {
         guard FileManager.default.fileExists(atPath: fileURL.path) else { return AppSettings() }
         do {
             var value = try SettingsCodec.read(fileURL)
@@ -60,16 +62,16 @@ final class SettingsStore {
 
     private func scheduleSave() {
         saveTask?.cancel()
-        saveTask = Task { [settings] in
+        saveTask = Task { [settings, url] in
             try? await Task.sleep(for: .milliseconds(500))
             guard !Task.isCancelled else { return }
-            Self.write(settings)
+            Self.write(settings, to: url)
         }
     }
 
-    private static func write(_ settings: AppSettings) {
+    private static func write(_ settings: AppSettings, to fileURL: URL) {
         do {
-            try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             try encoder.encode(settings).write(to: fileURL, options: .atomic)

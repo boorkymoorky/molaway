@@ -11,10 +11,10 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
 }
 
 @Observable final class AppContainer {
-    let settings = SettingsStore()
+    let settings: SettingsStore
     let login = LoginItemManager()
     let sound = SoundPlayer()
-    let statistics = StatisticsStore()
+    let statistics: StatisticsStore
     let eyes: BreakEngine
     let movement: BreakEngine
     private(set) var activity: ActivityState = .starting
@@ -54,7 +54,9 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     private var pendingDue: Set<MolaKind> = []
     private var activityToken: NSObjectProtocol?
 
-    init() {
+    init(settings: SettingsStore = SettingsStore(), statistics: StatisticsStore = StatisticsStore()) {
+        self.settings = settings
+        self.statistics = statistics
         eyes = BreakEngine(timing: settings.settings.eyes)
         movement = BreakEngine(timing: settings.settings.movement)
         Localization.shared.language = settings.settings.language
@@ -86,7 +88,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     var config: AppSettings { settings.settings }
     func engine(_ kind: MolaKind) -> BreakEngine { kind == .eyes ? eyes : movement }
     var time: Double { origin.duration(to: .now).seconds }
-    var nextKind: MolaKind { eyes.timeUntilBreak <= movement.timeUntilBreak ? .eyes : .movement }
+    var nextKind: MolaKind { eyes.timeUntilReminder <= movement.timeUntilReminder ? .eyes : .movement }
     var isPaused: Bool { pauseUntil != nil }
     var isWatching: Bool { watchingUntil != nil }
     var suppressionReasons: [String] {
@@ -143,16 +145,24 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     func start() {
         sleepMonitor = SleepWakeMonitor(onSuspend: { [weak self] in
             guard let self else { return }
-            suspended = true; statistics.resetSession(); statistics.flush(); hideReminder?(); sound.stop(); releaseActivity()
+            suspendTracking()
         }, onResume: { [weak self] gap in
             guard let self else { return }
-            suspended = false
-            for kind in MolaKind.allCases { engine(kind).accountForNaturalRest(gap) }
-            previousTime = nil; nextSensorRead = 0; tick()
+            resumeTracking(after: gap); tick()
         })
         timer = Poll.every(1) { [weak self] in self?.tick() }
         tick()
         play(config.startTone)
+    }
+    func suspendTracking() {
+        suspended = true
+        if activeRest != nil { cancelRest(restartCycle: false) }
+        statistics.resetSession(); statistics.flush(); hideReminder?(); sound.stop(); releaseActivity()
+    }
+    func resumeTracking(after gap: Double) {
+        suspended = false
+        applyNaturalRest(gap)
+        previousTime = nil; nextSensorRead = 0
     }
     private func readSensors(now: Double) {
         guard !suspended else { return }
@@ -167,6 +177,12 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     }
     func tick() {
         let now = time
+        readSensors(now: now)
+        tick(now: now, idle: suspended ? idleSeconds : IdleMonitor.idleSeconds(),
+             deliberateIdle: IdleMonitor.deliberateIdleSeconds())
+    }
+    // Sensor-independent entry point also used by deterministic lifecycle regression tests.
+    func tick(now: Double, idle: Double, deliberateIdle: Double) {
         let previousState = activity
         let rawDelta = previousTime.map { now - $0 } ?? 0
         let delta = rawDelta >= 0 && rawDelta <= 5 ? rawDelta : 0
@@ -174,14 +190,13 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if let until = pauseUntil, Date() >= until { pauseUntil = nil; nextSensorRead = 0 }
         if let until = watchingUntil, Date() >= until { watchingUntil = nil }
         if let until = presentationUntil, Date() >= until { presentationUntil = nil }
-        readSensors(now: now)
-        idleSeconds = suspended ? idleSeconds : IdleMonitor.idleSeconds()
+        idleSeconds = idle
         let decision = accounting.step(now: now, idle: idleSeconds,
-            video: (config.videoEnabled && videoPlaying) || isWatching || (config.cameraSuppression && cameraActive == true),
-            locked: suspended, paused: isPaused, threshold: Double(config.idlePauseSeconds))
+            video: activeRest == nil && ((config.videoEnabled && videoPlaying) || isWatching || (config.cameraSuppression && cameraActive == true)),
+            locked: suspended, paused: isPaused, resting: activeRest != nil, threshold: Double(config.idlePauseSeconds))
         activity = decision.state
         if suspended {
-            if activeRest != nil { cancelRest() }
+            if activeRest != nil { cancelRest(restartCycle: false) }
             activity = .sleeping
             applyNaturalRest(decision.restCredit)
             updateUI?(); return
@@ -189,8 +204,12 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if let kind = activeRest {
             if suppressing { hideReminder?(); sound.stop(); notifications?.clearWeekly() }
             _ = policy.update(now: now, suppressed: suppressing, eligible: false, due: [])
-            if restReturn.shouldResume(now: now, restStarted: restStarted, idle: idleSeconds, deliberateIdle: IdleMonitor.deliberateIdleSeconds()) { cancelRest() }
-            else { activity = .resting; engine(kind).advance(by: delta) }
+            // A return on the completion tick must finish, rather than cancel, the rest.
+            if engine(kind).breakRemaining <= delta {
+                engine(kind).advance(by: delta)
+            } else if restReturn.shouldResume(now: now, restStarted: restStarted, idle: idleSeconds, deliberateIdle: deliberateIdle) {
+                cancelRest(restartCycle: false)
+            } else { activity = .resting; engine(kind).advance(by: delta) }
             updateUI?(); return
         }
         statistics.sample(now: Date(), uptime: now, active: decision.activeSeconds, rollback: decision.rollback,
@@ -201,7 +220,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if activity == .active || activity == .video {
             credited.removeAll()
             // Keeps the timers responsive without preventing display or system sleep.
-            if activityToken == nil { activityToken = ProcessInfo.processInfo.beginActivity(options: .userInitiatedAllowingIdleSystemSleep, reason: "Local break timer") }
+            if timer != nil && activityToken == nil { activityToken = ProcessInfo.processInfo.beginActivity(options: .userInitiatedAllowingIdleSystemSleep, reason: "Local break timer") }
             eyes.advance(by: decision.activeSeconds); movement.advance(by: decision.activeSeconds)
         } else { releaseActivity(); if !isPreview { hideReminder?(); reminderKinds.removeAll() } }
         let ready = policy.update(now: now, suppressed: suppressing, eligible: canPresent && !hasAlertProblem, due: pendingDue)
@@ -230,22 +249,30 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     private func applyNaturalRest(_ duration: Double) {
         for kind in MolaKind.allCases where !credited.contains(kind) && duration >= Double(engine(kind).timing.shortBreakSeconds) {
             if !suspended { statistics.natural(kind: kind, target: Double(engine(kind).timing.shortBreakSeconds)) }
-            engine(kind).accountForNaturalRest(duration); policy.clear(kind); pendingDue.remove(kind); credited.insert(kind)
+            engine(kind).accountForNaturalRest(duration); policy.clear(kind); pendingDue.remove(kind); reminderKinds.remove(kind); credited.insert(kind)
         }
     }
-    func beginRest(_ kind: MolaKind) {
+    func beginRest(_ kind: MolaKind, now: Double? = nil) {
         guard !suspended else { return }
         if activeRest != nil { cancelRest() }
         statistics.beginManual()
-        pauseUntil = nil; activeRest = kind; restStarted = time; restReturn.reset()
+        pauseUntil = nil; activeRest = kind; restStarted = now ?? time; restReturn.reset()
         accounting.clearProvisional(); reminderKinds = [kind]; isPreview = false
         policy.clear(kind); engine(kind).startBreakNow(); activity = .resting
         showReminder?(); play(config.breakTone); updateUI?()
     }
-    func cancelRest() {
+    func cancelRest(restartCycle: Bool = true) {
         guard let kind = activeRest else { return }
-        statistics.cancelManual()
-        engine(kind).cancelBreakKeepingProgress(); activeRest = nil
+        let elapsed = engine(kind).breakElapsed
+        // Count only targets actually satisfied; restarting is not a completed break.
+        statistics.completeManual(duration: elapsed, eyes: Double(eyes.timing.shortBreakSeconds), movement: Double(movement.timing.shortBreakSeconds))
+        if restartCycle { engine(kind).restartWorkCycle() }
+        else { engine(kind).cancelBreakKeepingProgress() }
+        policy.clear(kind); pendingDue.remove(kind)
+        for other in MolaKind.allCases where other != kind && elapsed >= Double(engine(other).timing.shortBreakSeconds) {
+            engine(other).accountForNaturalRest(elapsed); policy.clear(other); pendingDue.remove(other); credited.insert(other)
+        }
+        activeRest = nil
         eyes.timing = config.eyes; movement.timing = config.movement
         dismissReminder(); accounting.clearProvisional(); activity = .active; nextSensorRead = 0
         play(config.resumeTone, transition: true); updateUI?()
