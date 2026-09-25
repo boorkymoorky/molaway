@@ -1,5 +1,7 @@
 # Molaway
 
+A personal derivative of **[Offscreen](https://github.com/dayaki/offscreen)** by **[Dayo Akinkuowo](https://github.com/dayaki)**, under the [MIT license](LICENSE). Molaway adaptations are by Burak Yelkenci, with ChatGPT/Codex assistance. [What comes from Offscreen and what changed](UPSTREAM.md).
+
 **Small breaks, a better day.** A local macOS menu bar app for eye and movement breaks.
 
 - Automatically pauses when you step away and resumes when you return.

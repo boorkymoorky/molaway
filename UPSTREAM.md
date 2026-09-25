@@ -19,7 +19,7 @@ The previous database dependency, app-content/screen-share/audio monitoring, glo
 
 ## Repository relationship
 
-The publication copy starts from a curated source snapshot, with explicit upstream links and license notices. It does not copy local development history, private settings, logs, or unrelated upstream website files. GitHub may therefore display this as an independent repository rather than a network fork. That does not change the attribution or license obligations.
+The publication copy starts from a curated source snapshot, with explicit upstream links and license notices. The initial snapshot commit records publication by Burak Yelkenci; it does not mean he authored the inherited Offscreen code. The original development history is available in the linked upstream repository. This copy does not include local development history, private settings, logs, or unrelated upstream website files. GitHub may therefore display this as an independent repository rather than a network fork. That does not change the attribution or license obligations.
 
 ## License notes
 
