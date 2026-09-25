@@ -16,6 +16,12 @@ struct DashboardView: View {
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(.secondary)
                 .lineLimit(2)
+            Label {
+                Text(L(model.nextReadout.resting ? "Rest time" : "Next reminder") + ": " + model.nextReadout.kind.title + " · " + model.nextReadout.clock)
+                    .monospacedDigit()
+            } icon: { Image(systemName: model.nextReadout.kind.symbol) }
+            .font(.system(size: 11, weight: .medium)).foregroundStyle(model.tint)
+            .fixedSize(horizontal: false, vertical: true)
             if model.visibleOverdue != .normal {
                 Label(L("A break is overdue"), systemImage: "exclamationmark.circle").font(.caption).foregroundStyle(model.visibleOverdue == .red ? .red : Theme.amber)
             }
@@ -86,7 +92,8 @@ struct TimerCard: View {
     let kind: MolaKind
     private var engine: BreakEngine { model.engine(kind) }
     private var color: Color { kind == .eyes ? model.tint : Theme.violet }
-    private var inRest: Bool { model.activeRest == kind }
+    private var readout: AppContainer.TimerReadout { model.readout(for: kind) }
+    private var inRest: Bool { readout.resting }
     private var progress: Double {
         inRest ? 1 - engine.breakProgress : min(1, max(0, engine.workAccrued / Double(engine.timing.workSeconds)))
     }
@@ -101,10 +108,10 @@ struct TimerCard: View {
             }
             Spacer(minLength: 2)
             VStack(alignment: .trailing, spacing: 3) {
-                Text(inRest ? Format.clock(engine.breakRemaining) : engine.timeUntilReminder <= 0 ? L("Now") : Format.clock(engine.timeUntilReminder))
+                Text(readout.clock)
                     .font(.system(size: 20, weight: .medium, design: .rounded)).monospacedDigit()
                     .foregroundStyle(engine.timeUntilBreak <= 0 && !inRest ? Theme.amber : .primary)
-                Text(inRest ? L("left") : L(engine.timeUntilBreak <= 0 ? "until reminder" : "until break")).font(.system(size: 10)).foregroundStyle(.secondary)
+                Text(inRest ? L("left") : L(readout.deferred ? "until reminder" : "until break")).font(.system(size: 10)).foregroundStyle(.secondary)
             }
         }.padding(15)
             .background(color.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.3 — 2026-09-25
+
+- Name the eye/movement timer in the menu bar countdown and show the same next reminder in the dashboard.
+- Use a shared timer readout to keep dashboard and menu countdown semantics consistent.
+- Add three regressions for snoozing followed by manual/natural rest and independent eye/movement resets.
+- Clarify that update checks are manual and the app stays offline.
+
 ## 2.2.2 — 2026-09-25
 
 - Show a live countdown to deferred reminders instead of leaving timers on “Now”.

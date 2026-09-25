@@ -39,14 +39,11 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         let paused = [.away, .sleeping, .paused, .starting].contains(model.activity)
         let ringKey = "\(Int(min(100, max(0, model.eyes.workAccrued / Double(model.eyes.timing.workSeconds) * 100))))-\(Int(min(100, max(0, model.movement.workAccrued / Double(model.movement.timing.workSeconds) * 100))))-\(indicator)-\(model.visibleOverdue.rawValue)"
         if ringKey != lastRingKey { button.image = ringImage(); lastRingKey = ringKey }
-        let engine = model.engine(model.activeRest ?? model.nextKind)
-        let text: String
-        if paused { text = "" }
-        else if model.activeRest != nil { text = Format.clock(engine.breakRemaining) }
-        else { text = engine.timeUntilReminder > 0 ? Format.clock(engine.timeUntilReminder) : "Molaway" }
+        let readout = model.nextReadout
+        let text = paused ? "" : readout.menuText
         let title = MenuTitle.make(show: model.config.showCountdownInMenuBar, paused: paused, countdown: text)
         if button.title != title { button.title = title }
-        let hint = model.statusText + "\n" + L("Eye break") + ": " + Format.clock(model.eyes.timeUntilReminder) + " · " + L("Movement break") + ": " + Format.clock(model.movement.timeUntilReminder)
+        let hint = model.statusText + "\n" + L(readout.resting ? "Rest time" : "Next reminder") + ": " + readout.kind.title + " · " + readout.clock + "\n" + L("Eye break") + ": " + Format.clock(model.eyes.timeUntilReminder) + " · " + L("Movement break") + ": " + Format.clock(model.movement.timeUntilReminder)
         if button.toolTip != hint { button.toolTip = hint; button.setAccessibilityValue(hint) }
         let label = L("Molaway · eye and movement breaks")
         if button.accessibilityLabel() != label { button.setAccessibilityLabel(label) }

@@ -1,5 +1,11 @@
 # Verification
 
+## 2.2.3 checks — 2026-09-25
+
+- 111 tests passed, including explicit snooze → completed manual rest and snooze → natural absence regressions.
+- Reproduced the ambiguous 20-minute eye / 5-minute movement case: the shorter eye rest satisfies only the eye target. The next timer is now named and uses the same readout in the menu and dashboard.
+- This explains one reproducible source of different numbers; it does not establish which exact sequence a user took without their confirmation.
+
 ## 2.2.2 local checks — 2026-09-25
 
 - 108 tests in 10 suites passed, including eight new lifecycle regressions using isolated local test data.

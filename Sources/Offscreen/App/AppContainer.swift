@@ -6,6 +6,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     case eyes, movement
     var id: String { rawValue }
     var title: String { L(self == .eyes ? "Eye break" : "Movement break") }
+    var shortTitle: String { L(self == .eyes ? "Eyes" : "Move") }
     var symbol: String { self == .eyes ? "eye" : "figure.walk" }
     var message: String { L(self == .eyes ? "Look away from the screen. Let your eyes rest." : "Stand up and take a short walk. Relax your shoulders.") }
 }
@@ -89,6 +90,20 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     func engine(_ kind: MolaKind) -> BreakEngine { kind == .eyes ? eyes : movement }
     var time: Double { origin.duration(to: .now).seconds }
     var nextKind: MolaKind { eyes.timeUntilReminder <= movement.timeUntilReminder ? .eyes : .movement }
+    struct TimerReadout {
+        let kind: MolaKind
+        let seconds: Double
+        let resting: Bool
+        let deferred: Bool
+        var clock: String { Format.clock(seconds) }
+        var menuText: String { kind.shortTitle + " " + clock }
+    }
+    func readout(for kind: MolaKind) -> TimerReadout {
+        let timer = engine(kind), resting = activeRest == kind
+        return TimerReadout(kind: kind, seconds: resting ? timer.breakRemaining : timer.timeUntilReminder,
+                            resting: resting, deferred: !resting && timer.timeUntilBreak <= 0 && timer.timeUntilReminder > 0)
+    }
+    var nextReadout: TimerReadout { readout(for: activeRest ?? nextKind) }
     var isPaused: Bool { pauseUntil != nil }
     var isWatching: Bool { watchingUntil != nil }
     var suppressionReasons: [String] {
@@ -179,7 +194,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         let now = time
         readSensors(now: now)
         tick(now: now, idle: suspended ? idleSeconds : IdleMonitor.idleSeconds(),
-             deliberateIdle: IdleMonitor.deliberateIdleSeconds())
+             deliberateIdle: activeRest == nil ? .infinity : IdleMonitor.deliberateIdleSeconds())
     }
     // Sensor-independent entry point also used by deterministic lifecycle regression tests.
     func tick(now: Double, idle: Double, deliberateIdle: Double) {

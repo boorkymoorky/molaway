@@ -29,6 +29,8 @@ Molaway is a personal, non-commercial project shared as open source. My version 
 
 **Terminal alternative:** [build and install locally](docs/INSTALL.md#terminal-install-from-source). No paid Apple Developer membership is needed. There is no official Homebrew package.
 
+**Updates are manual:** check [Releases](https://github.com/boorkymoorky/molaway/releases). Molaway does not contact GitHub or check for updates in the background.
+
 **Windows: coming soon — planned, with no release date yet.** No Windows build is available.
 
 ## Features
@@ -37,6 +39,7 @@ Molaway is a personal, non-commercial project shared as open source. My version 
 
 - Independent eye and movement intervals and rest durations; type values directly or use steppers.
 - **Outer ring = eyes; inner ring = movement**, consistently labeled in the dashboard and settings.
+- Menu countdown names the next timer; the panel shows the same next reminder and both independent countdowns.
 - Automatic idle pause and return detection; no key contents are read.
 - Natural breaks can satisfy either or both targets once the idle threshold is reached; one absence counts once in the total.
 - **Continue** during a break starts a fresh interval for that timer without counting an unfinished break. Automatic early return preserves progress and shows a five-minute reminder countdown.

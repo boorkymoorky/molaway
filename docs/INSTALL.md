@@ -38,7 +38,7 @@ This builds the app on your Mac. It does not download and immediately execute a 
 2. Open **Terminal** and download the versioned source:
 
    ```sh
-   git clone --branch v2.2.2 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
+   git clone --branch v2.2.3 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
    cd Molaway-source
    ```
 
@@ -71,6 +71,8 @@ If you previously installed Molaway in the shared `/Applications` folder, remove
 - **Overview:** enable only if you want local daily summaries. Recording starts from that point, not retroactively.
 
 ## Update
+
+Molaway does not check for updates automatically. Visit this repository's **Releases** page and compare the latest version with the version shown at the bottom of Molaway Settings. The app itself stays offline.
 
 1. Quit Molaway using the power button in its menu panel.
 2. Replace the old app in Applications with the new app.
