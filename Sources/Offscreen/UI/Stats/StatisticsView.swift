@@ -90,7 +90,7 @@ struct StatisticsView: View {
                     Picker(L("Keep summaries for"), selection: Binding(get: { stats.retention }, set: {
                         if $0 < stats.retention { retentionDialog = true } else { stats.setRetention($0) }
                     })) { Text(L("30 days")).tag(30); Text(L("90 days")).tag(90) }.disabled(stats.failed)
-                    Toggle(L("Optional weekly summary notification"), isOn: Binding(get: { stats.weekly }, set: model.setWeeklySummary)).disabled(!stats.enabled || stats.failed)
+                    Toggle(L("Optional weekly summary notification"), isOn: Binding(get: { stats.weekly }, set: { model.setWeeklySummary($0) })).disabled(!stats.enabled || stats.failed)
                     Text(L("Permission: macOS notifications. At most once a week with enough data; no figures on the lock screen. Quiet modes are respected. No trend-change alerts.")).font(.caption).foregroundStyle(.secondary)
                     if stats.weekly && model.notifications?.authorization != .authorized {
                         Button(L("Review notification settings")) { model.openAlertSettings() }

@@ -2,6 +2,7 @@
 
 ## 2.2.1 — 2026-09-24
 
+- Use an explicit weekly-summary binding closure for compatibility with the CI Swift compiler.
 - Fix severe overview slowdowns: prepare chart data once per data/locale change, cache all periods, and use indexed daily lookups.
 - Replace repeated date formatter construction with strict calendar parsing; keep invalid-date validation.
 - Identify eye breaks as the outer ring and movement breaks as the inner ring in both timers and settings.
