@@ -8,7 +8,7 @@ import subprocess
 ROOT_FILES = {'.gitignore', 'Package.swift', 'LICENSE', 'README.md', 'CHANGELOG.md',
               'CONTRIBUTING.md', 'SECURITY.md', 'UPSTREAM.md', 'THIRD_PARTY_NOTICES.md', 'VERIFICATION.md'}
 DIRECTORIES = {'Sources', 'Tests', 'docs', '.github'}
-SCRIPT_FILES = {'build-app.sh', 'install-local.sh', 'make-icon.sh', 'make-icon.swift', 'make-sounds.py', 'verify-security.py', 'verify-publication.py'}
+SCRIPT_FILES = {'build-app.sh', 'install-local.sh', 'verify-installation.py', 'make-icon.sh', 'make-icon.swift', 'make-sounds.py', 'verify-security.py', 'verify-publication.py'}
 RESOURCE_FILES = {'Info.plist', 'Mola.entitlements', 'AppIcon.icns', 'AppIcon.png'}
 
 

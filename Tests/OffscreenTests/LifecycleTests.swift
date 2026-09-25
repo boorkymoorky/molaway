@@ -176,6 +176,80 @@ import Testing
         }
     }
 
+    @Test func shortSleepBetweenTicksNeverCountsAsWork() throws {
+        try withModel { model in
+            model.tick(now: 0, idle: 0, deliberateIdle: 0)
+            model.tick(now: 1, idle: 0, deliberateIdle: 0)
+            let before = model.eyes.workAccrued
+            model.suspendTracking()
+            model.resumeTracking(after: 3)
+            model.tick(now: 4, idle: 0, deliberateIdle: 0)
+            #expect(model.eyes.workAccrued == before)
+            model.tick(now: 5, idle: 0, deliberateIdle: 0)
+            #expect(model.eyes.workAccrued == before + 1)
+        }
+    }
+
+    @Test func anotherTimerCannotMergeAnExplicitSnoozeEarly() throws {
+        try withModel { model in
+            model.eyes.advance(by: 1200)
+            // Outside the initial two-minute merge window.
+            model.movement.advance(by: 2820)
+            model.tick(now: 0, idle: 0, deliberateIdle: 0)
+            #expect(model.reminderKinds == [.eyes])
+            model.snoozeReminder()
+            for second in 1...180 { model.tick(now: Double(second), idle: 0, deliberateIdle: 0) }
+            #expect(model.reminderKinds == [.movement])
+            #expect(model.eyes.timeUntilReminder == 120)
+            #expect(model.eyes.isExplicitlyDeferred)
+            model.dismissReminder()
+            for second in 181...299 { model.tick(now: Double(second), idle: 0, deliberateIdle: 0) }
+            #expect(model.reminderKinds.isEmpty)
+            model.tick(now: 300, idle: 0, deliberateIdle: 0)
+            #expect(model.reminderKinds == [.eyes])
+            #expect(!model.eyes.isExplicitlyDeferred)
+        }
+    }
+
+    @Test func eightHourScheduleKeepsRestAndWorkStatesConsistent() throws {
+        try withModel { model in
+            model.settings.update { $0.eyeMinutes = 5; $0.movementMinutes = 10 }
+            var time = 0.0, idle = 0.0
+            var completed = 0, earlyReturns = 0, deferrals = 0, alerts = 0
+            model.showReminder = { alerts += 1 }
+            model.tick(now: time, idle: idle, deliberateIdle: idle)
+            for second in 1...28_800 {
+                time += 1
+                if second % 3600 == 0 {
+                    model.suspendTracking(); time += 180; model.resumeTracking(after: 180)
+                    idle = 0
+                }
+                let wasResting = model.activeRest
+                // Regular natural absences, alongside full and interrupted manual rests.
+                let away = second % 1800 >= 1620
+                idle = wasResting != nil || away ? idle + 1 : 0
+                model.tick(now: time, idle: idle, deliberateIdle: idle)
+                if wasResting != nil && model.activeRest == nil { completed += 1 }
+                if let kind = model.activeRest, second % 997 == 0 {
+                    model.cancelRest(); earlyReturns += 1
+                    #expect(model.engine(kind).workAccrued == 0)
+                    idle = 0
+                } else if model.activeRest == nil && !model.reminderKinds.isEmpty {
+                    if alerts % 3 == 0 { model.snoozeReminder(); deferrals += 1 }
+                    else { model.beginRest(model.reminderKinds.contains(.movement) ? .movement : .eyes, now: time); idle = 0 }
+                }
+                for kind in MolaKind.allCases {
+                    #expect((model.engine(kind).phase == .inBreak) == (model.activeRest == kind))
+                    #expect(model.engine(kind).workAccrued.isFinite && model.engine(kind).workAccrued >= 0)
+                    #expect(model.readout(for: kind).seconds.isFinite && model.readout(for: kind).seconds >= 0)
+                }
+            }
+            #expect(completed > 20)
+            #expect(deferrals > 5)
+            #expect(earlyReturns > 0)
+        }
+    }
+
     @Test func manualRestNeverCreatesProvisionalWork() {
         var accounting = ActivityAccounting()
         _ = accounting.step(now: 0, idle: 0, video: false, locked: false)

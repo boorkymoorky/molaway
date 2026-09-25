@@ -32,6 +32,15 @@ struct ActivityAccounting {
     private var lastState: ActivityState = .starting
     private var started = false
 
+    /// Resume on a fresh sample; a suspension can happen entirely between timer ticks.
+    mutating func resumeAfterSuspension() {
+        lastTime = nil
+        lastState = .starting
+        lockStart = nil
+        lastIdle = 0
+        provisional = 0
+    }
+
     mutating func clearProvisional() { provisional = 0 }
 
     mutating func step(now: Double, idle: Double, video: Bool, locked: Bool,

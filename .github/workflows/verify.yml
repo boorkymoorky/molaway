@@ -26,3 +26,5 @@ jobs:
         run: bash Scripts/build-app.sh
       - name: Verify signature
         run: codesign --verify --deep --strict build.noindex/Molaway.app
+      - name: Isolated installation and update checks
+        run: python3 Scripts/verify-installation.py

@@ -20,6 +20,8 @@ final class BreakEngine {
     var gentleReminders = false
     private(set) var nextReminderAccrued: Double = 0
     private(set) var explicitDeferrals = 0
+    private var explicitReminderAccrued: Double = 0
+    var isExplicitlyDeferred: Bool { workAccrued < explicitReminderAccrued }
 
     var timing: TimingConfig
     var behavior = BehaviorConfig()
@@ -226,6 +228,7 @@ final class BreakEngine {
         workAccrued = 0
         nextReminderAccrued = 0
         explicitDeferrals = 0
+        explicitReminderAccrued = 0
         snoozesThisCycle = 0
         holdReasons.remove(.snoozed)
         // A pending planned break never survives a cycle reset — whether it
@@ -363,8 +366,12 @@ final class BreakEngine {
     // Mola additions: reminders do not begin or complete a break by themselves.
     func recordExplicitDeferral() { explicitDeferrals = min(1000, explicitDeferrals + 1) }
 
-    func deferReminder(seconds: Double = 300) {
+    func deferReminder(seconds: Double = 300, explicit: Bool = false) {
         nextReminderAccrued = workAccrued + max(0, seconds)
+        if explicit {
+            recordExplicitDeferral()
+            explicitReminderAccrued = nextReminderAccrued
+        }
     }
 
     func removeProvisionalWork(_ seconds: Double) {

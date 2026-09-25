@@ -177,6 +177,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     func resumeTracking(after gap: Double) {
         suspended = false
         applyNaturalRest(gap)
+        accounting.resumeAfterSuspension()
         previousTime = nil; nextSensorRead = 0
     }
     private func readSensors(now: Double) {
@@ -244,7 +245,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if !ready.isEmpty {
             reminderKinds = ready
             if config.mergeBreaks {
-                for kind in MolaKind.allCases where engine(kind).timeUntilBreak <= 120 { reminderKinds.insert(kind) }
+                for kind in MolaKind.allCases where !engine(kind).isExplicitlyDeferred && engine(kind).timeUntilReminder <= 120 { reminderKinds.insert(kind) }
             }
             for kind in reminderKinds { engine(kind).deferReminder() }
             isPreview = false
@@ -302,7 +303,10 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         nextSensorRead = 0; play(config.endTone)
     }
     func dismissReminder() { reminderKinds.removeAll(); isPreview = false; hideReminder?() }
-    func snoozeReminder() { for kind in reminderKinds { if !isPreview { engine(kind).recordExplicitDeferral() }; engine(kind).deferReminder() }; dismissReminder(); updateUI?() }
+    func snoozeReminder() {
+        if !isPreview { for kind in reminderKinds { engine(kind).deferReminder(explicit: true) } }
+        dismissReminder(); updateUI?()
+    }
     func previewReminder() {
         guard canPreview else { feedback = L("End quiet mode before previewing."); return }
         isPreview = true; reminderKinds = [.eyes]; showReminder?()

@@ -38,7 +38,7 @@ This builds the app on your Mac. It does not download and immediately execute a 
 2. Open **Terminal** and download the versioned source:
 
    ```sh
-   git clone --branch v2.2.3 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
+   git clone --branch v2.2.4 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
    cd Molaway-source
    ```
 

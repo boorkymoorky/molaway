@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.4 — 2026-09-25
+
+- Honor an explicit five-minute snooze when another timer becomes due; merged reminders cannot shorten or restart that snooze.
+- Exclude short sleep intervals between timer ticks from working time.
+- Add regressions and an eight-hour simulated mixed-use schedule.
+- Verify fresh installs, replacements, damaged packages and unsafe destinations in isolated installer checks, also run in CI.
+
 ## 2.2.3 — 2026-09-25
 
 - Name the eye/movement timer in the menu bar countdown and show the same next reminder in the dashboard.

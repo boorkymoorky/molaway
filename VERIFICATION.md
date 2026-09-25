@@ -1,5 +1,14 @@
 # Verification
 
+## 2.2.4 local checks — 2026-09-25
+
+- 114 tests in 10 suites passed. New regressions first reproduced early merging of an explicit snooze and short sleep counted as work; both passed after the fixes.
+- An eight-hour simulated schedule exercised repeated manual/natural rests, snoozes, early returns and sleep, checking finite countdowns and consistent rest states. This is not eight hours of physical use.
+- The actual installer passed isolated fresh-install, replacement, staging-cleanup, damaged-source, unrelated-app, symlink-destination and relative-path checks. Failed cases preserved the existing test installation.
+- Version 2.2.4 was installed locally; existing interval settings remained unchanged and the dashboard opened with named eye/movement countdowns. Signature verification passed and the installed sandbox probe returned `networkDenied=true`.
+
+- A 60-second local sample with app windows closed measured about 1.25% of one CPU core and 92–95 MiB resident memory. User activity was uncontrolled; this is neither a battery/energy measurement nor a sustained-use guarantee. The earlier 2.2.3 sample was about 1.28%, so no meaningful performance improvement is claimed.
+
 ## 2.2.3 checks — 2026-09-25
 
 - 111 tests passed, including explicit snooze → completed manual rest and snooze → natural absence regressions.

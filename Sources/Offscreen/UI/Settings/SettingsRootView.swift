@@ -24,7 +24,7 @@ struct SettingsRootView: View {
                 }
                 Spacer()
                 Label(L("Only on this Mac"), systemImage: "lock").font(.caption).foregroundStyle(.secondary)
-                Text("Molaway 2.2.3 · MIT").font(.caption2).foregroundStyle(.secondary)
+                Text("Molaway 2.2.4 · MIT").font(.caption2).foregroundStyle(.secondary)
             }.padding(18).frame(width: 200).background(model.tint.opacity(0.04))
             Divider()
             VStack(alignment: .leading, spacing: 0) {

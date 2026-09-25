@@ -3,7 +3,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 SOURCE="$PWD/build.noindex/Molaway.app"
-APPS="$HOME/Applications"
+# Optional isolated destination for installation verification; never changes HOME.
+APPS="${MOLAWAY_INSTALL_DIR:-$HOME/Applications}"
+case "$APPS" in /*) ;; *) echo 'Installation directory must be absolute.' >&2; exit 1 ;; esac
 DEST="$APPS/Molaway.app"
 if [[ ! -d "$SOURCE" || -L "$SOURCE" ]]; then
     echo 'Build first: bash Scripts/build-app.sh' >&2; exit 1
