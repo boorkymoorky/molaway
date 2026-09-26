@@ -6,7 +6,6 @@
 - The prepared app download is for Apple Silicon (M-series Macs).
 - Intel builds and the oldest supported macOS versions have not been verified.
 - Release packages are locally (ad hoc) signed, not Apple Developer ID signed or notarized.
-- While the repository is private, only people with access can download releases.
 - Windows is planned; there is no Windows installer or release date.
 
 ## Download the app
@@ -42,7 +41,7 @@ This builds the app on your Mac. It does not download and immediately execute a 
    cd Molaway-source
    ```
 
-   While the repository is private, use an existing authorized GitHub Git connection, or download **Source code (zip)** from the release after signing in, extract it, and open Terminal in that extracted folder. Do not put a password or token into a command or URL.
+   Alternatively, download **Source code (zip)** from the release, extract it, and open Terminal in that folder. Public downloads do not require signing in.
 
 3. Review the source and `Scripts/build-app.sh` / `Scripts/install-local.sh`, then build:
 

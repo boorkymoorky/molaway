@@ -27,7 +27,7 @@ Molaway is a personal, non-commercial project shared as open source. My version 
 4. Open Molaway and click its two-ring icon in the menu bar.
 5. Choose your eye and movement intervals. Everything works locally.
 
-**Signing:** Molaway is locally (ad hoc) signed, **not Apple Developer ID signed or notarized**. macOS may ask you to approve the app. Follow the app-specific steps in the [installation guide](docs/INSTALL.md); keep Gatekeeper enabled. While this repository is private, downloads require repository access.
+**Signing:** Molaway is locally (ad hoc) signed, **not Apple Developer ID signed or notarized**. macOS may ask you to approve the app. Follow the app-specific steps in the [installation guide](docs/INSTALL.md); keep Gatekeeper enabled.
 
 **Terminal alternative:** [build and install locally](docs/INSTALL.md#terminal-install-from-source). No paid Apple Developer membership is needed. There is no official Homebrew package.
 
