@@ -24,7 +24,7 @@ No GitHub account or Git knowledge is needed to download a public release. No Mo
 The app does not have Apple Developer ID signing or notarization. An ad hoc signature preserves the app sandbox but does **not** verify the publisher's identity or mean Apple reviewed it.
 
 - Download only from this repository's Releases page. Each release includes `SHA256SUMS.txt` to check download integrity; a checksum is not an independent trust guarantee.
-- If macOS says the developer cannot be verified, and you have reviewed and trust this release: first try opening Molaway, then go to **System Settings → Privacy & Security → Open Anyway** for **Molaway**, and confirm. [Apple's instructions](https://support.apple.com/en-us/102445).
+- If you see **“Molaway.app” Not Opened** with **“Apple could not verify … is free of malware”**, this is the expected warning for this unnotarized download; it is not a malware detection. If you have reviewed and trust the release, choose **Done**, then **System Settings → Privacy & Security → Open Anyway** for **Molaway**, and confirm. [Apple's instructions](https://support.apple.com/en-us/102445).
 - This creates an exception for this app. Keep Gatekeeper enabled. Do not use quarantine-removal commands or disable system protection.
 - If macOS reports malware, damage, or your organization blocks it, stop. Do not override those warnings.
 - A free personal Apple account cannot provide Developer ID distribution signing. No paid membership or company account is needed to build Molaway locally. [Apple account options](https://developer.apple.com/help/account/basics/about-your-developer-account).
@@ -37,7 +37,7 @@ This builds the app on your Mac. It does not download and immediately execute a 
 2. Open **Terminal** and download the versioned source:
 
    ```sh
-   git clone --branch v2.2.4 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
+   git clone --branch v2.2.5 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
    cd Molaway-source
    ```
 

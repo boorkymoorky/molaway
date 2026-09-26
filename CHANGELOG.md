@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.5 — 2026-09-26
+
+- Snooze gives both break reminders at least five active minutes of quiet, so another timer cannot interrupt earlier. Later deadlines stay unchanged.
+- Clear pending delivery retries when snoozing; repeated snoozes start a fresh five-minute period.
+- Explain the macOS unnotarized-app warning and the per-app first-launch steps.
+
 ## 2.2.4 — 2026-09-25
 
 - Honor an explicit five-minute snooze when another timer becomes due; merged reminders cannot shorten or restart that snooze.

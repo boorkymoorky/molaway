@@ -190,7 +190,7 @@ import Testing
         }
     }
 
-    @Test func anotherTimerCannotMergeAnExplicitSnoozeEarly() throws {
+    @Test func snoozeKeepsBothTimersQuietForFiveActiveMinutes() throws {
         try withModel { model in
             model.eyes.advance(by: 1200)
             // Outside the initial two-minute merge window.
@@ -199,15 +199,50 @@ import Testing
             #expect(model.reminderKinds == [.eyes])
             model.snoozeReminder()
             for second in 1...180 { model.tick(now: Double(second), idle: 0, deliberateIdle: 0) }
-            #expect(model.reminderKinds == [.movement])
+            #expect(model.reminderKinds.isEmpty)
             #expect(model.eyes.timeUntilReminder == 120)
+            #expect(model.movement.timeUntilReminder == 120)
             #expect(model.eyes.isExplicitlyDeferred)
-            model.dismissReminder()
+            #expect(model.movement.explicitDeferrals == 0)
             for second in 181...299 { model.tick(now: Double(second), idle: 0, deliberateIdle: 0) }
             #expect(model.reminderKinds.isEmpty)
             model.tick(now: 300, idle: 0, deliberateIdle: 0)
-            #expect(model.reminderKinds == [.eyes])
+            #expect(model.reminderKinds == [.eyes, .movement])
             #expect(!model.eyes.isExplicitlyDeferred)
+        }
+    }
+
+    @Test func repeatedSnoozesRestartTheFullQuietPeriodAndClearQueuedDelivery() throws {
+        try withModel { model in
+            model.eyes.advance(by: 1200)
+            model.tick(now: 0, idle: 0, deliberateIdle: 0)
+            for cycle in 0..<4 {
+                #expect(model.reminderKinds == [.eyes])
+                // A delivery retry must not survive the user's explicit snooze.
+                model.notificationDeliveryFailed()
+                model.snoozeReminder()
+                #expect(model.eyes.timeUntilReminder == 300)
+                #expect(model.eyes.explicitDeferrals == cycle + 1)
+                for offset in 1...299 {
+                    model.tick(now: Double(cycle * 300 + offset), idle: 0, deliberateIdle: 0)
+                    #expect(model.reminderKinds.isEmpty)
+                }
+                model.tick(now: Double((cycle + 1) * 300), idle: 0, deliberateIdle: 0)
+            }
+            #expect(model.reminderKinds == [.eyes])
+            #expect(model.movement.timeUntilReminder == 1800)
+        }
+    }
+
+    @Test func previewSnoozeDoesNotChangeEitherTimer() throws {
+        try withModel { model in
+            model.tick(now: 0, idle: 0, deliberateIdle: 0)
+            let eyes = model.eyes.timeUntilReminder, movement = model.movement.timeUntilReminder
+            model.previewReminder()
+            model.snoozeReminder()
+            #expect(model.eyes.timeUntilReminder == eyes)
+            #expect(model.movement.timeUntilReminder == movement)
+            #expect(model.eyes.explicitDeferrals == 0)
         }
     }
 

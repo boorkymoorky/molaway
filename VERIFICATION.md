@@ -1,5 +1,12 @@
 # Verification
 
+## 2.2.5 checks — 2026-09-26
+
+- 116 tests in 10 suites passed. Regressions first reproduced a second timer interrupting a snooze and a pending delivery retry returning immediately after snooze; both passed after the fix. Four consecutive snoozes were exercised, preserving a later movement deadline and counting only shown reminders as deliberate deferrals. Preview controls leave timers unchanged.
+- Release build, signature verification and isolated installer checks passed. The installed sandbox probe returned `networkDenied=true`. No new permission or networking capability was added.
+- The repository is public. Main requires a pull request, the GitHub Actions `verify` check, an up-to-date branch and resolved conversations, including for administrators. Force pushes and branch deletion are disabled.
+- Private vulnerability reporting, secret scanning, push protection and Dependabot alerts are enabled. External contributors require approval before their workflows run; default workflow access is read-only and actions are pinned to full commit identifiers.
+
 ## Public release review — 2026-09-25
 
 - At commit `cc101b6`, the curated tree contained 87 files. Targeted privacy checks also covered all 137 unique historical file blobs and the six uploaded 2.2.2–2.2.4 app/source ZIPs. No matching credentials, personal home paths, private email addresses, or private network addresses were found. All commit author/committer email addresses use GitHub noreply.
