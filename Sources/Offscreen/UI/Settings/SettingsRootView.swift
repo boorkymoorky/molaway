@@ -24,7 +24,7 @@ struct SettingsRootView: View {
                 }
                 Spacer()
                 Label(L("Only on this Mac"), systemImage: "lock").font(.caption).foregroundStyle(.secondary)
-                Text("Molaway 2.2.4 · MIT").font(.caption2).foregroundStyle(.secondary)
+                Text("Molaway \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—") · MIT").font(.caption2).foregroundStyle(.secondary)
             }.padding(18).frame(width: 200).background(model.tint.opacity(0.04))
             Divider()
             VStack(alignment: .leading, spacing: 0) {
@@ -127,7 +127,7 @@ struct SettingsRootView: View {
                 if model.config.reminderStyle == .notification { notificationPermission }
                 Picker(L("Show on"), selection: model.settings.binding(\.displayTarget)) { ForEach(DisplayTarget.allCases, id: \.self) { Text($0.title).tag($0) } }.disabled(model.config.reminderStyle == .notification)
                 DurationField(title: "Alert duration", value: model.settings.binding(\.reminderVisibleSeconds), range: 5...30, unit: "sec").disabled(model.config.reminderStyle == .notification)
-                note("A reminder is not a completed break. Closing it keeps tracking; if needed, another reminder appears after 5 active minutes.")
+                note("A reminder is not a completed break. Closing it keeps tracking. Snooze silences both break reminders for at least 5 active minutes.")
                 if model.config.reminderStyle != .notification {
                     Picker(L("Panel surface"), selection: model.settings.binding(\.alertSurface)) {
                         ForEach(AlertSurface.allCases, id: \.self) { Text($0.title).tag($0) }

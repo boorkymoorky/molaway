@@ -1,4 +1,4 @@
-"A reminder is not a completed break. Closing it keeps tracking; if needed, another reminder appears after 5 active minutes." = "Uyarı göstermek mola tamamlandığı anlamına gelmez. Kapatınca takip sürer; gerekirse 5 aktif dakika sonra yeniden hatırlatılır.";
+"A reminder is not a completed break. Closing it keeps tracking. Snooze silences both break reminders for at least 5 active minutes." = "Uyarı göstermek mola tamamlandığı anlamına gelmez. Kapatınca takip sürer. Ertele, her iki mola uyarısını en az 5 aktif dakika susturur.";
 "About Mola" = "Mola hakkında";
 "Accent" = "Vurgu rengi";
 "Activity" = "Takip";

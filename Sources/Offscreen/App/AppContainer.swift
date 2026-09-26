@@ -304,7 +304,16 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     }
     func dismissReminder() { reminderKinds.removeAll(); isPreview = false; hideReminder?() }
     func snoozeReminder() {
-        if !isPreview { for kind in reminderKinds { engine(kind).deferReminder(explicit: true) } }
+        if !isPreview && !reminderKinds.isEmpty {
+            // Snooze is a quiet period for all break alerts. Preserve any later
+            // deadline and count a deliberate deferral only for the shown kinds.
+            for kind in MolaKind.allCases {
+                let timer = engine(kind)
+                timer.deferReminder(seconds: max(300, timer.timeUntilReminder), explicit: reminderKinds.contains(kind))
+                policy.clear(kind)
+                pendingDue.remove(kind)
+            }
+        }
         dismissReminder(); updateUI?()
     }
     func previewReminder() {
