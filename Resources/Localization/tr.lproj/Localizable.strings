@@ -290,3 +290,14 @@
 
 "%d completed short breaks are followed by one long break. Skips and snoozes do not advance the count." = "Tamamlanan %d kısa molayı bir uzun mola izler. Atlanan ve ertelenen molalar sayacı ilerletmez.";
 "Only short breaks are scheduled. Skips and snoozes do not advance the count." = "Yalnızca kısa molalar planlanır. Atlanan ve ertelenen molalar sayacı ilerletmez.";
+
+"Pause tracking" = "Takibi duraklat";
+"Pause for 30 minutes" = "30 dakika duraklat";
+"Pause for 1 hour" = "1 saat duraklat";
+"Pause until tomorrow" = "Yarına kadar duraklat";
+"Pause until I resume" = "Ben sürdürene kadar duraklat";
+"Resume manual pause" = "Elle duraklatmayı bitir";
+"Paused until you resume" = "Siz sürdürene kadar duraklatıldı";
+"Outside Office Hours · paused" = "Çalışma saatleri dışında · duraklatıldı";
+"Manual pause" = "Elle duraklatma";
+"Manual pause survives reopening. Other active pause reasons continue after it ends." = "Elle duraklatma uygulama yeniden açıldığında sürer. Bittiğinde diğer etkin duraklatma nedenleri devam eder.";

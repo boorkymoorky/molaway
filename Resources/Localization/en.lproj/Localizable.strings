@@ -290,3 +290,14 @@
 
 "%d completed short breaks are followed by one long break. Skips and snoozes do not advance the count." = "%d completed short breaks are followed by one long break. Skips and snoozes do not advance the count.";
 "Only short breaks are scheduled. Skips and snoozes do not advance the count." = "Only short breaks are scheduled. Skips and snoozes do not advance the count.";
+
+"Pause tracking" = "Pause tracking";
+"Pause for 30 minutes" = "Pause for 30 minutes";
+"Pause for 1 hour" = "Pause for 1 hour";
+"Pause until tomorrow" = "Pause until tomorrow";
+"Pause until I resume" = "Pause until I resume";
+"Resume manual pause" = "Resume manual pause";
+"Paused until you resume" = "Paused until you resume";
+"Outside Office Hours · paused" = "Outside Office Hours · paused";
+"Manual pause" = "Manual pause";
+"Manual pause survives reopening. Other active pause reasons continue after it ends." = "Manual pause survives reopening. Other active pause reasons continue after it ends.";

@@ -24,7 +24,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     private(set) var focusActive: Bool?
     private(set) var idleSeconds: Double = 0
     private(set) var activeRest: MolaKind?
-    private(set) var pauseUntil: Date?
+    private(set) var pause: PauseModel
     private(set) var watchingUntil: Date?
     private(set) var presentationUntil: Date?
     var settingsTab = 0
@@ -43,7 +43,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     var notifications: LocalNotificationService?
     private var timer: Timer?
     private var sleepMonitor: SleepWakeMonitor?
-    private var suspended = false
+    private var suspended: Bool { pause.reasons.contains(.sleepOrLock) }
     private let origin = ContinuousClock.now
     private var previousTime: Double?
     private var nextSensorRead = 0.0
@@ -57,6 +57,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     init(settings: SettingsStore = SettingsStore(), statistics: StatisticsStore = StatisticsStore()) {
         self.settings = settings
         self.statistics = statistics
+        pause = PauseModel(fileURL: settings.pauseFileURL)
         breakEngine = BreakEngine(timing: settings.settings.timing)
         breakEngine.restoreCadence(settings.settings.cycleShortCount)
         Localization.shared.language = settings.settings.language
@@ -108,7 +109,12 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
                      completedShorts: breakEngine.shortBreaksSinceLong,
                      shortsBeforeLong: config.shortBreaksBeforeLong)
     }
-    var isPaused: Bool { pauseUntil != nil }
+    var isPaused: Bool { pause.isManuallyPaused }
+    var pauseUntil: Date? { pause.deadline() }
+    var manualPauseText: String {
+        if let until = pauseUntil { return L("Paused until") + " " + until.formatted(date: .abbreviated, time: .shortened) }
+        return L("Paused until you resume")
+    }
     var isWatching: Bool { watchingUntil != nil }
     var suppressionReasons: [String] {
         var reasons: [String] = []
@@ -118,7 +124,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         return reasons
     }
     var suppressing: Bool { !suppressionReasons.isEmpty }
-    var canPresent: Bool { !suspended && !isPaused && !suppressing && activity != .away }
+    var canPresent: Bool { !pause.isPaused && !suppressing && activity != .away }
     var hasAlertProblem: Bool { config.reminderStyle == .notification && notifications?.hasProblem == true }
     func openAlertSettings() { settingsTab = 2; openSettingsAction?() }
     func notificationDeliveryFailed() { pendingDue.formUnion(reminderKinds); updateUI?() }
@@ -127,7 +133,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
             snoozes: engine(kind).explicitDeferrals, amberMinutes: config.amberMinutes, redMinutes: config.redMinutes)
     }
     var visibleOverdue: OverdueLevel {
-        guard !suppressing, !isPaused, activeRest == nil, [.active, .video].contains(activity) else { return .normal }
+        guard !suppressing, !pause.isPaused, activeRest == nil, [.active, .video].contains(activity) else { return .normal }
         return overdueLevel(nextKind)
     }
     func reminderMessage(_ kind: MolaKind) -> String {
@@ -146,7 +152,8 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     var canPreview: Bool { !suspended && !suppressing }
     var statusText: String {
         if suspended { return L("Screen off · paused") }
-        if let until = pauseUntil { return L("Paused until") + " " + until.formatted(date: .omitted, time: .shortened) }
+        if isPaused { return manualPauseText }
+        if pause.reasons.contains(.officeHours) { return L("Outside Office Hours · paused") }
         if activeRest != nil { return L("Enjoy your break") }
         if suppressing { return L("Alerts quiet") + " · " + suppressionReasons.joined(separator: ", ") }
         if hasAlertProblem { return L("Notifications need attention") }
@@ -170,12 +177,12 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         play(config.startTone)
     }
     func suspendTracking() {
-        suspended = true
+        pause.setSleepOrLock(true)
         if activeRest != nil { cancelRest(restartCycle: false) }
         statistics.resetSession(); statistics.flush(); hideReminder?(); sound.stop(); releaseActivity()
     }
     func resumeTracking(after gap: Double) {
-        suspended = false
+        pause.setSleepOrLock(false)
         applyNaturalRest(gap)
         accounting.resumeAfterSuspension()
         previousTime = nil; nextSensorRead = 0
@@ -184,7 +191,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         guard !suspended else { return }
         guard now >= nextSensorRead else { return }
         nextSensorRead = now + 5
-        if config.videoEnabled && !isPaused && activeRest == nil {
+        if config.videoEnabled && !isPaused && !pause.reasons.contains(.officeHours) && activeRest == nil {
             let reading = MediaMonitor.read()
             videoAvailable = reading.available; videoPlaying = reading.isPlaying
         } else if !config.videoEnabled { videoPlaying = false; videoAvailable = true }
@@ -203,13 +210,17 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         let rawDelta = previousTime.map { now - $0 } ?? 0
         let delta = rawDelta >= 0 && rawDelta <= 5 ? rawDelta : 0
         previousTime = now
-        if let until = pauseUntil, Date() >= until { pauseUntil = nil; nextSensorRead = 0 }
+        let wasManuallyPaused = isPaused
+        pause.expire(now: Date())
+        if wasManuallyPaused && !isPaused { nextSensorRead = 0 }
         if let until = watchingUntil, Date() >= until { watchingUntil = nil }
         if let until = presentationUntil, Date() >= until { presentationUntil = nil }
         idleSeconds = idle
         let decision = accounting.step(now: now, idle: idleSeconds,
             video: activeRest == nil && ((config.videoEnabled && videoPlaying) || isWatching || (config.cameraSuppression && cameraActive == true)),
-            locked: suspended, paused: isPaused, resting: activeRest != nil, threshold: Double(config.idlePauseSeconds))
+            locked: suspended, paused: isPaused || pause.reasons.contains(.officeHours), resting: activeRest != nil,
+            threshold: Double(config.idlePauseSeconds))
+        pause.setAutomaticActivity(decision.automaticPause)
         activity = decision.state
         if suspended {
             if activeRest != nil { cancelRest(restartCycle: false) }
@@ -229,7 +240,8 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
             updateUI?(); return
         }
         statistics.sample(now: Date(), uptime: now, active: decision.activeSeconds, rollback: decision.rollback,
-            provisional: accounting.unconfirmedSeconds, observed: isPaused || activity == .starting ? 0 : delta,
+            provisional: accounting.unconfirmedSeconds,
+            observed: isPaused || pause.reasons.contains(.officeHours) || activity == .starting ? 0 : delta,
             video: config.videoEnabled && videoPlaying, watching: isWatching)
         breakEngine.removeProvisionalWork(decision.rollback)
         applyNaturalRest(decision.restCredit)
@@ -274,7 +286,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if activeRest != nil { cancelRest() }
         statistics.beginManual()
         let selected = kind == .long ? MolaKind.long : nextKind
-        pauseUntil = nil; activeRest = selected; restStarted = now ?? time; restReturn.reset()
+        activeRest = selected; restStarted = now ?? time; restReturn.reset()
         accounting.clearProvisional(); reminderKinds = [selected]; isPreview = false
         policy.clear(selected)
         if selected == .long { breakEngine.startLongBreakNow() } else { breakEngine.startBreakNow() }
@@ -317,9 +329,16 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         isPreview = true; reminderKinds = [nextKind]; showReminder?()
         if config.reminderStyle != .notification { play(config.reminderTone) }
     }
-    func togglePause() {
-        if isPaused { pauseUntil = nil; nextSensorRead = 0 }
-        else { statistics.resetSession(); if activeRest != nil { cancelRest() }; pauseUntil = Date().addingTimeInterval(1800); dismissReminder() }
+    func pauseTracking(_ option: PauseOption) {
+        statistics.resetSession()
+        if activeRest != nil { cancelRest() }
+        pause.select(option)
+        dismissReminder()
+        tick()
+    }
+    func resumeManualPause() {
+        pause.resumeManually()
+        nextSensorRead = 0
         tick()
     }
     func toggleWatching() { watchingUntil = isWatching ? nil : Date().addingTimeInterval(Double(config.watchingMinutes * 60)); tick() }
