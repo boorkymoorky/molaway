@@ -250,6 +250,13 @@
 
 "Outer ring" = "Dış halka";
 "Inner ring" = "İç halka";
+"Work progress" = "Çalışma ilerlemesi";
+"Rest progress" = "Dinlenme ilerlemesi";
+"Next break" = "Sıradaki mola";
+"%d of %d short breaks completed" = "Tamamlanan kısa molalar: %d/%d";
+"More actions" = "Diğer işlemler";
+"Whole number" = "Tam sayı";
+"Adjust" = "Ayarla";
 
 "until reminder" = "hatırlatmaya";
 

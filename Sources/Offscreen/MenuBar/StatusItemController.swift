@@ -37,13 +37,20 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         guard let button = item.button else { return }
         refreshDashboardLayout()
         let paused = [.away, .sleeping, .paused, .starting].contains(model.activity)
-        let ringKey = "\(Int(min(100, max(0, model.breakEngine.workAccrued / Double(model.breakEngine.timing.workSeconds) * 100))))-\(model.breakEngine.shortBreaksSinceLong)-\(indicator)-\(model.visibleOverdue.rawValue)"
+        let progress = model.ringProgress
+        let ringKey = "\(Int(progress.outer * 100))-\(Int((progress.inner ?? -1) * 100))-\(indicator)-\(model.visibleOverdue.rawValue)"
         if ringKey != lastRingKey { button.image = ringImage(); lastRingKey = ringKey }
         let readout = model.nextReadout
         let text = paused ? "" : readout.menuText
         let title = MenuTitle.make(show: model.config.showCountdownInMenuBar, paused: paused, countdown: text)
         if button.title != title { button.title = title }
-        let hint = model.statusText + "\n" + L(readout.resting ? "Rest time" : "Next reminder") + ": " + readout.kind.title + " · " + readout.clock
+        let cadence = model.config.shortBreaksBeforeLong > 0
+            ? String(format: L("%d of %d short breaks completed"),
+                     min(model.breakEngine.shortBreaksSinceLong, model.config.shortBreaksBeforeLong), model.config.shortBreaksBeforeLong)
+            : L("Long breaks off")
+        let hint = model.statusText + "\n" + L(readout.resting ? "Rest time" : readout.deferred ? "Next reminder" : "Next break") + ": " + readout.kind.title + " · " + readout.clock
+            + "\n" + L("Outer ring") + ": " + L(readout.resting ? "Rest progress" : "Work progress") + " \(Int((progress.outer * 100).rounded()))%"
+            + "\n" + L("Inner ring") + ": " + cadence
         if button.toolTip != hint { button.toolTip = hint; button.setAccessibilityValue(hint) }
         let label = L("Molaway · short and long breaks")
         if button.accessibilityLabel() != label { button.setAccessibilityLabel(label) }
@@ -57,24 +64,24 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         return ""
     }
     private func ringImage() -> NSImage {
-        let paused = [.away, .sleeping, .paused, .starting].contains(model.activity)
-        let fraction = max(0, min(1, model.breakEngine.workAccrued / Double(model.breakEngine.timing.workSeconds)))
-        let second = max(0, min(1, Double(model.breakEngine.shortBreaksSinceLong) / Double(max(1, model.config.shortBreaksBeforeLong))))
+        let progress = model.ringProgress
         let glyph = indicator
         let level = model.visibleOverdue
         let ink: NSColor = level == .red ? .systemRed : level == .amber ? .systemOrange : .black
         let image = NSImage(size: NSSize(width: 20, height: 20), flipped: false) { _ in
-            for (radius, progress) in [(8.0, fraction), (4.7, second)] where (glyph.isEmpty || radius == 8) && (radius == 8 || self.model.config.shortBreaksBeforeLong > 0) {
+            var rings: [(Double, Double)] = [(8.0, progress.outer)]
+            if let inner = progress.inner { rings.append((4.7, inner)) }
+            for (radius, fraction) in rings {
                 let start = radius == 8 ? 45.0 : 225.0
                 let background = NSBezierPath()
                 background.appendArc(withCenter: NSPoint(x: 10, y: 10), radius: radius, startAngle: start, endAngle: start - 270, clockwise: true)
                 ink.withAlphaComponent(0.3).setStroke()
                 background.lineWidth = 1.6; background.lineCapStyle = .round
                 background.stroke()
-                if progress > 0 && !paused {
+                if fraction > 0 {
                     let arc = NSBezierPath()
                     arc.appendArc(withCenter: NSPoint(x: 10, y: 10), radius: radius,
-                                  startAngle: start, endAngle: start - 270 * max(0.02, progress), clockwise: true)
+                                  startAngle: start, endAngle: start - 270 * max(0.02, fraction), clockwise: true)
                     ink.setStroke(); arc.lineWidth = 1.8; arc.lineCapStyle = .round; arc.stroke()
                 }
             }
@@ -113,7 +120,7 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         panel.orderFrontRegardless(); panel.makeKey()
     }
     private var layoutKey: String {
-        "\(model.statusText)|\(model.isWatching)|\(model.presentationUntil != nil)|\(model.activeRest?.rawValue ?? "")|\(model.hasAlertProblem)|\(Localization.shared.code)|\(model.visibleOverdue.rawValue)"
+        "\(model.statusText)|\(model.isWatching)|\(model.presentationUntil != nil)|\(model.activeRest?.rawValue ?? "")|\(model.config.shortBreaksBeforeLong)|\(model.hasAlertProblem)|\(Localization.shared.code)|\(model.visibleOverdue.rawValue)"
     }
     private func refreshDashboardLayout(force: Bool = false) {
         guard let panel = dashboard, let screen = panel.screen, (force || layoutKey != dashboardLayoutKey) else { return }

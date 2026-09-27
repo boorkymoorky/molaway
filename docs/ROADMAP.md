@@ -7,7 +7,7 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 | Milestone | Planned scope | Status |
 | --- | --- | --- |
 | M1 | One work/short/long break cycle, migration from independent eye and movement timers, Deep Focus timing profile, and a minimal usable interface. | Implementation in review; not shipped |
-| M2 | Reconnect the two rings to work/rest and short-break cadence; simplify the menu panel and settings controls. | Planned |
+| M2 | Reconnect the two rings to work/rest and short-break cadence; simplify the menu panel and settings controls. | Implementation in review; not shipped |
 | M3 | A shared pause model with 30-minute, one-hour, tomorrow, and manual-resume options. | Planned |
 | M4 | Office Hours, including overnight shifts and tomorrow's next working start. | Planned |
 | M5 | Explicit Casual, Balanced, and Hardcore skip behavior across all reminder surfaces. | Planned |

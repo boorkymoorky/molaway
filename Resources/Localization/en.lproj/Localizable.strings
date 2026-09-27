@@ -250,6 +250,13 @@
 
 "Outer ring" = "Outer ring";
 "Inner ring" = "Inner ring";
+"Work progress" = "Work progress";
+"Rest progress" = "Rest progress";
+"Next break" = "Next break";
+"%d of %d short breaks completed" = "%d of %d short breaks completed";
+"More actions" = "More actions";
+"Whole number" = "Whole number";
+"Adjust" = "Adjust";
 
 "until reminder" = "until reminder";
 

@@ -144,10 +144,10 @@ struct SettingsRootView: View {
                         ForEach(AlertSurface.allCases, id: \.self) { Text($0.title).tag($0) }
                     }
                     if model.config.alertSurface != .solid {
-                        Slider(value: model.settings.binding(\.surfaceDensity), in: 0.3...1) { Text(L("Background opacity")) }
+                        PercentageSlider(title: "Background opacity", value: model.settings.binding(\.surfaceDensity), range: 0.3...1)
                     }
                     if model.config.reminderStyle == .fullScreen {
-                        Slider(value: model.settings.binding(\.fullScreenDim), in: 0.4...1) { Text(L("Full screen dimming")) }
+                        PercentageSlider(title: "Full screen dimming", value: model.settings.binding(\.fullScreenDim), range: 0.4...1)
                     }
                     note("Text stays readable. Reduce Transparency and Reduce Motion take priority. Native notifications follow macOS appearance.")
                     Button(L("Reset alert appearance")) { model.settings.update { $0.alertSurface = .system; $0.surfaceDensity = 0.65; $0.fullScreenDim = 0.85 } }
@@ -183,7 +183,7 @@ struct SettingsRootView: View {
                 soundRow("Tracking resumes", \.resumeTone)
                 soundRow("Break starts", \.breakTone)
                 soundRow("Break ends", \.endTone)
-                Slider(value: model.settings.binding(\.soundVolume), in: 0...1) { Text(L("App sound volume")) }
+                PercentageSlider(title: "App sound volume", value: model.settings.binding(\.soundVolume), range: 0...1)
                 note("Permission: none. Quiet modes mute all app sounds. Native notifications use the system volume; system-tone choices use the default notification sound.")
             }
         }
