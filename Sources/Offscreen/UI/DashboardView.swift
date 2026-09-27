@@ -88,6 +88,14 @@ struct DashboardView: View {
                 }.buttonStyle(.bordered).controlSize(.small)
             }
 
+            if model.config.officeHours.enabled {
+                VStack(alignment: .leading, spacing: 4) {
+                    Button { model.openOfficeHours() } label: {
+                        Label(model.officeHoursText, systemImage: "calendar.badge.clock")
+                    }.buttonStyle(.plain)
+                    if let next = model.nextOfficeStartText { Text(next).foregroundStyle(.secondary) }
+                }.font(.caption).fixedSize(horizontal: false, vertical: true)
+            }
             Divider()
             HStack {
                 PauseControls(model: model)

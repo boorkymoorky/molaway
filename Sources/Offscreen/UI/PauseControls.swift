@@ -9,7 +9,7 @@ struct PauseControls: View {
         } else {
             Menu {
                 ForEach(PauseOption.allCases, id: \.self) { option in
-                    Button(option.title) { model.pauseTracking(option) }
+                    Button(option.title(officeHoursEnabled: model.config.officeHours.enabled)) { model.pauseTracking(option) }
                 }
             } label: {
                 Label(L("Pause tracking"), systemImage: "pause.circle")

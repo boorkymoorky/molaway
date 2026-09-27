@@ -96,6 +96,7 @@ struct SettingsRootView: View {
                 if model.isPaused { Text(model.manualPauseText).font(.caption) }
                 note("Manual pause survives reopening. Other active pause reasons continue after it ends.")
             }
+            OfficeHoursSettings(model: model)
             Section(L("Automatic tracking")) {
                 Picker(L("Pause after inactivity"), selection: model.settings.binding(\.idlePauseSeconds)) {
                     ForEach([30, 60, 120, 180, 300, 600], id: \.self) { seconds in Text(seconds < 60 ? "30 " + L("sec") : minutes(seconds / 60)).tag(seconds) }

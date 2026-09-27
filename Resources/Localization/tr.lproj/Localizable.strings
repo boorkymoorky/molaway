@@ -301,3 +301,24 @@
 "Outside Office Hours · paused" = "Çalışma saatleri dışında · duraklatıldı";
 "Manual pause" = "Elle duraklatma";
 "Manual pause survives reopening. Other active pause reasons continue after it ends." = "Elle duraklatma uygulama yeniden açıldığında sürer. Bittiğinde diğer etkin duraklatma nedenleri devam eder.";
+
+"Office Hours" = "Çalışma saatleri";
+"Use Office Hours" = "Çalışma saatlerini kullan";
+"Office Hours off" = "Çalışma saatleri kapalı";
+"Within Office Hours" = "Çalışma saatleri içinde";
+"Next work start" = "Sonraki çalışma başlangıcı";
+"Work starts" = "Çalışma başlangıcı";
+"Work ends" = "Çalışma bitişi";
+"Monday" = "Pazartesi";
+"Tuesday" = "Salı";
+"Wednesday" = "Çarşamba";
+"Thursday" = "Perşembe";
+"Friday" = "Cuma";
+"Saturday" = "Cumartesi";
+"Sunday" = "Pazar";
+"Pause until tomorrow · next work start" = "Yarına kadar duraklat · sonraki çalışma başlangıcı";
+"Paused until a selected work start" = "Seçili bir çalışma başlangıcına kadar duraklatıldı";
+"No working days selected. Timers stay paused; manual breaks remain available." = "Çalışma günü seçilmedi. Sayaçlar duraklatılır; elle mola alınabilir.";
+"Overnight shifts belong to the day they start. Equal start and end times mean 24 hours." = "Gece yarısını aşan vardiya başladığı güne aittir. Başlangıç ve bitiş aynıysa süre 24 saattir.";
+"Uses your current local time zone. Outside these hours, work time stops accumulating; manual breaks stay available." = "Geçerli yerel saat diliminizi kullanır. Bu saatler dışında çalışma süresi birikmez; elle mola alınabilir.";
+"Until tomorrow uses the next selected work start when Office Hours is on, or the next local 09:00 when off. Other pause reasons stay active." = "Yarına kadar seçeneği, çalışma saatleri açıkken sonraki seçilmiş başlangıcı, kapalıyken sonraki yerel 09.00’u kullanır. Diğer duraklatma nedenleri sürer.";

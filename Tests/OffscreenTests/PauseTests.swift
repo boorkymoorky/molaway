@@ -93,6 +93,7 @@ import Testing
         let model = AppContainer(settings: SettingsStore(url: settingsURL),
                                  statistics: StatisticsStore(url: directory.appendingPathComponent("stats.json")))
         model.pauseTracking(.untilResumed)
+        model.tick(now: model.time, idle: 0, deliberateIdle: .infinity)
         model.suspendTracking()
         #expect(model.pause.reasons.contains(.manual) && model.pause.reasons.contains(.sleepOrLock))
         model.resumeManualPause()

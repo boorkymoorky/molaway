@@ -2,7 +2,7 @@
 
 ## What is stored
 
-- Preferences in the app's sandbox container.
+- Preferences in the app's sandbox container. The unreleased M4 Office Hours preferences contain only selected weekdays and local start/end minutes; they are included in user-requested settings backups. No schedule-use history is recorded.
 - The current manual pause choice and its deadline, if timed, in a separate local file. It is removed when the pause ends and is excluded from settings backups. No pause history is kept.
 - Only after opt-in: daily active/video/manual-watching/observed seconds, completed eye/movement/natural/total break counts (and, in the unreleased M1 cycle, separate short/long counts; older eye/movement totals keep their original meaning), capped rest seconds, retention preference, and last weekly-report attempt day.
 - No per-event log, app/site identity, typed content, media capture, or exact usage timeline.
