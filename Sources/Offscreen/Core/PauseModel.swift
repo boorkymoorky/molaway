@@ -3,6 +3,11 @@ import Foundation
 enum PauseOption: CaseIterable {
     case thirtyMinutes, oneHour, tomorrow, untilResumed
 
+    func title(officeHoursEnabled: Bool) -> String {
+        if self == .tomorrow && officeHoursEnabled { return L("Pause until tomorrow · next work start") }
+        return title
+    }
+
     var title: String {
         switch self {
         case .thirtyMinutes: L("Pause for 30 minutes")
@@ -32,13 +37,14 @@ struct PauseModel {
     private(set) var automaticActivity = false
     private let fileURL: URL
 
-    init(fileURL: URL, now: Date = Date()) {
+    init(fileURL: URL, now: Date = Date(), officeHours: OfficeHours = OfficeHours(), calendar: Calendar = .autoupdatingCurrent) {
         self.fileURL = fileURL
         if let data = Self.read(fileURL),
            let saved = try? JSONDecoder().decode(ManualPause.self, from: data) {
             manual = saved
         }
-        expire(now: now)
+        setOfficeHours(!officeHours.isOpen(at: now, calendar: calendar))
+        expire(now: now, calendar: calendar, officeHours: officeHours)
     }
 
     private static func read(_ url: URL) -> Data? {
@@ -62,13 +68,14 @@ struct PauseModel {
     }
     var isPaused: Bool { !reasons.isEmpty }
     var isManuallyPaused: Bool { manual != nil }
-    func deadline(calendar: Calendar = .autoupdatingCurrent) -> Date? {
+    func deadline(calendar: Calendar = .autoupdatingCurrent, officeHours: OfficeHours = OfficeHours()) -> Date? {
         switch manual {
-        case .until(let date): date
+        case .until(let date): return date
         case .nextLocalNine(let started):
-            calendar.nextDate(after: started, matching: DateComponents(hour: 9, minute: 0, second: 0),
+            if officeHours.enabled { return officeHours.nextStart(after: started, calendar: calendar) }
+            return calendar.nextDate(after: started, matching: DateComponents(hour: 9, minute: 0, second: 0),
                               matchingPolicy: .nextTime, repeatedTimePolicy: .first, direction: .forward)
-        case .untilResumed, nil: nil
+        case .untilResumed, nil: return nil
         }
     }
 
@@ -77,8 +84,8 @@ struct PauseModel {
         case .thirtyMinutes: manual = .until(now.addingTimeInterval(1800))
         case .oneHour: manual = .until(now.addingTimeInterval(3600))
         case .tomorrow:
-            // M4 can supply the next Office Hours start here. Until then this
-            // follows the next local 09:00 if the system time zone changes.
+            // Keep the M3 encoded case for compatibility. Resolve against the
+            // current Office Hours / local time zone, including after reopening.
             manual = .nextLocalNine(started: now)
         case .untilResumed: manual = .untilResumed
         }
@@ -90,8 +97,8 @@ struct PauseModel {
     mutating func setSleepOrLock(_ active: Bool) { sleepOrLock = active }
     mutating func setAutomaticActivity(_ active: Bool) { automaticActivity = active }
 
-    mutating func expire(now: Date, calendar: Calendar = .autoupdatingCurrent) {
-        if let deadline = deadline(calendar: calendar), now >= deadline { resumeManually() }
+    mutating func expire(now: Date, calendar: Calendar = .autoupdatingCurrent, officeHours: OfficeHours = OfficeHours()) {
+        if let deadline = deadline(calendar: calendar, officeHours: officeHours), now >= deadline { resumeManually() }
     }
 
     private func save() {

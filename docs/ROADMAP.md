@@ -9,7 +9,7 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 | M1 | One work/short/long break cycle, migration from independent eye and movement timers, Deep Focus timing profile, and a minimal usable interface. | Implementation in review; not shipped |
 | M2 | Reconnect the two rings to work/rest and short-break cadence; simplify the menu panel and settings controls. | Implementation in review; not shipped |
 | M3 | A shared pause model with 30-minute, one-hour, tomorrow, and manual-resume options. | Implementation in review; not shipped |
-| M4 | Office Hours, including overnight shifts and tomorrow's next working start. | Planned |
+| M4 | Office Hours, including overnight shifts and tomorrow's next working start. | Implementation in review; not shipped |
 | M5 | Explicit Casual, Balanced, and Hardcore skip behavior across all reminder surfaces. | Planned |
 | M6 | Optional cursor countdown before a break. | Planned |
 | M7 | Unify existing activity signals under Smart Pause and add bounded typing deferral. | Planned |
@@ -32,8 +32,8 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 - The proposed legacy migration maps eye interval to work interval, eye rest to short rest, and movement rest to long rest. The old independent movement interval has no exact equivalent, so users review an approximate cadence. Old eye/movement statistics keep their historical meaning.
 - Deep Focus timing is planned as 45 minutes of work, 30 seconds of short rest, and 8 minutes of long rest, with one short break before a long break. Changing profile should preserve a route back to earlier custom timing.
 - M2 will make the outer ring show work or rest progress and the inner ring show completed short breaks toward the next long break. The center will show the next break and remaining time. If long breaks are off, the inner ring will not act as a cadence counter.
-- M3 pause options preserve distinct manual, future office-hours, sleep/lock, and automatic reasons. With Office Hours still planned for M4, “until tomorrow” uses the next local 09:00, including after a time-zone change. M4 will connect it to the next selected Office Hours start.
-- M4 Office Hours will support selected weekdays and overnight spans assigned to the start day. Time outside those hours will not accrue break debt; a manual break remains available.
+- M3 pause options preserve distinct manual, Office Hours, sleep/lock, and automatic reasons. In M4, “until tomorrow” uses the next selected work start when Office Hours is enabled; otherwise it retains the next local 09:00. Reopening, schedule edits, and local time-zone changes re-evaluate the deadline without clearing other pause reasons.
+- M4 (implemented for review, not shipped): Office Hours defaults off and supports selected weekdays with one shared local start/end time. Overnight shifts belong to their starting day; equal times mean a 24-hour shift. With no days selected, tracking stays paused and no automatic resume is scheduled. Starts are inclusive and ends exclusive. Missing daylight-saving times move to the next valid time; repeated starts use the first occurrence and repeated ends the last. Work progress and snooze time freeze outside the schedule; off-hours absence does not itself complete a break. Manual rests continue across boundaries, with the normal completion/cancellation and short/long cadence rules.
 - M5 skip modes are planned as always available, available after a visible delay, and unavailable in normal break controls. Closing a surface must never mark a break complete, and quitting the app remains possible.
 - M6's optional cursor countdown will be click-through and active only while shown; display boundaries, pause, and reduced motion need verification.
 - M7–M8 will distinguish video activity from suppressing breaks. Camera and microphone features may read use state only, not content. Selected focus apps would be local preferences only, never usage history. Signals that cannot be trusted under current sandbox permissions will be documented or deferred.
@@ -41,3 +41,9 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 - M10 installation instructions will use a verified Molaway asset and checksum. No unverified Homebrew command will be published. The app itself will remain offline and manually updated.
 
 The project remains local-first, account-free, telemetry-free, and permission-minimal. Planned work does not authorize new network access, broad permissions, private APIs, or application usage history.
+
+## M4 verification and handoff
+
+- Automated coverage includes weekday/week/month boundaries, overnight and 24-hour shifts, no selected days, DST gaps/repeated hours, local time-zone changes, preference validation/migration, relaunch, overlapping pause reasons, snooze, manual rest, and natural-rest accounting.
+- Limited English/Turkish preview and time-field keyboard smoke checks passed. Physical checks remain pending: full VoiceOver and keyboard traversal of weekday toggles, pause menus, and the menu panel; real sleep/lock/relaunch around a boundary; and monitor/Space placement. Synthetic clock tests do not establish these physical results.
+- M5 is the next separate implementation milestone. It has not started in M4. Inspect the current PR chain and Git state again before starting it.

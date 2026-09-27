@@ -1,5 +1,13 @@
 # Verification
 
+## M4 Office Hours development checks — 2026-09-27 (not shipped)
+
+- 128 tests in 12 suites passed locally, including 15 Office Hours regressions. These cover calendar boundaries, overnight ownership, DST gaps/repeated hours, travel, settings migration/validation, relaunch, independent pause reasons, frozen work/snooze time, and manual/natural break cadence. The existing M3 lock test now supplies a deterministic idle sample.
+- The local release build, ad hoc signature verification, source/publication guards, and isolated fresh-install/update/failure-path checks passed.
+- An isolated preview was inspected in English and Turkish. The Office Hours settings, dashboard, and tomorrow menu rendered; keyboard increment and Tab traversal of the time fields worked. This is a limited UI smoke check, not full VoiceOver or physical lifecycle verification.
+- No network, permission, dependency, capture, or activity-history capability was added. Schedule preferences remain local; only a user-requested settings backup includes them.
+- Full keyboard/VoiceOver flows, all window sizes, real sleep/lock/relaunch at schedule boundaries, and monitor/Space combinations remain pending. See the M4 checklist in `docs/ROADMAP.md`.
+
 ## 2.2.5 checks — 2026-09-26
 
 - 116 tests in 10 suites passed. Regressions first reproduced a second timer interrupting a snooze and a pending delivery retry returning immediately after snooze; both passed after the fix. Four consecutive snoozes were exercised, preserving a later movement deadline and counting only shown reminders as deliberate deferrals. Preview controls leave timers unchanged.

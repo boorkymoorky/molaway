@@ -84,6 +84,7 @@ enum SoundChoice: String, Codable, CaseIterable { case none, soft, rise, fall, b
 }
 
 struct AppSettings: Codable, Equatable, Sendable {
+    var officeHours = OfficeHours()
     var schemaVersion: Int = 3
     var workMinutes: Int = 20
     var shortRestSeconds: Int = 20
@@ -126,7 +127,7 @@ struct AppSettings: Codable, Equatable, Sendable {
     var redMinutes = 20
     init() {}
     enum CodingKeys: String, CodingKey, CaseIterable {
-        case schemaVersion, workMinutes, shortRestSeconds, longRestMinutes, shortBreaksBeforeLong, cycleShortCount, migrationNoticePending, previousCustomTiming, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
+        case officeHours, schemaVersion, workMinutes, shortRestSeconds, longRestMinutes, shortBreaksBeforeLong, cycleShortCount, migrationNoticePending, previousCustomTiming, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
     }
     private enum LegacyKeys: String, CodingKey { case chromeVideoEnabled, reminderSound }
     init(from decoder: Decoder) throws {
@@ -134,6 +135,7 @@ struct AppSettings: Codable, Equatable, Sendable {
         let legacy = try decoder.container(keyedBy: LegacyKeys.self)
         let version = try c.decodeIfPresent(Int.self, forKey: .schemaVersion) ?? 1
         guard (1...3).contains(version) else { throw SettingsError.version }
+        officeHours = try c.decodeIfPresent(OfficeHours.self, forKey: .officeHours) ?? OfficeHours()
         eyeMinutes = try c.decodeIfPresent(Int.self, forKey: .eyeMinutes) ?? 20
         movementMinutes = try c.decodeIfPresent(Int.self, forKey: .movementMinutes) ?? 50
         eyeRestSeconds = try c.decodeIfPresent(Int.self, forKey: .eyeRestSeconds) ?? 20
@@ -210,6 +212,7 @@ struct AppSettings: Codable, Equatable, Sendable {
     var eyes: TimingConfig { TimingConfig(workSeconds: min(120, max(5, eyeMinutes)) * 60, shortBreakSeconds: min(120, max(10, eyeRestSeconds)), longBreakEvery: 0, leadTimeSeconds: 0) }
     var movement: TimingConfig { TimingConfig(workSeconds: min(180, max(10, movementMinutes)) * 60, shortBreakSeconds: min(15, max(1, movementRestMinutes)) * 60, longBreakEvery: 0, leadTimeSeconds: 0) }
     mutating func validate() {
+        officeHours.validate()
         schemaVersion = 3
         workMinutes = min(180, max(5, workMinutes))
         shortRestSeconds = min(120, max(10, shortRestSeconds))

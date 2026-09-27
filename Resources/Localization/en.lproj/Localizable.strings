@@ -301,3 +301,24 @@
 "Outside Office Hours · paused" = "Outside Office Hours · paused";
 "Manual pause" = "Manual pause";
 "Manual pause survives reopening. Other active pause reasons continue after it ends." = "Manual pause survives reopening. Other active pause reasons continue after it ends.";
+
+"Office Hours" = "Office Hours";
+"Use Office Hours" = "Use Office Hours";
+"Office Hours off" = "Office Hours off";
+"Within Office Hours" = "Within Office Hours";
+"Next work start" = "Next work start";
+"Work starts" = "Work starts";
+"Work ends" = "Work ends";
+"Monday" = "Monday";
+"Tuesday" = "Tuesday";
+"Wednesday" = "Wednesday";
+"Thursday" = "Thursday";
+"Friday" = "Friday";
+"Saturday" = "Saturday";
+"Sunday" = "Sunday";
+"Pause until tomorrow · next work start" = "Pause until tomorrow · next work start";
+"Paused until a selected work start" = "Paused until a selected work start";
+"No working days selected. Timers stay paused; manual breaks remain available." = "No working days selected. Timers stay paused; manual breaks remain available.";
+"Overnight shifts belong to the day they start. Equal start and end times mean 24 hours." = "Overnight shifts belong to the day they start. Equal start and end times mean 24 hours.";
+"Uses your current local time zone. Outside these hours, work time stops accumulating; manual breaks stay available." = "Uses your current local time zone. Outside these hours, work time stops accumulating; manual breaks stay available.";
+"Until tomorrow uses the next selected work start when Office Hours is on, or the next local 09:00 when off. Other pause reasons stay active." = "Until tomorrow uses the next selected work start when Office Hours is on, or the next local 09:00 when off. Other pause reasons stay active.";

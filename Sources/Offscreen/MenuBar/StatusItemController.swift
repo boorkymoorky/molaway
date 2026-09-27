@@ -36,7 +36,7 @@ final class StatusItemController: NSObject, NSWindowDelegate {
     func refresh() {
         guard let button = item.button else { return }
         refreshDashboardLayout()
-        let paused = [.away, .sleeping, .paused, .starting].contains(model.activity)
+        let paused = model.activeRest == nil && (model.pause.isPaused || [.away, .sleeping, .paused, .starting].contains(model.activity))
         let progress = model.ringProgress
         let ringKey = "\(Int(progress.outer * 100))-\(Int((progress.inner ?? -1) * 100))-\(indicator)-\(model.visibleOverdue.rawValue)"
         if ringKey != lastRingKey { button.image = ringImage(); lastRingKey = ringKey }
@@ -48,17 +48,19 @@ final class StatusItemController: NSObject, NSWindowDelegate {
             ? String(format: L("%d of %d short breaks completed"),
                      min(model.breakEngine.shortBreaksSinceLong, model.config.shortBreaksBeforeLong), model.config.shortBreaksBeforeLong)
             : L("Long breaks off")
-        let hint = model.statusText + "\n" + L(readout.resting ? "Rest time" : readout.deferred ? "Next reminder" : "Next break") + ": " + readout.kind.title + " · " + readout.clock
+        var hint = model.statusText + "\n" + L(readout.resting ? "Rest time" : readout.deferred ? "Next reminder" : "Next break") + ": " + readout.kind.title + " · " + readout.clock
             + "\n" + L("Outer ring") + ": " + L(readout.resting ? "Rest progress" : "Work progress") + " \(Int((progress.outer * 100).rounded()))%"
             + "\n" + L("Inner ring") + ": " + cadence
+        let officeHint = model.nextOfficeStartText.map { "\n" + model.officeHoursText + "\n" + $0 } ?? ""
+        hint += officeHint
         if button.toolTip != hint { button.toolTip = hint; button.setAccessibilityValue(hint) }
         let label = L("Molaway · short and long breaks")
         if button.accessibilityLabel() != label { button.setAccessibilityLabel(label) }
     }
 
     private var indicator: String {
-        if [.away, .sleeping, .paused, .starting].contains(model.activity) { return "pause.fill" }
         if model.activeRest != nil { return "leaf.fill" }
+        if model.pause.isPaused || [.away, .sleeping, .paused, .starting].contains(model.activity) { return "pause.fill" }
         if model.suppressing { return "bell.slash.fill" }
         if model.hasAlertProblem || model.visibleOverdue != .normal { return "exclamationmark" }
         return ""
@@ -120,7 +122,7 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         panel.orderFrontRegardless(); panel.makeKey()
     }
     private var layoutKey: String {
-        "\(model.statusText)|\(model.isWatching)|\(model.presentationUntil != nil)|\(model.activeRest?.rawValue ?? "")|\(model.config.shortBreaksBeforeLong)|\(model.hasAlertProblem)|\(Localization.shared.code)|\(model.visibleOverdue.rawValue)"
+        "\(model.statusText)|\(model.isWatching)|\(model.presentationUntil != nil)|\(model.activeRest?.rawValue ?? "")|\(model.config.shortBreaksBeforeLong)|\(model.hasAlertProblem)|\(Localization.shared.code)|\(model.visibleOverdue.rawValue)|\(model.officeHoursText)|\(model.nextOfficeStartText ?? "")"
     }
     private func refreshDashboardLayout(force: Bool = false) {
         guard let panel = dashboard, let screen = panel.screen, (force || layoutKey != dashboardLayoutKey) else { return }
@@ -144,11 +146,28 @@ final class StatusItemController: NSObject, NSWindowDelegate {
     @objc private func resumePauseAction() { model.resumeManualPause() }
     @objc private func watchingAction() { model.toggleWatching() }
     @objc private func presentationAction() { model.togglePresentation() }
+    @objc private func officeHoursAction() { model.openOfficeHours() }
+    @objc private func takeBreakAction() { model.beginRest(model.nextKind) }
     @objc private func settingsAction() { model.openSettingsAction?() }
     @objc private func quitAction() { NSApp.terminate(nil) }
     private func showContextMenu() {
         closeDashboard()
         let menu = NSMenu()
+        let state = NSMenuItem(title: model.statusText, action: nil, keyEquivalent: "")
+        state.isEnabled = false; menu.addItem(state)
+        if let next = model.nextOfficeStartText {
+            let officeState = NSMenuItem(title: model.officeHoursText, action: nil, keyEquivalent: "")
+            officeState.isEnabled = false; menu.addItem(officeState)
+            let info = NSMenuItem(title: next, action: nil, keyEquivalent: "")
+            info.isEnabled = false; menu.addItem(info)
+        }
+        let hours = NSMenuItem(title: L("Office Hours") + "…", action: #selector(officeHoursAction), keyEquivalent: "")
+        hours.target = self; menu.addItem(hours)
+        if model.activeRest == nil {
+            let rest = NSMenuItem(title: L("Take a break"), action: #selector(takeBreakAction), keyEquivalent: "")
+            rest.target = self; menu.addItem(rest)
+        }
+        menu.addItem(.separator())
         if model.isPaused {
             let resume = NSMenuItem(title: L("Resume manual pause"), action: #selector(resumePauseAction), keyEquivalent: "")
             resume.target = self; menu.addItem(resume)
@@ -156,7 +175,7 @@ final class StatusItemController: NSObject, NSWindowDelegate {
             let pauseItem = NSMenuItem(title: L("Pause tracking"), action: nil, keyEquivalent: "")
             let choices = NSMenu()
             for (index, option) in PauseOption.allCases.enumerated() {
-                let entry = NSMenuItem(title: option.title, action: #selector(pauseAction(_:)), keyEquivalent: "")
+                let entry = NSMenuItem(title: option.title(officeHoursEnabled: model.config.officeHours.enabled), action: #selector(pauseAction(_:)), keyEquivalent: "")
                 entry.tag = index; entry.target = self; choices.addItem(entry)
             }
             menu.setSubmenu(choices, for: pauseItem)
