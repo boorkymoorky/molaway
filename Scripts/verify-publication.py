@@ -21,6 +21,11 @@ def publication_files(root):
         yield root / 'Scripts' / name
     for name in sorted(RESOURCE_FILES):
         yield root / 'Resources' / name
+    windows = root / 'Windows'
+    if windows.exists():
+        for path in sorted(windows.rglob('*')):
+            if not any(part in {'bin', 'obj'} or part.startswith('.molaway-tests-') for part in path.relative_to(windows).parts):
+                yield path
     for name in ['Localization', 'Sounds']:
         yield from sorted((root / 'Resources' / name).rglob('*'))
 
@@ -32,7 +37,7 @@ def check(root, tracked=False):
                 r'AKIA[A-Z0-9]{16}', r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',
                 r'(?i)(?:https?|ssh)://[^\s/@:]+:[^\s/@]+@',
                 r'(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b']
-    binary = {'.png', '.jpg', '.icns', '.wav'}
+    binary = {'.png', '.jpg', '.icns', '.ico', '.wav'}
     count = 0
     for path in publication_files(root):
         rel = path.relative_to(root)

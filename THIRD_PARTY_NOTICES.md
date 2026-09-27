@@ -19,3 +19,7 @@ Resources/Sounds/{soft,rise,fall,bell}.wav are simple sine-wave compositions gen
 System sound choices are played through macOS NSSound. Apple sound files and system symbol artwork are not copied into the repository. SF Symbols are referenced at runtime via Apple APIs.
 
 No third-party Swift package dependencies are included. Apple SDK frameworks are provided by macOS/Xcode under Apple's terms.
+
+## Windows preview
+
+The Windows implementation is written in C# using Microsoft .NET, WPF, Windows Forms tray support and documented Windows APIs. It follows Molaway timer behavior and preserves the Offscreen attribution. No third-party application NuGet packages are declared. Microsoft targeting/runtime packs are obtained during build; self-contained folders retain their supplied license/notices files. Windows system sounds are referenced through SystemSounds and are not copied. `Windows/scripts/make-icon.py` renders the original Molaway two-ring artwork without external assets.

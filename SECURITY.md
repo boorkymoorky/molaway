@@ -27,3 +27,7 @@ The current 2.2 release line is the intended maintained line. Support begins whe
 `Scripts/verify-security.py` checks a narrow set of source/release invariants. It is not a penetration test. Functional tests include settings attacks, stale/pending reminder behavior and display geometry. See VERIFICATION.md for actual results and untested scenarios.
 
 Developer ID signing/notarization is a separate distribution step. Do not disable Gatekeeper to install this project. Signing keys must never be committed or made available to pull-request CI runs.
+
+## Windows development preview
+
+The macOS sandbox guarantees above do not apply to `Windows/`. The Windows preview is a standard-user, unpackaged WPF desktop app with no OS-enforced network sandbox. Its source makes no network requests and requests no elevation, screen/key/media-content capture, camera or microphone access. It reads session idle duration and supported playback state. Local JSON files are size-bounded, values validated, linked paths refused and writes replaced atomically. Optional summaries default off and retain up to 90 days. No telemetry, automatic update, startup registration or registry write is included. It is not a stable or fully security-reviewed Windows release; see `Windows/PLAN.md` for the physical verification gate.

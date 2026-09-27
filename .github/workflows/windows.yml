@@ -1,0 +1,37 @@
+name: Windows preview
+on:
+  pull_request:
+    paths: ['Windows/**', 'Scripts/verify-publication.py', '.github/workflows/windows.yml']
+  push:
+    branches: [main]
+    paths: ['Windows/**', 'Scripts/verify-publication.py', '.github/workflows/windows.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-preview:
+    runs-on: windows-2025
+    timeout-minutes: 15
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          persist-credentials: false
+      - name: Source and publication guards
+        run: |
+          python Windows/scripts/verify-source.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python Scripts/verify-publication.py --tracked
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build, scheduler regressions and WPF smoke test
+        run: ./Windows/scripts/build.ps1
+      - name: Keep preview and synthetic UI renders
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: Molaway-Windows-x64-development-preview
+          path: build.noindex/windows-x64/
+          if-no-files-found: error
+          retention-days: 7
+          include-hidden-files: false
