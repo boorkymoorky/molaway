@@ -56,7 +56,7 @@ final class PreBreakPanelController {
         hide(animated: false)
         shownStyle = model.config.reminderStyle; shownTarget = model.config.displayTarget
         if model.config.reminderStyle == .notification && model.activeRest == nil {
-            model.notifications?.show(kind: model.reminderKinds.contains(.movement) ? .movement : .eyes, combined: model.reminderKinds.count > 1, preview: model.isPreview)
+            model.notifications?.show(kind: model.nextKind, combined: model.reminderKinds.count > 1, preview: model.isPreview)
             if model.isPreview { scheduleDismissal() }
             return
         }

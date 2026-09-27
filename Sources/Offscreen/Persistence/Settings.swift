@@ -6,7 +6,7 @@ import Darwin
 struct TimingConfig: Codable, Equatable, Sendable {
     var workSeconds: Int = 20 * 60
     var shortBreakSeconds: Int = 20
-    var longBreakEvery: Int = 3 // every Nth break is a long one; 0 = never
+    var longBreakEvery: Int = 4 // engine rule: after 3 completed shorts; 0 = never
     var longBreakSeconds: Int = 5 * 60
     var leadTimeSeconds: Int = 60 // heads-up notice before a break
     var snoozeLimitPerCycle: Int = 3
@@ -84,7 +84,14 @@ enum SoundChoice: String, Codable, CaseIterable { case none, soft, rise, fall, b
 }
 
 struct AppSettings: Codable, Equatable, Sendable {
-    var schemaVersion: Int = 2
+    var schemaVersion: Int = 3
+    var workMinutes: Int = 20
+    var shortRestSeconds: Int = 20
+    var longRestMinutes: Int = 2
+    var shortBreaksBeforeLong: Int = 2 // 0 disables long breaks
+    var cycleShortCount: Int = 0
+    var migrationNoticePending: Bool = false
+    var previousCustomTiming: TimingConfig?
     var eyeMinutes: Int = 20
     var movementMinutes: Int = 50
     var eyeRestSeconds: Int = 20
@@ -119,18 +126,38 @@ struct AppSettings: Codable, Equatable, Sendable {
     var redMinutes = 20
     init() {}
     enum CodingKeys: String, CodingKey, CaseIterable {
-        case schemaVersion, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
+        case schemaVersion, workMinutes, shortRestSeconds, longRestMinutes, shortBreaksBeforeLong, cycleShortCount, migrationNoticePending, previousCustomTiming, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
     }
     private enum LegacyKeys: String, CodingKey { case chromeVideoEnabled, reminderSound }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         let legacy = try decoder.container(keyedBy: LegacyKeys.self)
         let version = try c.decodeIfPresent(Int.self, forKey: .schemaVersion) ?? 1
-        guard (1...2).contains(version) else { throw SettingsError.version }
+        guard (1...3).contains(version) else { throw SettingsError.version }
         eyeMinutes = try c.decodeIfPresent(Int.self, forKey: .eyeMinutes) ?? 20
         movementMinutes = try c.decodeIfPresent(Int.self, forKey: .movementMinutes) ?? 50
         eyeRestSeconds = try c.decodeIfPresent(Int.self, forKey: .eyeRestSeconds) ?? 20
         movementRestMinutes = try c.decodeIfPresent(Int.self, forKey: .movementRestMinutes) ?? 2
+        if version >= 3 {
+            workMinutes = try c.decode(Int.self, forKey: .workMinutes)
+            shortRestSeconds = try c.decode(Int.self, forKey: .shortRestSeconds)
+            longRestMinutes = try c.decode(Int.self, forKey: .longRestMinutes)
+            shortBreaksBeforeLong = try c.decode(Int.self, forKey: .shortBreaksBeforeLong)
+            cycleShortCount = try c.decodeIfPresent(Int.self, forKey: .cycleShortCount) ?? 0
+            migrationNoticePending = try c.decodeIfPresent(Bool.self, forKey: .migrationNoticePending) ?? false
+            previousCustomTiming = try c.decodeIfPresent(TimingConfig.self, forKey: .previousCustomTiming)
+        } else {
+            workMinutes = eyeMinutes
+            shortRestSeconds = eyeRestSeconds
+            longRestMinutes = movementRestMinutes
+            // Aim for a long break near the old movement interval. The old
+            // independent movement timer cannot be reproduced exactly.
+            let intervals = max(2, min(13, Int((Double(min(180, max(10, movementMinutes))) / Double(min(120, max(5, eyeMinutes)))).rounded())))
+            shortBreaksBeforeLong = min(12, intervals - 1)
+            cycleShortCount = 0
+            migrationNoticePending = true
+            previousCustomTiming = nil
+        }
         idlePauseSeconds = try c.decodeIfPresent(Int.self, forKey: .idlePauseSeconds) ?? 120
         showCountdownInMenuBar = try c.decodeIfPresent(Bool.self, forKey: .showCountdownInMenuBar) ?? true
         videoEnabled = try c.decodeIfPresent(Bool.self, forKey: .videoEnabled) ?? legacy.decodeIfPresent(Bool.self, forKey: .chromeVideoEnabled) ?? true
@@ -159,13 +186,36 @@ struct AppSettings: Codable, Equatable, Sendable {
         overdueEnabled = try c.decodeIfPresent(Bool.self, forKey: .overdueEnabled) ?? true
         amberMinutes = try c.decodeIfPresent(Int.self, forKey: .amberMinutes) ?? 10
         redMinutes = try c.decodeIfPresent(Int.self, forKey: .redMinutes) ?? 20
-        schemaVersion = 2
+        schemaVersion = 3
         validate()
+    }
+    var timing: TimingConfig { TimingConfig(workSeconds: min(180, max(5, workMinutes)) * 60, shortBreakSeconds: min(120, max(10, shortRestSeconds)), longBreakEvery: shortBreaksBeforeLong <= 0 ? 0 : min(12, shortBreaksBeforeLong) + 1, longBreakSeconds: min(15, max(1, longRestMinutes)) * 60, leadTimeSeconds: 0) }
+    mutating func applyPreset(_ preset: TimingConfig) {
+        if previousCustomTiming == nil { previousCustomTiming = timing }
+        workMinutes = preset.workSeconds / 60
+        shortRestSeconds = preset.shortBreakSeconds
+        longRestMinutes = preset.longBreakSeconds / 60
+        shortBreaksBeforeLong = preset.longBreakEvery == 0 ? 0 : preset.longBreakEvery - 1
+        cycleShortCount = 0
+    }
+    mutating func restorePreviousTiming() {
+        guard let previousCustomTiming else { return }
+        workMinutes = previousCustomTiming.workSeconds / 60
+        shortRestSeconds = previousCustomTiming.shortBreakSeconds
+        longRestMinutes = previousCustomTiming.longBreakSeconds / 60
+        shortBreaksBeforeLong = previousCustomTiming.longBreakEvery == 0 ? 0 : previousCustomTiming.longBreakEvery - 1
+        self.previousCustomTiming = nil
+        cycleShortCount = 0
     }
     var eyes: TimingConfig { TimingConfig(workSeconds: min(120, max(5, eyeMinutes)) * 60, shortBreakSeconds: min(120, max(10, eyeRestSeconds)), longBreakEvery: 0, leadTimeSeconds: 0) }
     var movement: TimingConfig { TimingConfig(workSeconds: min(180, max(10, movementMinutes)) * 60, shortBreakSeconds: min(15, max(1, movementRestMinutes)) * 60, longBreakEvery: 0, leadTimeSeconds: 0) }
     mutating func validate() {
-        schemaVersion = 2
+        schemaVersion = 3
+        workMinutes = min(180, max(5, workMinutes))
+        shortRestSeconds = min(120, max(10, shortRestSeconds))
+        longRestMinutes = min(15, max(1, longRestMinutes))
+        shortBreaksBeforeLong = min(12, max(0, shortBreaksBeforeLong))
+        cycleShortCount = min(shortBreaksBeforeLong, max(0, cycleShortCount))
         amberMinutes = min(60, max(5, amberMinutes))
         redMinutes = min(120, max(amberMinutes + 5, redMinutes))
         eyeMinutes = min(120, max(5, eyeMinutes))
@@ -208,6 +258,8 @@ enum SettingsCodec {
     static func export(_ settings: AppSettings) throws -> Data {
         var safe = settings
         safe.didFinishWelcome = false
+        safe.cycleShortCount = 0
+        safe.migrationNoticePending = false
         safe.cameraSuppression = false
         safe.focusSuppression = false
         let encoder = JSONEncoder(); encoder.outputFormatting = [.prettyPrinted, .sortedKeys]

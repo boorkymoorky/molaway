@@ -75,13 +75,13 @@ import Observation
     }
     func beginManual() { guard !failed else { return }; ledger.beginManual() }
     func cancelManual() { ledger.cancelManual() }
-    func completeManual(duration: Double, eyes: Double, movement: Double, now: Date = Date()) {
+    func completeCycle(kind: MolaKind, duration: Double, now: Date = Date()) {
         guard enabled, !failed else { return }
-        ledger.completeManual(day: StatsCalendar.key(now), duration: duration, eyes: eyes, movement: movement); changed()
+        ledger.completeCycle(day: StatsCalendar.key(now), kind: kind, duration: duration); changed()
     }
-    func natural(kind: MolaKind, target: Double, now: Date = Date()) {
+    func naturalCycle(kind: MolaKind, target: Double, now: Date = Date()) {
         guard enabled, !failed else { return }
-        ledger.natural(day: StatsCalendar.key(now), kind: kind, target: target); changed()
+        ledger.naturalCycle(day: StatsCalendar.key(now), kind: kind, target: target); changed()
     }
     func resetSession() { ledger.resetSession(); lastDate = nil }
     func reportDue(now: Date = Date()) -> Bool {

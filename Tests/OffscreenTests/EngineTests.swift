@@ -146,7 +146,7 @@ import Foundation
         #expect(engine.phase == .inBreak)
         engine.endBreakEarly()
         #expect(engine.phase == .working)
-        #expect(engine.shortBreaksSinceLong == 1) // ended-early still counts as taken
+        #expect(engine.shortBreaksSinceLong == 0) // returning early is not completion
     }
 
     @Test func plannedBreakPreempts() {

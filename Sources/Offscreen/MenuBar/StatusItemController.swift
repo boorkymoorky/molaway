@@ -26,7 +26,7 @@ final class StatusItemController: NSObject, NSWindowDelegate {
             button.action = #selector(clicked)
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
             button.font = .monospacedDigitSystemFont(ofSize: 12, weight: .medium)
-            button.setAccessibilityLabel(L("Molaway · eye and movement breaks"))
+            button.setAccessibilityLabel(L("Molaway · short and long breaks"))
         }
         model.openDashboardAction = { [weak self] in self?.toggle() }
         model.updateUI = { [weak self] in self?.refresh() }
@@ -37,15 +37,15 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         guard let button = item.button else { return }
         refreshDashboardLayout()
         let paused = [.away, .sleeping, .paused, .starting].contains(model.activity)
-        let ringKey = "\(Int(min(100, max(0, model.eyes.workAccrued / Double(model.eyes.timing.workSeconds) * 100))))-\(Int(min(100, max(0, model.movement.workAccrued / Double(model.movement.timing.workSeconds) * 100))))-\(indicator)-\(model.visibleOverdue.rawValue)"
+        let ringKey = "\(Int(min(100, max(0, model.breakEngine.workAccrued / Double(model.breakEngine.timing.workSeconds) * 100))))-\(model.breakEngine.shortBreaksSinceLong)-\(indicator)-\(model.visibleOverdue.rawValue)"
         if ringKey != lastRingKey { button.image = ringImage(); lastRingKey = ringKey }
         let readout = model.nextReadout
         let text = paused ? "" : readout.menuText
         let title = MenuTitle.make(show: model.config.showCountdownInMenuBar, paused: paused, countdown: text)
         if button.title != title { button.title = title }
-        let hint = model.statusText + "\n" + L(readout.resting ? "Rest time" : "Next reminder") + ": " + readout.kind.title + " · " + readout.clock + "\n" + L("Eye break") + ": " + Format.clock(model.eyes.timeUntilReminder) + " · " + L("Movement break") + ": " + Format.clock(model.movement.timeUntilReminder)
+        let hint = model.statusText + "\n" + L(readout.resting ? "Rest time" : "Next reminder") + ": " + readout.kind.title + " · " + readout.clock
         if button.toolTip != hint { button.toolTip = hint; button.setAccessibilityValue(hint) }
-        let label = L("Molaway · eye and movement breaks")
+        let label = L("Molaway · short and long breaks")
         if button.accessibilityLabel() != label { button.setAccessibilityLabel(label) }
     }
 
@@ -58,13 +58,13 @@ final class StatusItemController: NSObject, NSWindowDelegate {
     }
     private func ringImage() -> NSImage {
         let paused = [.away, .sleeping, .paused, .starting].contains(model.activity)
-        let fraction = max(0, min(1, model.eyes.workAccrued / Double(model.eyes.timing.workSeconds)))
-        let second = max(0, min(1, model.movement.workAccrued / Double(model.movement.timing.workSeconds)))
+        let fraction = max(0, min(1, model.breakEngine.workAccrued / Double(model.breakEngine.timing.workSeconds)))
+        let second = max(0, min(1, Double(model.breakEngine.shortBreaksSinceLong) / Double(max(1, model.config.shortBreaksBeforeLong))))
         let glyph = indicator
         let level = model.visibleOverdue
         let ink: NSColor = level == .red ? .systemRed : level == .amber ? .systemOrange : .black
         let image = NSImage(size: NSSize(width: 20, height: 20), flipped: false) { _ in
-            for (radius, progress) in [(8.0, fraction), (4.7, second)] where glyph.isEmpty || radius == 8 {
+            for (radius, progress) in [(8.0, fraction), (4.7, second)] where (glyph.isEmpty || radius == 8) && (radius == 8 || self.model.config.shortBreaksBeforeLong > 0) {
                 let start = radius == 8 ? 45.0 : 225.0
                 let background = NSBezierPath()
                 background.appendArc(withCenter: NSPoint(x: 10, y: 10), radius: radius, startAngle: start, endAngle: start - 270, clockwise: true)

@@ -18,11 +18,11 @@ struct TimerRing: View {
         GeometryReader { proxy in
             let rect = CGRect(origin: .zero, size: proxy.size)
             let stroke = StrokeStyle(lineWidth: min(proxy.size.width, proxy.size.height) * 0.075, lineCap: .round)
-            Path(BrandGeometry.ring(in: rect, outer: kind != .eyes))
+            Path(BrandGeometry.ring(in: rect, outer: kind != .short))
                 .stroke(Color.secondary.opacity(0.18), style: stroke)
-            Path(BrandGeometry.ring(in: rect, outer: kind == .eyes))
+            Path(BrandGeometry.ring(in: rect, outer: kind == .short))
                 .stroke(color.opacity(0.22), style: stroke)
-            Path(BrandGeometry.ring(in: rect, outer: kind == .eyes, progress: progress))
+            Path(BrandGeometry.ring(in: rect, outer: kind == .short, progress: progress))
                 .stroke(color, style: stroke)
         }.accessibilityHidden(true)
     }

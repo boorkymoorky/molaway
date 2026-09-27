@@ -6,7 +6,7 @@ struct PreBreakView: View {
     let availableSize: CGSize
     var onHover: (Bool) -> Void = { _ in }
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-    private var kind: MolaKind { model.activeRest ?? (model.reminderKinds.contains(.movement) ? .movement : .eyes) }
+    private var kind: MolaKind { model.activeRest ?? model.nextKind }
     private var full: Bool { style == .fullScreen }
     var body: some View {
         ZStack {
@@ -17,7 +17,7 @@ struct PreBreakView: View {
                         .frame(width: full ? 76 : 48, height: full ? 76 : 48)
                         .background(model.tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 15))
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(model.isPreview ? L("Alert preview") : model.reminderKinds.count > 1 ? L("Movement & eye break") : kind.title)
+                        Text(model.isPreview ? L("Alert preview") : kind.title)
                             .font(.system(size: full ? 30 : 17, weight: .semibold, design: .rounded))
                         Text(model.reminderMessage(kind)).font(.system(size: full ? 19 : 13)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                     }
@@ -38,7 +38,7 @@ struct PreBreakView: View {
                         Button(L("Take a break")) { model.beginRest(kind) }.buttonStyle(.borderedProminent).tint(model.tint)
                         Button(L("Snooze 5 min")) { model.snoozeReminder() }.buttonStyle(.bordered)
                         Spacer()
-                        Text("\(model.engine(kind).timing.shortBreakSeconds) " + L("sec")).font(.caption).foregroundStyle(.secondary)
+                        Text("\(BreakScheduleMath.duration(of: kind == .long ? .long : .short, timing: model.breakEngine.timing)) " + L("sec")).font(.caption).foregroundStyle(.secondary)
                     }
                 }
                 if full { Text(L("Esc to close · your timers keep running")).font(.caption).foregroundStyle(.secondary) }

@@ -36,3 +36,5 @@ Do not read every document for every task. Treat the current Git branch, working
 - Run tests that cover the change. Before a macOS release, run the repository security, publication, build, test, and installation checks documented in `CONTRIBUTING.md`. Windows work follows its own verification plan.
 - Update public documentation only for behavior that is actually shipped or clearly labeled as preview.
 - Keep `docs/PROJECT_CONTEXT.md` short and update it only when durable decisions, platform status, or the next major milestone changes.
+
+- After each planned job is complete, remind Burak to start a new chat and provide the full next-job prompt plus recommended model and effort. Keep fixes and review of the same job in the current chat.

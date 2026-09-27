@@ -255,3 +255,31 @@
 
 "Eyes" = "Eyes";
 "Next reminder" = "Next reminder";
+
+"Short break" = "Short break";
+"Long break" = "Long break";
+"Short" = "Short";
+"Long" = "Long";
+"Molaway · short and long breaks" = "Molaway · short and long breaks";
+"Long break now" = "Long break now";
+"Timing profile" = "Timing profile";
+"Balanced" = "Balanced";
+"Deep Focus" = "Deep Focus";
+"Restore previous timing" = "Restore previous timing";
+"Break cycle" = "Break cycle";
+"Work interval" = "Work interval";
+"Short break duration" = "Short break duration";
+"Long break duration" = "Long break duration";
+"Short breaks before long" = "Short breaks before long";
+"Long breaks off" = "Long breaks off";
+"Your break schedule changed" = "Your break schedule changed";
+"I reviewed the schedule" = "I reviewed the schedule";
+"Short breaks completed" = "Short breaks completed";
+"Long breaks completed" = "Long breaks completed";
+"Legacy eye breaks completed" = "Legacy eye breaks completed";
+"Legacy movement breaks completed" = "Legacy movement breaks completed";
+"Your former eye interval became the work interval; eye rest became the short break; movement rest became the long break. The independent movement interval has no exact match. Review the new schedule below; old eye and movement statistics retain their original meaning." = "Your former eye interval became the work interval; eye rest became the short break; movement rest became the long break. The independent movement interval has no exact match. Review the new schedule below; old eye and movement statistics retain their original meaning.";
+"Legacy eye and movement counts keep their original meaning. New short and long counts start with this schedule. Natural breaks count once. Video and watching are parts of active time; playback cannot prove you are at your desk." = "Legacy eye and movement counts keep their original meaning. New short and long counts start with this schedule. Natural breaks count once. Video and watching are parts of active time; playback cannot prove you are at your desk.";
+
+"%d completed short breaks are followed by one long break. Skips and snoozes do not advance the count." = "%d completed short breaks are followed by one long break. Skips and snoozes do not advance the count.";
+"Only short breaks are scheduled. Skips and snoozes do not advance the count." = "Only short breaks are scheduled. Skips and snoozes do not advance the count.";

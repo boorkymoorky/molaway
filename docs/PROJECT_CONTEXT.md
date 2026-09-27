@@ -4,7 +4,7 @@ This file gives new Codex chats the durable context needed to continue Molaway w
 
 ## Product intent
 
-Molaway helps people take independent eye and movement breaks without manual timer restarts. It should recognize active use, pause after real inactivity, continue through supported video playback, and use reminders that can be noticeable without taking over the screen. The experience should feel native, calm, accessible, and predictable across multiple displays.
+Molaway helps people follow a planned short/long break cycle without manual timer restarts. The current 2.2.x release still uses independent eye and movement timers. It should recognize active use, pause after real inactivity, continue through supported video playback, and use reminders that can be noticeable without taking over the screen. The experience should feel native, calm, accessible, and predictable across multiple displays.
 
 Privacy and security are product features. Molaway should work locally, request the least possible access, store only bounded optional summaries, and make limitations clear. It is not a medical device and should not make health or security guarantees that the evidence cannot support.
 
@@ -44,3 +44,5 @@ At the start of Windows work, inspect the current branch, working tree, pull req
 ## Completion standard
 
 A change is complete when its user-visible behavior is coherent, relevant regressions are covered, privacy/security impact is reviewed, English and Turkish surfaces remain consistent where applicable, and documentation reflects only verified behavior. Physical platform checks remain explicitly pending when the current Mac cannot perform them.
+
+After a planned job is complete, hand off the full next-job prompt and model/effort and suggest a new chat. Keep same-job fixes in this chat.
