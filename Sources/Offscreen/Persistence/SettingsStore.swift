@@ -17,6 +17,7 @@ final class SettingsStore {
     static let fileURL = directoryURL.appendingPathComponent("settings.json")
 
     private let url: URL
+    var pauseFileURL: URL { url.deletingLastPathComponent().appendingPathComponent("pause.json") }
     init(url: URL = SettingsStore.fileURL) {
         self.url = url
         settings = Self.load(url)

@@ -90,7 +90,7 @@ struct DashboardView: View {
 
             Divider()
             HStack {
-                Button(model.isPaused ? L("Resume tracking") : L("Pause 30 min")) { model.togglePause() }
+                PauseControls(model: model)
                 Spacer()
                 Button { model.openSettingsAction?() } label: {
                     Label(L("Settings"), systemImage: "gearshape")

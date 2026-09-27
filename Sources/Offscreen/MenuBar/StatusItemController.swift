@@ -137,7 +137,11 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         let old = dashboard; dashboard = nil
         old?.delegate = nil; old?.orderOut(nil); old?.contentView = nil; old?.close()
     }
-    @objc private func pauseAction() { model.togglePause() }
+    @objc private func pauseAction(_ sender: NSMenuItem) {
+        guard PauseOption.allCases.indices.contains(sender.tag) else { return }
+        model.pauseTracking(PauseOption.allCases[sender.tag])
+    }
+    @objc private func resumePauseAction() { model.resumeManualPause() }
     @objc private func watchingAction() { model.toggleWatching() }
     @objc private func presentationAction() { model.togglePresentation() }
     @objc private func settingsAction() { model.openSettingsAction?() }
@@ -145,8 +149,20 @@ final class StatusItemController: NSObject, NSWindowDelegate {
     private func showContextMenu() {
         closeDashboard()
         let menu = NSMenu()
-        for (title, action) in [(model.isPaused ? L("Resume tracking") : L("Pause 30 min"), #selector(pauseAction)),
-                                (L(model.isWatching ? "End watching" : "Watching mode"), #selector(watchingAction)),
+        if model.isPaused {
+            let resume = NSMenuItem(title: L("Resume manual pause"), action: #selector(resumePauseAction), keyEquivalent: "")
+            resume.target = self; menu.addItem(resume)
+        } else {
+            let pauseItem = NSMenuItem(title: L("Pause tracking"), action: nil, keyEquivalent: "")
+            let choices = NSMenu()
+            for (index, option) in PauseOption.allCases.enumerated() {
+                let entry = NSMenuItem(title: option.title, action: #selector(pauseAction(_:)), keyEquivalent: "")
+                entry.tag = index; entry.target = self; choices.addItem(entry)
+            }
+            menu.setSubmenu(choices, for: pauseItem)
+            menu.addItem(pauseItem)
+        }
+        for (title, action) in [(L(model.isWatching ? "End watching" : "Watching mode"), #selector(watchingAction)),
                                 (L(model.presentationUntil == nil ? "Presentation" : "End presentation"), #selector(presentationAction)),
                                 (L("Settings"), #selector(settingsAction)), (L("Quit Molaway"), #selector(quitAction))] {
             let entry = NSMenuItem(title: title, action: action, keyEquivalent: "")

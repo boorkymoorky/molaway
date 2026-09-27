@@ -17,6 +17,7 @@ enum ActivityState: String {
 
 struct ActivityDecision {
     var state: ActivityState
+    var automaticPause: Bool = false
     var activeSeconds: Double = 0
     var rollback: Double = 0
     var restCredit: Double = 0
@@ -71,7 +72,7 @@ struct ActivityAccounting {
             provisional = 0
             lastIdle = effectiveIdle
             lastState = .away
-            return ActivityDecision(state: paused ? .paused : .away, rollback: rollback,
+            return ActivityDecision(state: paused ? .paused : .away, automaticPause: true, rollback: rollback,
                                     restCredit: max(restCredit, effectiveIdle))
         }
         if paused {
