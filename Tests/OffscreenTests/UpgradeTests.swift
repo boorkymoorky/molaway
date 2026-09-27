@@ -8,11 +8,16 @@ import Foundation
         let settings = try SettingsCodec.decode(data, strict: true)
         #expect(settings.eyeMinutes == 35)
         #expect(settings.movementMinutes == 75)
+        #expect(settings.workMinutes == 35)
+        #expect(settings.shortRestSeconds == 20)
+        #expect(settings.longRestMinutes == 2)
+        #expect(settings.shortBreaksBeforeLong == 1)
+        #expect(settings.migrationNoticePending)
         #expect(!settings.videoEnabled)
         #expect(settings.reminderTone == .tink)
         #expect(settings.reminderStyle == .corner)
         #expect(settings.didFinishWelcome)
-        #expect(settings.schemaVersion == 2)
+        #expect(settings.schemaVersion == 3)
     }
     @Test func newSettingsUseSafeDefaults() {
         let settings = AppSettings()
@@ -21,6 +26,26 @@ import Foundation
         #expect(settings.pauseTone == .none && settings.resumeTone == .none)
         #expect(settings.displayTarget == .cursor)
         #expect(settings.language == .system)
+    }
+    @Test func newSchemaRequiresCompleteTimingAndSafeImport() throws {
+        #expect(throws: (any Error).self) { try SettingsCodec.decode(Data(#"{"schemaVersion":3,"workMinutes":20}"#.utf8), strict: true) }
+        var settings = AppSettings()
+        settings.workMinutes = Int.max; settings.shortBreaksBeforeLong = Int.max
+        settings.validate()
+        #expect(settings.workMinutes == 180)
+        #expect(settings.shortBreaksBeforeLong == 12)
+        settings.applyPreset(.deepFocus)
+        #expect(settings.workMinutes == 45)
+        #expect(settings.shortRestSeconds == 30)
+        #expect(settings.longRestMinutes == 8)
+        #expect(settings.shortBreaksBeforeLong == 1)
+        settings.restorePreviousTiming()
+        #expect(settings.workMinutes == 180)
+        let data = try SettingsCodec.export(settings)
+        let copy = try SettingsCodec.decode(data, strict: true)
+        #expect(copy.workMinutes == 180)
+        #expect(copy.cycleShortCount == 0)
+        #expect(!copy.migrationNoticePending)
     }
     @Test func newerSchemaRejected() { #expect(throws: (any Error).self) { try SettingsCodec.decode(Data(#"{"schemaVersion":999}"#.utf8)) } }
     @Test func invalidEnumsRejected() { #expect(throws: (any Error).self) { try SettingsCodec.decode(Data(#"{"schemaVersion":2,"reminderStyle":"shell"}"#.utf8)) } }
@@ -55,34 +80,34 @@ import Foundation
     }
     @Test func quietPeriodCoalescesAndDelaysReminders() {
         var policy = ReminderPolicy()
-        #expect(policy.update(now: 0, suppressed: true, eligible: true, due: [.eyes]).isEmpty)
-        #expect(policy.update(now: 100, suppressed: true, eligible: true, due: [.movement]).isEmpty)
+        #expect(policy.update(now: 0, suppressed: true, eligible: true, due: [.short]).isEmpty)
+        #expect(policy.update(now: 100, suppressed: true, eligible: true, due: [.long]).isEmpty)
         #expect(policy.update(now: 101, suppressed: false, eligible: true, due: []).isEmpty)
         #expect(policy.update(now: 160, suppressed: false, eligible: true, due: []).isEmpty)
-        #expect(policy.update(now: 161, suppressed: false, eligible: true, due: []) == [.eyes, .movement])
+        #expect(policy.update(now: 161, suppressed: false, eligible: true, due: []) == [.short, .long])
         #expect(policy.update(now: 162, suppressed: false, eligible: true, due: []).isEmpty)
     }
     @Test func quietResumingRestartsGracePeriod() {
         var policy = ReminderPolicy()
-        _ = policy.update(now: 0, suppressed: true, eligible: true, due: [.eyes])
+        _ = policy.update(now: 0, suppressed: true, eligible: true, due: [.short])
         _ = policy.update(now: 10, suppressed: false, eligible: true, due: [])
         _ = policy.update(now: 20, suppressed: true, eligible: true, due: [])
         _ = policy.update(now: 30, suppressed: false, eligible: true, due: [])
         #expect(policy.update(now: 70, suppressed: false, eligible: true, due: []).isEmpty)
-        #expect(policy.update(now: 90, suppressed: false, eligible: true, due: []) == [.eyes])
+        #expect(policy.update(now: 90, suppressed: false, eligible: true, due: []) == [.short])
     }
     @Test func completedRestRemovesPendingReminder() {
         var policy = ReminderPolicy()
-        _ = policy.update(now: 0, suppressed: true, eligible: true, due: [.eyes, .movement])
-        policy.clear(.eyes)
+        _ = policy.update(now: 0, suppressed: true, eligible: true, due: [.short, .long])
+        policy.clear(.short)
         _ = policy.update(now: 1, suppressed: false, eligible: true, due: [])
-        #expect(policy.update(now: 61, suppressed: false, eligible: true, due: []) == [.movement])
+        #expect(policy.update(now: 61, suppressed: false, eligible: true, due: []) == [.long])
     }
     @Test func lockedOrPausedNeverDeliversPendingReminder() {
         var policy = ReminderPolicy()
-        #expect(policy.update(now: 0, suppressed: false, eligible: false, due: [.eyes]).isEmpty)
+        #expect(policy.update(now: 0, suppressed: false, eligible: false, due: [.short]).isEmpty)
         #expect(policy.update(now: 60, suppressed: false, eligible: false, due: []).isEmpty)
-        #expect(policy.update(now: 61, suppressed: false, eligible: true, due: []) == [.eyes])
+        #expect(policy.update(now: 61, suppressed: false, eligible: true, due: []) == [.short])
     }
     @Test func genericMediaDoesNotPretendToBeVideo() {
         for name in ["Playing audio", "Audio Wake Lock", "Screen Wake Lock", "disable screen saver", "media playback", ""] {

@@ -10,6 +10,12 @@ import Testing
         #expect(BreakScheduleMath.nextBreakKind(shortBreaksSinceLong: 5, longBreakEvery: 3) == .long)
     }
 
+    @Test func userFacingThreeShortsConvertsToEveryFourth() {
+        var settings = AppSettings()
+        settings.shortBreaksBeforeLong = 3
+        #expect(settings.timing.longBreakEvery == 4)
+        #expect((0...3).map { BreakScheduleMath.nextBreakKind(shortBreaksSinceLong: $0, longBreakEvery: settings.timing.longBreakEvery) } == [.short, .short, .short, .long])
+    }
     @Test func longBreaksDisabled() {
         #expect(BreakScheduleMath.nextBreakKind(shortBreaksSinceLong: 99, longBreakEvery: 0) == .short)
     }

@@ -255,3 +255,31 @@
 
 "Eyes" = "Göz";
 "Next reminder" = "Sıradaki hatırlatma";
+
+"Short break" = "Kısa mola";
+"Long break" = "Uzun mola";
+"Short" = "Kısa";
+"Long" = "Uzun";
+"Molaway · short and long breaks" = "Molaway · kısa ve uzun molalar";
+"Long break now" = "Şimdi uzun mola";
+"Timing profile" = "Zamanlama düzeni";
+"Balanced" = "Dengeli";
+"Deep Focus" = "Derin odak";
+"Restore previous timing" = "Önceki süreleri geri yükle";
+"Break cycle" = "Mola döngüsü";
+"Work interval" = "Çalışma aralığı";
+"Short break duration" = "Kısa mola süresi";
+"Long break duration" = "Uzun mola süresi";
+"Short breaks before long" = "Uzun moladan önce kısa mola sayısı";
+"Long breaks off" = "Uzun molalar kapalı";
+"Your break schedule changed" = "Mola düzeniniz değişti";
+"I reviewed the schedule" = "Düzeni gözden geçirdim";
+"Short breaks completed" = "Tamamlanan kısa mola";
+"Long breaks completed" = "Tamamlanan uzun mola";
+"Legacy eye breaks completed" = "Eski göz molaları";
+"Legacy movement breaks completed" = "Eski hareket molaları";
+"Your former eye interval became the work interval; eye rest became the short break; movement rest became the long break. The independent movement interval has no exact match. Review the new schedule below; old eye and movement statistics retain their original meaning." = "Eski göz aralığı çalışma aralığına, göz dinlenmesi kısa molaya ve hareket dinlenmesi uzun molaya dönüştü. Bağımsız hareket aralığının tam karşılığı yok. Aşağıdaki yeni düzeni gözden geçirin; eski göz ve hareket istatistiklerinin anlamı değişmedi.";
+"Legacy eye and movement counts keep their original meaning. New short and long counts start with this schedule. Natural breaks count once. Video and watching are parts of active time; playback cannot prove you are at your desk." = "Eski göz ve hareket sayıları ilk anlamını korur. Yeni kısa ve uzun sayıları bu düzenle başlar. Doğal mola bir kez sayılır. Video ve izleme etkin sürenin parçalarıdır; oynatma masada olduğunuzu kanıtlamaz.";
+
+"%d completed short breaks are followed by one long break. Skips and snoozes do not advance the count." = "Tamamlanan %d kısa molayı bir uzun mola izler. Atlanan ve ertelenen molalar sayacı ilerletmez.";
+"Only short breaks are scheduled. Skips and snoozes do not advance the count." = "Yalnızca kısa molalar planlanır. Atlanan ve ertelenen molalar sayacı ilerletmez.";

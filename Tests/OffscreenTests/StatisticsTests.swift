@@ -32,48 +32,59 @@ import Testing
         #expect(row.active == 8); #expect(row.video == 5); #expect(row.watching == 3); #expect(row.valid)
     }
     @Test func absenceAtLaunchDoesNotInventBreaks() {
-        var l = enabled(); l.natural(day: day, kind: .eyes, target: 20); #expect(l.document.days.isEmpty)
+        var l = enabled(); l.naturalCycle(day: day, kind: .short, target: 20)
+        #expect(l.document.days.isEmpty)
     }
-    @Test func continuousNaturalBreakCountsOnceAndCapsDurationAcrossMidnight() {
+    @Test func continuousNaturalBreakCountsOnce() {
         var l = enabled()
         l.sample(day: day, active: 1, rollback: 0, provisional: 0, observed: 1, video: false, watching: false)
-        l.natural(day: day, kind: .eyes, target: 20)
-        l.natural(day: "2026-09-25", kind: .movement, target: 120)
-        l.natural(day: "2026-09-25", kind: .movement, target: 120)
-        #expect(l.document.days.count == 1)
+        l.naturalCycle(day: day, kind: .short, target: 20)
+        l.naturalCycle(day: day, kind: .long, target: 120)
         let row = l.document.days[0]
-        #expect(row.breaks == 1 && row.eyes == 1 && row.movement == 1 && row.natural == 1 && row.rest == 120)
+        #expect(row.breaks == 1 && row.shortBreaks == 1 && row.longBreaks == 0 && row.natural == 1 && row.rest == 20)
     }
     @Test func returningThenLeavingMakesANewNaturalBreak() {
         var l = enabled()
         for _ in 0..<2 {
             l.sample(day: day, active: 1, rollback: 0, provisional: 0, observed: 1, video: false, watching: false)
-            l.natural(day: day, kind: .eyes, target: 20)
+            l.naturalCycle(day: day, kind: .short, target: 20)
         }
         #expect(l.document.days[0].breaks == 2)
     }
     @Test func cancelledAndUnstartedManualBreaksDoNotCount() {
-        var l = enabled(); l.completeManual(day: day, duration: 120, eyes: 20, movement: 120)
-        l.beginManual(); l.cancelManual(); l.completeManual(day: day, duration: 120, eyes: 20, movement: 120)
+        var l = enabled(); l.completeCycle(day: day, kind: .long, duration: 120)
+        l.beginManual(); l.cancelManual(); l.completeCycle(day: day, kind: .long, duration: 120)
         #expect(l.document.days.isEmpty)
     }
-    @Test func completedMovementCountsOnceForBothTargets() {
-        var l = enabled(); l.beginManual(); l.completeManual(day: day, duration: 125, eyes: 20, movement: 120)
-        l.completeManual(day: day, duration: 125, eyes: 20, movement: 120)
+    @Test func completedLongCountsOnce() {
+        var l = enabled(); l.beginManual(); l.completeCycle(day: day, kind: .long, duration: 120)
+        l.completeCycle(day: day, kind: .long, duration: 120)
         let row = l.document.days[0]
-        #expect(row.breaks == 1 && row.eyes == 1 && row.movement == 1 && row.rest == 120 && row.natural == 0)
+        #expect(row.breaks == 1 && row.shortBreaks == 0 && row.longBreaks == 1 && row.rest == 120)
     }
     @Test func manualBreakIsNotAlsoCreditedAsNatural() {
         var l = enabled(); l.sample(day: day, active: 5, rollback: 0, provisional: 0, observed: 5, video: false, watching: false)
-        l.beginManual(); l.completeManual(day: day, duration: 20, eyes: 20, movement: 120)
-        l.natural(day: day, kind: .eyes, target: 20)
+        l.beginManual(); l.completeCycle(day: day, kind: .short, duration: 20)
+        l.naturalCycle(day: day, kind: .short, target: 20)
         #expect(l.document.days[0].breaks == 1)
     }
+    @Test func legacyCountsKeepOriginalMeaning() throws {
+        let old = Data(#"{"version":1,"enabled":true,"weekly":false,"retention":90,"days":[{"day":"2026-09-24","active":0,"video":0,"watching":0,"observed":0,"breaks":2,"eyes":2,"movement":1,"natural":0,"rest":140}]}"#.utf8)
+        var document = try StatisticsCodec.decode(old)
+        #expect(document.days[0].eyes == 2 && document.days[0].movement == 1)
+        #expect(document.days[0].shortBreaks == 0 && document.days[0].longBreaks == 0)
+        var ledger = StatisticsLedger(); ledger.document = document
+        ledger.beginManual(); ledger.completeCycle(day: day, kind: .short, duration: 20)
+        document = ledger.document
+        #expect(document.days[0].eyes == 2 && document.days[0].movement == 1)
+        #expect(document.days[0].shortBreaks == 1 && document.days[0].breaks == 3)
+        #expect(try StatisticsCodec.decode(JSONEncoder().encode(document)).days[0] == document.days[0])
+    }
     @Test func continuedInactivityAfterManualBreakDoesNotInventAnotherBreak() {
-        var l = enabled(); l.beginManual(); l.completeManual(day: day, duration: 20, eyes: 20, movement: 120)
+        var l = enabled(); l.beginManual(); l.completeCycle(day: day, kind: .short, duration: 20)
         l.sample(day: day, active: 5, rollback: 0, provisional: 5, observed: 5, video: false, watching: false)
         l.sample(day: day, active: 0, rollback: 5, provisional: 0, observed: 1, video: false, watching: false)
-        l.natural(day: day, kind: .eyes, target: 20)
+        l.naturalCycle(day: day, kind: .short, target: 20)
         #expect(l.document.days[0].breaks == 1)
     }
     @Test func invalidSamplesAreIgnored() {

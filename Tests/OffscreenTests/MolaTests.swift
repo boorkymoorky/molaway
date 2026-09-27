@@ -43,17 +43,18 @@ import Foundation
         engine.advance(by: 1)
         #expect(engine.workAccrued == 1001)
     }
-    @Test func twoTimersResetOnlyWhenRestIsLongEnough() {
-        let eyes = BreakEngine(timing: AppSettings().eyes)
-        let movement = BreakEngine(timing: AppSettings().movement)
-        eyes.advance(by: 600); movement.advance(by: 600)
-        eyes.accountForNaturalRest(20); movement.accountForNaturalRest(20)
-        #expect(eyes.workAccrued == 0)
-        #expect(movement.workAccrued == 600)
-        eyes.advance(by: 100); movement.advance(by: 100)
-        eyes.accountForNaturalRest(120); movement.accountForNaturalRest(120)
-        #expect(eyes.workAccrued == 0)
-        #expect(movement.workAccrued == 0)
+    @Test func oneNaturalAbsenceSatisfiesOnlyNextKind() {
+        let engine = BreakEngine(timing: TimingConfig(workSeconds: 1200, shortBreakSeconds: 20, longBreakEvery: 2, longBreakSeconds: 120))
+        engine.advance(by: 600)
+        engine.accountForNaturalRest(20)
+        #expect(engine.shortBreaksSinceLong == 1)
+        engine.advance(by: 600)
+        engine.accountForNaturalRest(20)
+        #expect(engine.shortBreaksSinceLong == 1)
+        #expect(engine.workAccrued == 600)
+        engine.accountForNaturalRest(120)
+        #expect(engine.shortBreaksSinceLong == 0)
+        #expect(engine.workAccrued == 0)
     }
     @Test func initialIdleDoesNotStartButFirstInputDoes() {
         var policy = ActivityAccounting()

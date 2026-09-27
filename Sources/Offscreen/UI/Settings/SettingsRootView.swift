@@ -53,29 +53,40 @@ struct SettingsRootView: View {
     }
     private var breaks: some View {
         Form {
-            Section {
-                DurationField(title: "Remind every", value: model.settings.binding(\.eyeMinutes), range: 5...120, unit: "min", step: 5)
-                DurationField(title: "Rest for", value: model.settings.binding(\.eyeRestSeconds), range: 10...120, unit: "sec", step: 10)
-            } header: { ringHeader(.eyes) }
-            Section {
-                DurationField(title: "Remind every", value: model.settings.binding(\.movementMinutes), range: 10...180, unit: "min", step: 5)
-                DurationField(title: "Rest for", value: model.settings.binding(\.movementRestMinutes), range: 1...15, unit: "min")
-            } header: { ringHeader(.movement) }
-            Section {
-                Toggle(L("Combine nearby breaks"), isOn: model.settings.binding(\.mergeBreaks))
-                note("When breaks are within 2 minutes, show one reminder. A short eye break never resets the movement timer.")
+            Section(L("Timing profile")) {
+                HStack {
+                    Button(L("Balanced")) { model.settings.update { $0.applyPreset(.balanced) } }
+                    Button(L("Deep Focus")) { model.settings.update { $0.applyPreset(.deepFocus) } }
+                    Button(L("20-20-20")) { model.settings.update { $0.applyPreset(.twentyTwentyTwenty) } }
+                }
+                if model.config.previousCustomTiming != nil {
+                    Button(L("Restore previous timing")) { model.settings.update { $0.restorePreviousTiming() } }
+                }
+            }
+            Section(L("Break cycle")) {
+                DurationField(title: "Work interval", value: model.settings.binding(\.workMinutes), range: 5...180, unit: "min", step: 5)
+                DurationField(title: "Short break duration", value: model.settings.binding(\.shortRestSeconds), range: 10...120, unit: "sec", step: 10)
+                DurationField(title: "Long break duration", value: model.settings.binding(\.longRestMinutes), range: 1...15, unit: "min")
+                Picker(L("Short breaks before long"), selection: model.settings.binding(\.shortBreaksBeforeLong)) {
+                    Text(L("Long breaks off")).tag(0)
+                    ForEach(1...12, id: \.self) { value in Text(String(value)).tag(value) }
+                }
+                if model.config.shortBreaksBeforeLong > 0 {
+                    Text(String(format: L("%d completed short breaks are followed by one long break. Skips and snoozes do not advance the count."), model.config.shortBreaksBeforeLong))
+                        .font(.system(size: 11)).foregroundStyle(.secondary)
+                } else { note("Only short breaks are scheduled. Skips and snoozes do not advance the count.") }
                 note("Changes to rest duration apply to your next break.")
+            }
+            if model.config.migrationNoticePending {
+                Section(L("Your break schedule changed")) {
+                    Text(L("Your former eye interval became the work interval; eye rest became the short break; movement rest became the long break. The independent movement interval has no exact match. Review the new schedule below; old eye and movement statistics retain their original meaning."))
+                    Button(L("I reviewed the schedule")) { model.settings.update { $0.migrationNoticePending = false } }
+                }
             }
             Section(L("Settings backup")) {
                 HStack { Button(L("Export settings")) { SettingsTransfer.export(model) }; Button(L("Import settings")) { SettingsTransfer.importSettings(model) } }
                 note("Permission: only the file you choose. No activity history is exported. Import does not grant permissions.")
             }
-        }
-    }
-    private func ringHeader(_ kind: MolaKind) -> some View {
-        HStack(spacing: 8) {
-            TimerRing(kind: kind, color: kind == .eyes ? model.tint : Theme.violet).frame(width: 26, height: 26)
-            Text(kind.title + " · " + L(kind == .eyes ? "Outer ring" : "Inner ring"))
         }
     }
     private var activity: some View {

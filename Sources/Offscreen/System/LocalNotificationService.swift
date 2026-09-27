@@ -11,7 +11,7 @@ import UserNotifications
     private(set) var deliveryFailed = false
     var hasProblem: Bool { authorization != .authorized || !alertsEnabled || deliveryFailed }
     private var preview = false
-    private var kind: MolaKind = .eyes
+    private var kind: MolaKind = .short
     init(model: AppContainer) {
         self.model = model
         super.init()
@@ -51,7 +51,7 @@ import UserNotifications
         self.kind = kind; self.preview = preview
         let token = UUID().uuidString; self.token = token
         let content = UNMutableNotificationContent()
-        content.title = preview ? L("Alert preview") : combined ? L("Movement & eye break") : kind.title
+        content.title = preview ? L("Alert preview") : kind.title
         content.body = model.reminderMessage(kind)
         content.userInfo = ["token": token]
         content.categoryIdentifier = preview ? "" : "mola.break"

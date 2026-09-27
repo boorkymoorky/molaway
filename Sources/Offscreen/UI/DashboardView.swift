@@ -31,16 +31,15 @@ struct DashboardView: View {
                 }.buttonStyle(.bordered).controlSize(.small)
             }
             VStack(spacing: 10) {
-                TimerCard(model: model, kind: .eyes)
-                TimerCard(model: model, kind: .movement)
+                TimerCard(model: model, kind: model.nextKind)
             }
             if model.activeRest != nil {
                 Button(L("End break and continue")) { model.cancelRest() }
                     .buttonStyle(.bordered).frame(maxWidth: .infinity)
             } else {
                 HStack(spacing: 8) {
-                    Button { model.beginRest(.eyes) } label: { Label(L("Eye break"), systemImage: "eye") }
-                    Button { model.beginRest(.movement) } label: { Label(L("Move"), systemImage: "figure.walk") }
+                    Button { model.beginRest(model.nextKind) } label: { Label(L("Take a break"), systemImage: "leaf") }
+                    Button { model.beginRest(.long) } label: { Label(L("Long break now"), systemImage: "figure.walk") }
                 }.buttonStyle(.bordered).controlSize(.regular)
             }
             HStack {
@@ -91,7 +90,7 @@ struct TimerCard: View {
     let model: AppContainer
     let kind: MolaKind
     private var engine: BreakEngine { model.engine(kind) }
-    private var color: Color { kind == .eyes ? model.tint : Theme.violet }
+    private var color: Color { kind == .short ? model.tint : Theme.violet }
     private var readout: AppContainer.TimerReadout { model.readout(for: kind) }
     private var inRest: Bool { readout.resting }
     private var progress: Double {
@@ -102,7 +101,7 @@ struct TimerCard: View {
             TimerRing(kind: kind, progress: progress, color: color).frame(width: 42, height: 42)
             VStack(alignment: .leading, spacing: 3) {
                 Label(kind.title, systemImage: kind.symbol).font(.system(size: 13, weight: .semibold))
-                Text(L(kind == .eyes ? "Outer ring" : "Inner ring")).font(.system(size: 10)).foregroundStyle(color)
+                Text(L(kind == .short ? "Outer ring" : "Inner ring")).font(.system(size: 10)).foregroundStyle(color)
                 Text(inRest ? L("Rest time") : L("Every") + " " + minutes(engine.timing.workSeconds / 60))
                     .font(.system(size: 11)).foregroundStyle(.secondary)
             }

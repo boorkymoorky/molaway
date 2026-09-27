@@ -15,6 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         status = StatusItemController(model: container)
         reminder = PreBreakPanelController(model: container)
         container.start()
+        if container.config.migrationNoticePending { settings.show() }
         if !container.settings.settings.didFinishWelcome {
             container.settings.update { $0.didFinishWelcome = true }
             settings.show()

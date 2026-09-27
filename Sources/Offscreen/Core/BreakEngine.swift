@@ -217,7 +217,7 @@ final class BreakEngine {
         guard let kind = activeBreak else { return }
         let elapsed = breakElapsed
         activeBreak = nil
-        resetCycle(afterCompleted: reason != .skipped ? kind : nil)
+        resetCycle(afterCompleted: reason == .completed ? kind : nil)
         setPhase(.working)
         emit(.breakEnded(kind: kind, reason: reason, elapsedSeconds: elapsed))
     }
@@ -236,7 +236,7 @@ final class BreakEngine {
         // back as the next cycle's break.
         pendingPlannedBreak = nil
         switch kind {
-        case .short: shortBreaksSinceLong += 1
+        case .short: shortBreaksSinceLong = min(12, shortBreaksSinceLong + 1)
         case .long: shortBreaksSinceLong = 0
         default: break
         }
@@ -250,6 +250,13 @@ final class BreakEngine {
     }
 
     // MARK: User actions
+
+    func restoreCadence(_ count: Int) { shortBreaksSinceLong = min(12, max(0, count)) }
+
+    func startLongBreakNow() {
+        guard !phase.isInactive, phase != .inBreak else { return }
+        startBreak(.long)
+    }
 
     func startBreakNow() {
         guard !phase.isInactive, phase != .inBreak else { return }
@@ -277,8 +284,11 @@ final class BreakEngine {
     }
 
     func endBreakEarly() {
-        guard phase == .inBreak else { return }
-        endBreak(.endedEarly)
+        guard phase == .inBreak, let kind = activeBreak else { return }
+        if breakRemaining <= 0 { endBreak(.completed); return }
+        let elapsed = breakElapsed
+        cancelBreakKeepingProgress()
+        emit(.breakEnded(kind: kind, reason: .endedEarly, elapsedSeconds: elapsed))
     }
 
     func snooze(seconds: Int) {
@@ -379,8 +389,9 @@ final class BreakEngine {
     }
 
     func accountForNaturalRest(_ seconds: Double) {
-        guard seconds >= Double(timing.shortBreakSeconds) else { return }
-        resetCycle(afterCompleted: .short)
+        let kind = nextBreakKind
+        guard seconds >= Double(BreakScheduleMath.duration(of: kind, timing: timing)) else { return }
+        resetCycle(afterCompleted: kind)
     }
 
     func restartWorkCycle() {

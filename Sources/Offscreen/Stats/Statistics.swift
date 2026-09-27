@@ -10,13 +10,38 @@ struct DailySummary: Codable, Equatable, Identifiable, Sendable {
     var breaks: Int = 0
     var eyes: Int = 0
     var movement: Int = 0
+    var shortBreaks: Int = 0
+    var longBreaks: Int = 0
     var natural: Int = 0
     var rest: Double = 0
+    enum CodingKeys: String, CodingKey {
+        case day, active, video, watching, observed, breaks, eyes, movement, shortBreaks, longBreaks, natural, rest
+    }
+    init(day: String, active: Double = 0, video: Double = 0, watching: Double = 0, observed: Double = 0, breaks: Int = 0, eyes: Int = 0, movement: Int = 0, shortBreaks: Int = 0, longBreaks: Int = 0, natural: Int = 0, rest: Double = 0) {
+        self.day = day; self.active = active; self.video = video; self.watching = watching; self.observed = observed
+        self.breaks = breaks; self.eyes = eyes; self.movement = movement; self.shortBreaks = shortBreaks; self.longBreaks = longBreaks
+        self.natural = natural; self.rest = rest
+    }
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        day = try c.decode(String.self, forKey: .day)
+        active = try c.decode(Double.self, forKey: .active)
+        video = try c.decode(Double.self, forKey: .video)
+        watching = try c.decode(Double.self, forKey: .watching)
+        observed = try c.decode(Double.self, forKey: .observed)
+        breaks = try c.decode(Int.self, forKey: .breaks)
+        eyes = try c.decode(Int.self, forKey: .eyes)
+        movement = try c.decode(Int.self, forKey: .movement)
+        shortBreaks = try c.decodeIfPresent(Int.self, forKey: .shortBreaks) ?? 0
+        longBreaks = try c.decodeIfPresent(Int.self, forKey: .longBreaks) ?? 0
+        natural = try c.decode(Int.self, forKey: .natural)
+        rest = try c.decode(Double.self, forKey: .rest)
+    }
     var id: String { day }
     var valid: Bool {
         StatsCalendar.date(day) != nil && [active, video, watching, observed, rest].allSatisfy { $0.isFinite && (0...86_400).contains($0) }
-        && video + watching <= active + 0.01 && [breaks, eyes, movement, natural].allSatisfy { (0...8640).contains($0) }
-        && eyes <= breaks && movement <= breaks && natural <= breaks
+        && video + watching <= active + 0.01 && [breaks, eyes, movement, shortBreaks, longBreaks, natural].allSatisfy { (0...8640).contains($0) }
+        && eyes <= breaks && movement <= breaks && shortBreaks + longBreaks <= breaks && natural <= breaks
     }
 }
 struct StatisticsDocument: Codable, Sendable {
@@ -140,27 +165,26 @@ struct StatisticsLedger {
     }
     mutating func beginManual() { manualStarted = document.enabled; pending.removeAll(); eligibleNatural = false; naturalKinds.removeAll(); naturalSeconds = 0 }
     mutating func cancelManual() { manualStarted = false }
-    mutating func completeManual(day: String, duration: Double, eyes: Double, movement: Double) {
-        guard document.enabled, manualStarted, duration.isFinite else { return }; manualStarted = false
-        let eye = duration >= eyes, move = duration >= movement
-        guard eye || move else { return }
-        let capped = min(duration, max(eye ? eyes : 0, move ? movement : 0))
+    mutating func completeCycle(day: String, kind: MolaKind, duration: Double) {
+        guard document.enabled, manualStarted, duration.isFinite, duration >= 0 else { return }
+        manualStarted = false
         edit(day) { row in
-            row.breaks = min(8640, row.breaks + 1)
-            if eye { row.eyes = min(row.breaks, row.eyes + 1) }; if move { row.movement = min(row.breaks, row.movement + 1) }
-            row.rest = min(86_400, row.rest + capped)
+            if row.breaks < 8640 {
+                row.breaks += 1
+                if kind == .short { row.shortBreaks += 1 } else { row.longBreaks += 1 }
+            }
+            row.rest = min(86_400, row.rest + duration)
         }
     }
-    mutating func natural(day: String, kind: MolaKind, target: Double) {
-        guard document.enabled, eligibleNatural, !naturalKinds.contains(kind), target.isFinite, target > 0 else { return }
-        let first = naturalKinds.isEmpty; naturalKinds.insert(kind)
-        if first { naturalDay = day }
-        let addition = max(0, target - naturalSeconds); naturalSeconds = max(target, naturalSeconds)
-        edit(naturalDay ?? day) { row in
-            // A continuous absence is one break even if it satisfies both timers.
-            if first { row.breaks = min(8640, row.breaks + 1); row.natural = min(row.breaks, row.natural + 1) }
-            if kind == .eyes { row.eyes = min(row.breaks, row.eyes + 1) } else { row.movement = min(row.breaks, row.movement + 1) }
-            row.rest = min(86_400, row.rest + addition)
+    mutating func naturalCycle(day: String, kind: MolaKind, target: Double) {
+        guard document.enabled, eligibleNatural, naturalKinds.isEmpty, target.isFinite, target > 0 else { return }
+        naturalKinds.insert(kind)
+        edit(day) { row in
+            if row.breaks < 8640 {
+                row.breaks += 1; row.natural += 1
+                if kind == .short { row.shortBreaks += 1 } else { row.longBreaks += 1 }
+            }
+            row.rest = min(86_400, row.rest + target)
         }
     }
 }

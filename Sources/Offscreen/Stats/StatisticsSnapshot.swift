@@ -26,7 +26,7 @@ struct StatisticsSnapshot {
         axisKeys = keys.enumerated().filter { $0.offset % stride == 0 }.map(\.element)
         totals = rows.reduce(into: DailySummary(day: today)) { sum, row in
             sum.active += row.active; sum.rest += row.rest; sum.breaks += row.breaks
-            sum.eyes += row.eyes; sum.movement += row.movement; sum.natural += row.natural
+            sum.eyes += row.eyes; sum.movement += row.movement; sum.shortBreaks += row.shortBreaks; sum.longBreaks += row.longBreaks; sum.natural += row.natural
             sum.video += row.video; sum.watching += row.watching
         }
         comparison = StatisticsComparison.make(days: days, period: period, today: today)

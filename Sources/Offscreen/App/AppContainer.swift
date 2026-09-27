@@ -3,12 +3,12 @@ import Observation
 
 // MIT derivative of Offscreen's scheduler, with independent activity and reminder policies.
 enum MolaKind: String, CaseIterable, Identifiable, Sendable {
-    case eyes, movement
+    case short, long
     var id: String { rawValue }
-    var title: String { L(self == .eyes ? "Eye break" : "Movement break") }
-    var shortTitle: String { L(self == .eyes ? "Eyes" : "Move") }
-    var symbol: String { self == .eyes ? "eye" : "figure.walk" }
-    var message: String { L(self == .eyes ? "Look away from the screen. Let your eyes rest." : "Stand up and take a short walk. Relax your shoulders.") }
+    var title: String { L(self == .short ? "Short break" : "Long break") }
+    var shortTitle: String { L(self == .short ? "Short" : "Long") }
+    var symbol: String { self == .short ? "eye" : "figure.walk" }
+    var message: String { L(self == .short ? "Look away from the screen. Let your eyes rest." : "Stand up and take a short walk. Relax your shoulders.") }
 }
 
 @Observable final class AppContainer {
@@ -16,8 +16,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     let login = LoginItemManager()
     let sound = SoundPlayer()
     let statistics: StatisticsStore
-    let eyes: BreakEngine
-    let movement: BreakEngine
+    let breakEngine: BreakEngine
     private(set) var activity: ActivityState = .starting
     private(set) var videoAvailable = true
     private(set) var videoPlaying = false
@@ -51,33 +50,31 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     private var restStarted: Double = 0
     private var accounting = ActivityAccounting()
     private var policy = ReminderPolicy()
-    private var credited: Set<MolaKind> = []
+    private var credited = false
     private var pendingDue: Set<MolaKind> = []
     private var activityToken: NSObjectProtocol?
 
     init(settings: SettingsStore = SettingsStore(), statistics: StatisticsStore = StatisticsStore()) {
         self.settings = settings
         self.statistics = statistics
-        eyes = BreakEngine(timing: settings.settings.eyes)
-        movement = BreakEngine(timing: settings.settings.movement)
+        breakEngine = BreakEngine(timing: settings.settings.timing)
+        breakEngine.restoreCadence(settings.settings.cycleShortCount)
         Localization.shared.language = settings.settings.language
         applyAppearance()
-        for kind in MolaKind.allCases {
-            engine(kind).gentleReminders = true
-            engine(kind).addListener { [weak self] event in
-                guard let self else { return }
-                switch event {
-                case .reminderDue: pendingDue.insert(kind)
-                case .breakEnded(_, .completed, let duration):
-                    if activeRest == kind { finishRest(duration: duration) }
-                default: break
-                }
+        breakEngine.gentleReminders = true
+        breakEngine.addListener { [weak self] event in
+            guard let self else { return }
+            switch event {
+            case .reminderDue: pendingDue.insert(nextKind)
+            case .breakEnded(_, .completed, let duration):
+                if activeRest != nil { finishRest(duration: duration) }
+            default: break
             }
         }
         settings.addListener { [weak self] value in
             guard let self else { return }
-            if activeRest != .eyes { eyes.timing = value.eyes }
-            if activeRest != .movement { movement.timing = value.movement }
+            if activeRest == nil { breakEngine.timing = value.timing }
+            breakEngine.restoreCadence(value.cycleShortCount)
             Localization.shared.language = value.language
             applyAppearance()
             nextSensorRead = 0
@@ -87,9 +84,9 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         loginEnabled = login.isEnabled
     }
     var config: AppSettings { settings.settings }
-    func engine(_ kind: MolaKind) -> BreakEngine { kind == .eyes ? eyes : movement }
+    func engine(_ kind: MolaKind) -> BreakEngine { breakEngine }
     var time: Double { origin.duration(to: .now).seconds }
-    var nextKind: MolaKind { eyes.timeUntilReminder <= movement.timeUntilReminder ? .eyes : .movement }
+    var nextKind: MolaKind { breakEngine.nextBreakKind == .long ? .long : .short }
     struct TimerReadout {
         let kind: MolaKind
         let seconds: Double
@@ -124,17 +121,13 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     }
     var visibleOverdue: OverdueLevel {
         guard !suppressing, !isPaused, activeRest == nil, [.active, .video].contains(activity) else { return .normal }
-        return MolaKind.allCases.map { overdueLevel($0) }.max() ?? .normal
+        return overdueLevel(nextKind)
     }
     func reminderMessage(_ kind: MolaKind) -> String {
         guard !isPreview, activeRest == nil else { return kind.message }
-        let warning = reminderKinds.union([kind]).max {
-            let a = overdueLevel($0), b = overdueLevel($1)
-            return a == b ? engine($0).timeUntilBreak > engine($1).timeUntilBreak : a < b
-        } ?? kind
-        guard overdueLevel(warning) != .normal else { return kind.message }
-        let minutes = Int(max(0, -engine(warning).timeUntilBreak) / 60)
-        return String(format: L("%@ has been waiting for %d minutes. Take a short break when you can."), warning.title, minutes)
+        guard overdueLevel(kind) != .normal else { return kind.message }
+        let minutes = Int(max(0, -breakEngine.timeUntilBreak) / 60)
+        return String(format: L("%@ has been waiting for %d minutes. Take a short break when you can."), kind.title, minutes)
     }
     func openStatistics() { settingsTab = 5; openSettingsAction?() }
     func setStatisticsEnabled(_ value: Bool) { statistics.setEnabled(value); if !value { notifications?.clearWeekly() } }
@@ -231,23 +224,20 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         statistics.sample(now: Date(), uptime: now, active: decision.activeSeconds, rollback: decision.rollback,
             provisional: accounting.unconfirmedSeconds, observed: isPaused || activity == .starting ? 0 : delta,
             video: config.videoEnabled && videoPlaying, watching: isWatching)
-        for kind in MolaKind.allCases { engine(kind).removeProvisionalWork(decision.rollback) }
+        breakEngine.removeProvisionalWork(decision.rollback)
         applyNaturalRest(decision.restCredit)
         if activity == .active || activity == .video {
-            credited.removeAll()
+            credited = false
             // Keeps the timers responsive without preventing display or system sleep.
             if timer != nil && activityToken == nil { activityToken = ProcessInfo.processInfo.beginActivity(options: .userInitiatedAllowingIdleSystemSleep, reason: "Local break timer") }
-            eyes.advance(by: decision.activeSeconds); movement.advance(by: decision.activeSeconds)
+            breakEngine.advance(by: decision.activeSeconds)
         } else { releaseActivity(); if !isPreview { hideReminder?(); reminderKinds.removeAll() } }
         let ready = policy.update(now: now, suppressed: suppressing, eligible: canPresent && !hasAlertProblem, due: pendingDue)
         pendingDue.removeAll()
         if suppressing { hideReminder?(); sound.stop(); notifications?.clearWeekly() }
         if !ready.isEmpty {
             reminderKinds = ready
-            if config.mergeBreaks {
-                for kind in MolaKind.allCases where !engine(kind).isExplicitlyDeferred && engine(kind).timeUntilReminder <= 120 { reminderKinds.insert(kind) }
-            }
-            for kind in reminderKinds { engine(kind).deferReminder() }
+            breakEngine.deferReminder()
             isPreview = false
             showReminder?()
             if config.reminderStyle != .notification { play(config.reminderTone) }
@@ -263,42 +253,44 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         updateUI?()
     }
     private func applyNaturalRest(_ duration: Double) {
-        for kind in MolaKind.allCases where !credited.contains(kind) && duration >= Double(engine(kind).timing.shortBreakSeconds) {
-            if !suspended { statistics.natural(kind: kind, target: Double(engine(kind).timing.shortBreakSeconds)) }
-            engine(kind).accountForNaturalRest(duration); policy.clear(kind); pendingDue.remove(kind); reminderKinds.remove(kind); credited.insert(kind)
-        }
+        guard !credited else { return }
+        let kind = nextKind
+        let target = Double(BreakScheduleMath.duration(of: breakEngine.nextBreakKind, timing: breakEngine.timing))
+        guard duration >= target else { return }
+        if !suspended { statistics.naturalCycle(kind: kind, target: target) }
+        breakEngine.accountForNaturalRest(duration)
+        settings.update { $0.cycleShortCount = breakEngine.shortBreaksSinceLong }; settings.flush()
+        policy.clear(kind); pendingDue.removeAll(); reminderKinds.removeAll(); credited = true
     }
     func beginRest(_ kind: MolaKind, now: Double? = nil) {
         guard !suspended else { return }
         if activeRest != nil { cancelRest() }
         statistics.beginManual()
-        pauseUntil = nil; activeRest = kind; restStarted = now ?? time; restReturn.reset()
-        accounting.clearProvisional(); reminderKinds = [kind]; isPreview = false
-        policy.clear(kind); engine(kind).startBreakNow(); activity = .resting
+        let selected = kind == .long ? MolaKind.long : nextKind
+        pauseUntil = nil; activeRest = selected; restStarted = now ?? time; restReturn.reset()
+        accounting.clearProvisional(); reminderKinds = [selected]; isPreview = false
+        policy.clear(selected)
+        if selected == .long { breakEngine.startLongBreakNow() } else { breakEngine.startBreakNow() }
+        activity = .resting
         showReminder?(); play(config.breakTone); updateUI?()
     }
-    func cancelRest(restartCycle: Bool = true) {
+    func cancelRest(restartCycle: Bool = false) {
         guard let kind = activeRest else { return }
-        let elapsed = engine(kind).breakElapsed
-        // Count only targets actually satisfied; restarting is not a completed break.
-        statistics.completeManual(duration: elapsed, eyes: Double(eyes.timing.shortBreakSeconds), movement: Double(movement.timing.shortBreakSeconds))
-        if restartCycle { engine(kind).restartWorkCycle() }
-        else { engine(kind).cancelBreakKeepingProgress() }
+        statistics.cancelManual()
+        if restartCycle { breakEngine.restartWorkCycle() }
+        else { breakEngine.cancelBreakKeepingProgress() }
         policy.clear(kind); pendingDue.remove(kind)
-        for other in MolaKind.allCases where other != kind && elapsed >= Double(engine(other).timing.shortBreakSeconds) {
-            engine(other).accountForNaturalRest(elapsed); policy.clear(other); pendingDue.remove(other); credited.insert(other)
-        }
         activeRest = nil
-        eyes.timing = config.eyes; movement.timing = config.movement
+        breakEngine.timing = config.timing
         dismissReminder(); accounting.clearProvisional(); activity = .active; nextSensorRead = 0
         play(config.resumeTone, transition: true); updateUI?()
     }
     private func finishRest(duration: Double) {
-        statistics.completeManual(duration: duration, eyes: Double(eyes.timing.shortBreakSeconds), movement: Double(movement.timing.shortBreakSeconds))
-        for kind in MolaKind.allCases {
-            if duration >= Double(engine(kind).timing.shortBreakSeconds) { engine(kind).accountForNaturalRest(duration); policy.clear(kind); pendingDue.remove(kind) }
-        }
-        activeRest = nil; eyes.timing = config.eyes; movement.timing = config.movement
+        guard let kind = activeRest else { return }
+        statistics.completeCycle(kind: kind, duration: duration)
+        settings.update { $0.cycleShortCount = breakEngine.shortBreaksSinceLong }; settings.flush()
+        policy.clear(kind); pendingDue.remove(kind)
+        activeRest = nil; breakEngine.timing = config.timing
         dismissReminder(); accounting.clearProvisional(); activity = .active
         nextSensorRead = 0; play(config.endTone)
     }
@@ -307,18 +299,15 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if !isPreview && !reminderKinds.isEmpty {
             // Snooze is a quiet period for all break alerts. Preserve any later
             // deadline and count a deliberate deferral only for the shown kinds.
-            for kind in MolaKind.allCases {
-                let timer = engine(kind)
-                timer.deferReminder(seconds: max(300, timer.timeUntilReminder), explicit: reminderKinds.contains(kind))
-                policy.clear(kind)
-                pendingDue.remove(kind)
-            }
+            breakEngine.deferReminder(seconds: max(300, breakEngine.timeUntilReminder), explicit: true)
+            policy.clear(nextKind)
+            pendingDue.removeAll()
         }
         dismissReminder(); updateUI?()
     }
     func previewReminder() {
         guard canPreview else { feedback = L("End quiet mode before previewing."); return }
-        isPreview = true; reminderKinds = [.eyes]; showReminder?()
+        isPreview = true; reminderKinds = [nextKind]; showReminder?()
         if config.reminderStyle != .notification { play(config.reminderTone) }
     }
     func togglePause() {

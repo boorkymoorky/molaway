@@ -75,12 +75,14 @@ struct StatisticsView: View {
                     }.padding(16).background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 16))
                     DisclosureGroup(L("Break and video details")) {
                         VStack(spacing: 10) {
-                            detail("Eye breaks completed", String(total.eyes))
-                            detail("Movement breaks completed", String(total.movement))
+                            detail("Short breaks completed", String(total.shortBreaks))
+                            detail("Long breaks completed", String(total.longBreaks))
+                            detail("Legacy eye breaks completed", String(total.eyes))
+                            detail("Legacy movement breaks completed", String(total.movement))
                             detail("Natural breaks included", String(total.natural))
                             detail("Detected video · estimated", duration(total.video))
                             detail("Manual watching · no video signal", duration(total.watching))
-                            Text(L("One break may meet both targets, but counts once in the total. Natural breaks use the qualifying duration, not all time away. Video and watching are parts of active time; playback cannot prove you are at your desk.")).font(.caption).foregroundStyle(.secondary)
+                            Text(L("Legacy eye and movement counts keep their original meaning. New short and long counts start with this schedule. Natural breaks count once. Video and watching are parts of active time; playback cannot prove you are at your desk.")).font(.caption).foregroundStyle(.secondary)
                         }.padding(.top, 12)
                     }
                     Text(L("Daily totals update about every 15 seconds. Unconfirmed idle time is not saved; the last minute may be lost after a crash. These are estimates, not health measurements.")).font(.caption).foregroundStyle(.secondary)
