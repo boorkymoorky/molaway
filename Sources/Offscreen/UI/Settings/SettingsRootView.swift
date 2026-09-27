@@ -77,6 +77,12 @@ struct SettingsRootView: View {
                 } else { note("Only short breaks are scheduled. Skips and snoozes do not advance the count.") }
                 note("Changes to rest duration apply to your next break.")
             }
+            Section(L("Skipping breaks")) {
+                Picker(L("Skip mode"), selection: model.settings.binding(\.skipMode)) {
+                    ForEach(DifficultyMode.allCases, id: \.self) { mode in Text(mode.label).tag(mode) }
+                }
+                note("Casual: skip any time. Balanced: skip after a visible 5-second countdown. Hardcore: no skip control; you can still close an alert or quit Molaway. Closing and snoozing never complete a break.")
+            }
             if model.config.migrationNoticePending {
                 Section(L("Your break schedule changed")) {
                     Text(L("Your former eye interval became the work interval; eye rest became the short break; movement rest became the long break. The independent movement interval has no exact match. Review the new schedule below; old eye and movement statistics retain their original meaning."))

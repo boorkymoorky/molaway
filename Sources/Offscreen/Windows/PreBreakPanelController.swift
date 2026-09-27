@@ -71,7 +71,7 @@ final class PreBreakPanelController {
             panel.isOpaque = false; panel.backgroundColor = .clear; panel.hasShadow = !full
             panel.isReleasedWhenClosed = false; panel.acceptsKeys = true
             panel.onEscape = { [weak model] in
-                if model?.activeRest != nil { model?.cancelRest() } else { model?.dismissReminder() }
+                model?.dismissReminder()
             }
             panel.onInteraction = { [weak self] in self?.scheduleDismissal() }
             let id = ObjectIdentifier(panel)

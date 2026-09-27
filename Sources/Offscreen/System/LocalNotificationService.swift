@@ -22,7 +22,11 @@ import UserNotifications
     func configureActions() {
         let rest = UNNotificationAction(identifier: "rest", title: L("Take a break"))
         let later = UNNotificationAction(identifier: "later", title: L("Snooze 5 min"))
-        center.setNotificationCategories([UNNotificationCategory(identifier: "mola.break", actions: [rest, later], intentIdentifiers: [])])
+        let skip = UNNotificationAction(identifier: "skip", title: L("Skip break"))
+        center.setNotificationCategories([
+            UNNotificationCategory(identifier: "mola.break", actions: [rest, later], intentIdentifiers: []),
+            UNNotificationCategory(identifier: "mola.break.skip", actions: [rest, later, skip], intentIdentifiers: [])
+        ])
     }
     func refresh() {
         Task { [weak self] in
@@ -53,8 +57,11 @@ import UserNotifications
         let content = UNMutableNotificationContent()
         content.title = preview ? L("Alert preview") : kind.title
         content.body = model.reminderMessage(kind)
+        if !preview, let seconds = model.skipCountdown, seconds > 0 {
+            content.body += " " + String(format: L("Skip available in %d seconds"), seconds) + "."
+        }
         content.userInfo = ["token": token]
-        content.categoryIdentifier = preview ? "" : "mola.break"
+        content.categoryIdentifier = preview ? "" : model.canSkipBreak ? "mola.break.skip" : "mola.break"
         content.interruptionLevel = .active
         if model.config.reminderTone != .none {
             content.sound = model.config.reminderTone.generated
@@ -123,10 +130,13 @@ import UserNotifications
         await MainActor.run { [weak self] in
             guard let self, let token, token == self.token, let model else { return }
             let wasPreview = preview
+            model.updateSkipCountdown(at: model.time)
+            if action == "skip" && !model.canSkipBreak { return }
             clear()
             guard !wasPreview, model.canPresent else { return }
             if action == "rest" { model.beginRest(kind) }
             else if action == "later" { model.snoozeReminder() }
+            else if action == "skip" { model.skipBreak() }
             else if action == UNNotificationDefaultActionIdentifier { model.openDashboardAction?() }
         }
     }

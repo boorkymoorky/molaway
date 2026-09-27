@@ -50,6 +50,8 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     private var previousTime: Double?
     private var nextSensorRead = 0.0
     private var restStarted: Double = 0
+    private var reminderShownAt: Double?
+    private(set) var skipCountdown: Int?
     private var accounting = ActivityAccounting()
     private var policy = ReminderPolicy()
     private var credited = false
@@ -80,6 +82,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         settings.addListener { [weak self] value in
             guard let self else { return }
             if activeRest == nil { breakEngine.timing = value.timing }
+            updateSkipCountdown(at: time)
             breakEngine.restoreCadence(value.cycleShortCount)
             Localization.shared.language = value.language
             applyAppearance()
@@ -108,6 +111,24 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
                             resting: resting, deferred: !resting && timer.timeUntilBreak <= 0 && timer.timeUntilReminder > 0)
     }
     var nextReadout: TimerReadout { readout(for: activeRest ?? nextKind) }
+    var canSkipBreak: Bool {
+        !isPreview && skipCountdown == 0 &&
+        (activeRest != nil || (!reminderKinds.isEmpty && breakEngine.timeUntilBreak <= 0))
+    }
+    func updateSkipCountdown(at now: Double) {
+        guard !isPreview, activeRest != nil || !reminderKinds.isEmpty else { skipCountdown = nil; return }
+        switch config.skipMode {
+        case .casual: skipCountdown = 0
+        case .hardcore: skipCountdown = nil
+        case .balanced:
+            let start = activeRest == nil ? reminderShownAt : restStarted
+            skipCountdown = start.map { max(0, Int(ceil(Double(breakEngine.behavior.skipEnableDelaySeconds) - max(0, now - $0)))) }
+        }
+    }
+    func markReminderShown(at now: Double) {
+        reminderShownAt = now
+        updateSkipCountdown(at: now)
+    }
     var ringProgress: RingProgress {
         RingProgress(workAccrued: breakEngine.workAccrued, workSeconds: breakEngine.timing.workSeconds,
                      restRemaining: activeRest == nil ? nil : breakEngine.breakRemaining,
@@ -252,6 +273,12 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         let delta = rawDelta >= 0 && rawDelta <= 5 ? rawDelta : 0
         previousTime = now
         refreshSchedule()
+        let oldSkipCountdown = skipCountdown
+        updateSkipCountdown(at: now)
+        if oldSkipCountdown != 0 && skipCountdown == 0 && config.skipMode == .balanced &&
+           config.reminderStyle == .notification && activeRest == nil && !reminderKinds.isEmpty && canPresent {
+            showReminder?()
+        }
         if let until = watchingUntil, Date() >= until { watchingUntil = nil }
         if let until = presentationUntil, Date() >= until { presentationUntil = nil }
         idleSeconds = idle
@@ -297,6 +324,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
             reminderKinds = ready
             breakEngine.deferReminder()
             isPreview = false
+            markReminderShown(at: now)
             showReminder?()
             if config.reminderStyle != .notification { play(config.reminderTone) }
         }
@@ -333,7 +361,9 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         statistics.beginManual()
         let selected = kind == .long ? MolaKind.long : nextKind
         activeRest = selected; restStarted = now ?? time; restReturn.reset()
+        reminderShownAt = nil
         accounting.clearProvisional(); reminderKinds = [selected]; isPreview = false
+        updateSkipCountdown(at: restStarted)
         policy.clear(selected)
         if selected == .long { breakEngine.startLongBreakNow() } else { breakEngine.startBreakNow() }
         activity = .resting
@@ -346,8 +376,9 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         else { breakEngine.cancelBreakKeepingProgress() }
         policy.clear(kind); pendingDue.remove(kind)
         activeRest = nil
+        skipCountdown = nil
         breakEngine.timing = config.timing
-        dismissReminder(); accounting.clearProvisional(); activity = .active; nextSensorRead = 0
+        dismissReminder(); accounting.clearProvisional(); activity = pause.isPaused ? .paused : .active; nextSensorRead = 0
         play(config.resumeTone, transition: true); updateUI?()
     }
     private func finishRest(duration: Double) {
@@ -356,10 +387,26 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         settings.update { $0.cycleShortCount = breakEngine.shortBreaksSinceLong }; settings.flush()
         policy.clear(kind); pendingDue.remove(kind)
         activeRest = nil; breakEngine.timing = config.timing
+        skipCountdown = nil
         dismissReminder(); accounting.clearProvisional(); activity = .active
         nextSensorRead = 0; play(config.endTone)
     }
-    func dismissReminder() { reminderKinds.removeAll(); isPreview = false; hideReminder?() }
+    func dismissReminder() {
+        reminderKinds.removeAll(); reminderShownAt = nil; skipCountdown = nil
+        isPreview = false; updateSkipCountdown(at: time); hideReminder?()
+    }
+    @discardableResult func skipBreak(now: Double? = nil) -> Bool {
+        updateSkipCountdown(at: now ?? time)
+        guard canSkipBreak else { return false }
+        if activeRest != nil { statistics.cancelManual() }
+        let kind = activeRest ?? nextKind
+        breakEngine.skipBreak()
+        policy.clear(kind); pendingDue.remove(kind)
+        activeRest = nil; breakEngine.timing = config.timing
+        dismissReminder(); accounting.clearProvisional(); activity = pause.isPaused ? .paused : .active; nextSensorRead = 0
+        play(config.resumeTone, transition: true); updateUI?()
+        return true
+    }
     func snoozeReminder() {
         if !isPreview && !reminderKinds.isEmpty {
             // Snooze is a quiet period for all break alerts. Preserve any later

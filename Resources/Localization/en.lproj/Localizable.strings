@@ -322,3 +322,12 @@
 "Overnight shifts belong to the day they start. Equal start and end times mean 24 hours." = "Overnight shifts belong to the day they start. Equal start and end times mean 24 hours.";
 "Uses your current local time zone. Outside these hours, work time stops accumulating; manual breaks stay available." = "Uses your current local time zone. Outside these hours, work time stops accumulating; manual breaks stay available.";
 "Until tomorrow uses the next selected work start when Office Hours is on, or the next local 09:00 when off. Other pause reasons stay active." = "Until tomorrow uses the next selected work start when Office Hours is on, or the next local 09:00 when off. Other pause reasons stay active.";
+
+"Skipping breaks" = "Skipping breaks";
+"Skip mode" = "Skip mode";
+"Casual" = "Casual";
+"Hardcore" = "Hardcore";
+"Skip break" = "Skip break";
+"Skip in %d s" = "Skip in %d s";
+"Skip available in %d seconds" = "Skip available in %d seconds";
+"Casual: skip any time. Balanced: skip after a visible 5-second countdown. Hardcore: no skip control; you can still close an alert or quit Molaway. Closing and snoozing never complete a break." = "Casual: skip any time. Balanced: skip after a visible 5-second countdown. Hardcore: no skip control; you can still close an alert or quit Molaway. Closing and snoozing never complete a break.";

@@ -47,16 +47,6 @@ final class BreakEngine {
     /// Set by the planned-break scheduler to make the next due break a named one.
     var pendingPlannedBreak: BreakKind?
 
-    /// Whether the overlay's skip control is currently usable (difficulty-gated).
-    var canSkipOverlay: Bool {
-        guard phase == .inBreak else { return true }
-        switch behavior.difficulty {
-        case .casual: return true
-        case .balanced: return breakElapsed >= Double(behavior.skipEnableDelaySeconds)
-        case .hardcore: return false
-        }
-    }
-
     var canEndEarlyNow: Bool {
         guard let minimum = behavior.endEarlyMinimumSeconds, phase == .inBreak else { return false }
         return breakElapsed >= Double(minimum)
@@ -277,6 +267,11 @@ final class BreakEngine {
             let kind = nextBreakKind
             resetCycle(afterCompleted: nil)
             setPhase(.working)
+            emit(.breakEnded(kind: kind, reason: .skipped, elapsedSeconds: 0))
+        case .working where timeUntilBreak <= 0:
+            // Gentle reminders stay in .working after the break is due.
+            let kind = nextBreakKind
+            resetCycle(afterCompleted: nil)
             emit(.breakEnded(kind: kind, reason: .skipped, elapsedSeconds: 0))
         default:
             break

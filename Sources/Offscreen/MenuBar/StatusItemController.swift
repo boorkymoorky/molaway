@@ -122,7 +122,7 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         panel.orderFrontRegardless(); panel.makeKey()
     }
     private var layoutKey: String {
-        "\(model.statusText)|\(model.isWatching)|\(model.presentationUntil != nil)|\(model.activeRest?.rawValue ?? "")|\(model.config.shortBreaksBeforeLong)|\(model.hasAlertProblem)|\(Localization.shared.code)|\(model.visibleOverdue.rawValue)|\(model.officeHoursText)|\(model.nextOfficeStartText ?? "")"
+        "\(model.statusText)|\(model.isWatching)|\(model.presentationUntil != nil)|\(model.activeRest?.rawValue ?? "")|\(model.config.shortBreaksBeforeLong)|\(model.hasAlertProblem)|\(Localization.shared.code)|\(model.visibleOverdue.rawValue)|\(model.officeHoursText)|\(model.nextOfficeStartText ?? "")|\(model.config.skipMode.rawValue)|\(model.skipCountdown.map(String.init) ?? "")|\(model.reminderKinds.count)"
     }
     private func refreshDashboardLayout(force: Bool = false) {
         guard let panel = dashboard, let screen = panel.screen, (force || layoutKey != dashboardLayoutKey) else { return }
