@@ -136,6 +136,11 @@
 "Settings imported. Permission features remain off." = "Ayarlar alındı. İzinle çalışan özellikler kapalı tutuldu.";
 "Show on" = "Gösterilecek ekran";
 "Show remaining time in menu bar" = "Menü çubuğunda kalan süreyi göster";
+"Show countdown beside pointer" = "İmlecin yanında geri sayımı göster";
+"Shows the last 10 seconds before a break. The badge never accepts clicks and follows Reduce Motion." = "Moladan önceki son 10 saniyeyi gösterir. İşaret tıklamaları engellemez ve Hareketi Azalt ayarına uyar.";
+"Break countdown" = "Mola geri sayımı";
+"Break in %d seconds" = "%d saniye sonra mola";
+"%d s" = "%d sn";
 "Show timers" = "Sayaçları göster";
 "Small breaks, a better day." = "Küçük aralar, daha iyi bir gün.";
 "Small card" = "Küçük kart";

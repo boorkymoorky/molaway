@@ -27,4 +27,15 @@ enum DisplayLayout {
         let x = centered ? visible.midX - width / 2 : visible.maxX - width - 16
         return CGRect(x: x, y: visible.maxY - height - 16, width: width, height: height)
     }
+    static func cursorBadgeFrame(visible: CGRect, cursor: CGPoint, size: CGSize) -> CGRect {
+        let area = visible.insetBy(dx: 8, dy: 8)
+        let width = min(size.width, max(1, area.width))
+        let height = min(size.height, max(1, area.height))
+        let right = cursor.x + 18
+        let x = right + width <= area.maxX ? right : cursor.x - width - 18
+        let above = cursor.y + 18
+        let y = above + height <= area.maxY ? above : cursor.y - height - 18
+        return CGRect(x: min(max(x, area.minX), area.maxX - width),
+                      y: min(max(y, area.minY), area.maxY - height), width: width, height: height)
+    }
 }

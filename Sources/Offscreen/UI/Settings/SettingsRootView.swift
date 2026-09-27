@@ -174,6 +174,8 @@ struct SettingsRootView: View {
             }
             Section(L("Menu bar & startup")) {
                 Toggle(L("Show remaining time in menu bar"), isOn: model.settings.binding(\.showCountdownInMenuBar))
+                Toggle(L("Show countdown beside pointer"), isOn: model.settings.binding(\.showCursorCountdown))
+                note("Shows the last 10 seconds before a break. The badge never accepts clicks and follows Reduce Motion.")
                 Toggle(L("Launch at login"), isOn: Binding(get: { model.loginEnabled }, set: { model.setLogin($0) }))
                 note("Permission: macOS login-item approval may be required. No administrator access.")
                 if let error = model.loginError { Text(error).font(.caption).foregroundStyle(.red) }

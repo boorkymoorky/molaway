@@ -11,7 +11,7 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 | M3 | A shared pause model with 30-minute, one-hour, tomorrow, and manual-resume options. | Implementation in review; not shipped |
 | M4 | Office Hours, including overnight shifts and tomorrow's next working start. | Implementation in review; not shipped |
 | M5 | Explicit Casual, Balanced, and Hardcore skip behavior across all reminder surfaces. | Implementation in review; not shipped |
-| M6 | Optional cursor countdown before a break. | Planned |
+| M6 | Optional cursor countdown before a break. | Implementation in review; not shipped |
 | M7 | Unify existing activity signals under Smart Pause and add bounded typing deferral. | Planned |
 | M8 | Evaluate microphone, sharing, fullscreen, and selected focus-app signals within public APIs and current permissions. | Planned |
 | M9 | An explainable Screen Score based on actual break opportunities and bounded optional daily summaries. | Planned |
@@ -35,7 +35,7 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 - M3 pause options preserve distinct manual, Office Hours, sleep/lock, and automatic reasons. In M4, “until tomorrow” uses the next selected work start when Office Hours is enabled; otherwise it retains the next local 09:00. Reopening, schedule edits, and local time-zone changes re-evaluate the deadline without clearing other pause reasons.
 - M4 (implemented for review, not shipped): Office Hours defaults off and supports selected weekdays with one shared local start/end time. Overnight shifts belong to their starting day; equal times mean a 24-hour shift. With no days selected, tracking stays paused and no automatic resume is scheduled. Starts are inclusive and ends exclusive. Missing daylight-saving times move to the next valid time; repeated starts use the first occurrence and repeated ends the last. Work progress and snooze time freeze outside the schedule; off-hours absence does not itself complete a break. Manual rests continue across boundaries, with the normal completion/cancellation and short/long cadence rules.
 - M5 (implemented for review, not shipped): Casual allows immediate skip; Balanced unlocks after a visible five-second countdown; Hardcore offers no skip control. The gate applies to due reminders and active rests in panels, the menu dashboard, and notification actions. Closing a surface, snoozing, and returning early do not credit a completed break. Quitting remains available, including from the full-screen alert. A preview does not change the real break state.
-- M6's optional cursor countdown will be click-through and active only while shown; display boundaries, pause, and reduced motion need verification.
+- M6 (implemented for review, not shipped): An off-by-default pointer badge shows the final ten seconds before a due break. It never takes focus or pointer events, stays within the pointer display's visible frame, and freezes its position with Reduce Motion. Pause, Office Hours, sleep/lock, active rests, and previews hide it. It does not change break timing or request permissions.
 - M7–M8 will distinguish video activity from suppressing breaks. Camera and microphone features may read use state only, not content. Selected focus apps would be local preferences only, never usage history. Signals that cannot be trusted under current sandbox permissions will be documented or deferred.
 - M9's proposed score uses completed real break opportunities rather than a fixed 30-minute expectation. Snoozes should not cause repeated penalties, and extra manual breaks should not inflate it. Insufficient data and days before the new schedule will not receive invented scores. Optional storage stays in bounded daily summaries, with existing retention and deletion controls.
 - M10 installation instructions will use a verified Molaway asset and checksum. No unverified Homebrew command will be published. The app itself will remain offline and manually updated.
@@ -52,4 +52,9 @@ The project remains local-first, account-free, telemetry-free, and permission-mi
 
 - Automated regression coverage checks all three modes, the five-second gate, settings persistence, due and active break skipping, closing, snoozing, preview isolation, completed-short cadence, independent manual pause, and notification suppression at an Office Hours boundary.
 - Local Swift tests, source/publication guards, release build, ad hoc signature, and isolated installation checks passed. These checks do not establish physical notification delivery or accessibility behavior.
-- Physical checks remain pending for notification actions and timing, VoiceOver and keyboard traversal, Escape and close behavior on each panel style, and multi-display/Space placement. M6 remains planned and has not started.
+- Physical checks remain pending for notification actions and timing, VoiceOver and keyboard traversal, Escape and close behavior on each panel style, and multi-display/Space placement.
+
+## M6 verification and handoff
+
+- Local verification passed: 139 Swift tests in 14 suites, including opt-in persistence, the final-ten-second boundary, preview isolation, manual and automatic pause, quiet mode, Office Hours, sleep/lock, active rest, and negative-origin display placement. Source and publication guards, release build, ad hoc signature verification, and isolated installation checks also passed. These checks are narrower than physical platform verification.
+- Physical checks remain pending for real pointer click-through and interaction, multiple displays and Spaces, VoiceOver reading without repeated announcements, Reduce Motion, and sleep/lock transitions. M6 remains unshipped until its PR chain is merged and verified. M7 has not started.
