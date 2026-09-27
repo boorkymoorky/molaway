@@ -9,6 +9,8 @@ try {
     $output = Join-Path $root 'build.noindex/windows-x64'
     dotnet publish Molaway.Windows -c Release -r win-x64 --self-contained true -o $output
     if ($LASTEXITCODE -ne 0) { throw 'Windows publish failed.' }
+    python scripts/collect-runtime-notices.py $output
+    if ($LASTEXITCODE -ne 0) { throw 'Runtime notice collection failed.' }
     $app = Join-Path $output 'Molaway.exe'
     $process = Start-Process $app -ArgumentList '--smoke-test' -PassThru
     if (-not $process.WaitForExit(30000)) { $process.Kill(); throw 'WPF smoke test timed out.' }

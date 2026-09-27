@@ -46,3 +46,5 @@ Automated scheduler tests and cross-compilation are not a substitute for interac
 ## Credits
 
 Molaway is a personal, non-commercial project by Burak Yelkenci, developed with ChatGPT/Codex assistance. The Windows scheduler follows the Molaway behavior built on the MIT-licensed Offscreen project by Dayo Akinkuowo. The original license and attribution remain in the repository and portable folder. See [upstream attribution](../UPSTREAM.md).
+
+The portable folder contains Microsoft runtime components under their own notices in `licenses/`; the project MIT license does not replace those terms. The Windows SDK projection uses the [Windows SDK terms](https://aka.ms/WinSDKLicenseURL); WinRT.Runtime uses the [C#/WinRT MIT license](https://github.com/microsoft/CsWinRT/blob/master/LICENSE). Public binary distribution is deferred until the Windows validation and distribution review are complete. CI uploads synthetic images only, not an installer.

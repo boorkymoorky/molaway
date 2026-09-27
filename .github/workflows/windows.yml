@@ -27,11 +27,11 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build, scheduler regressions and WPF smoke test
         run: ./Windows/scripts/build.ps1
-      - name: Keep preview and synthetic UI renders
+      - name: Keep synthetic UI renders
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: Molaway-Windows-x64-development-preview
-          path: build.noindex/windows-x64/
+          name: Molaway-Windows-synthetic-renders
+          path: build.noindex/windows-x64/smoke/*.png
           if-no-files-found: error
           retention-days: 7
           include-hidden-files: false

@@ -9,6 +9,6 @@
 
 ## Windows gate
 
-The Windows CI workflow runs the same core checks, publishes a self-contained preview and launches a synthetic WPF smoke test. It saves only the preview files and synthetic app renders for seven days. Interactive Windows validation remains required even if CI passes. See PLAN.md.
+The Windows CI workflow runs the same core checks, publishes a self-contained preview and launches a synthetic WPF smoke test. It retains only synthetic app renders for seven days; no Windows binary is published. Interactive Windows validation remains required even if CI passes. See PLAN.md.
 
 No personal settings, machine inventory, local paths or raw development logs belong in this report or the uploaded artifact.

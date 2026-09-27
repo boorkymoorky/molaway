@@ -67,7 +67,7 @@ def check(root, tracked=False):
                 errors.append(f'Review private information: {rel}')
                 break
     if tracked:
-        expected = {str(p.relative_to(root)) for p in publication_files(root) if p.is_file()}
+        expected = {p.relative_to(root).as_posix() for p in publication_files(root) if p.is_file()}
         result = subprocess.run(['git', '-C', str(root), 'ls-files', '-z'], check=True, capture_output=True)
         actual = set(result.stdout.decode().rstrip('\0').split('\0'))
         for extra in sorted(actual - expected):

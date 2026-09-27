@@ -30,7 +30,7 @@ A real interactive Windows session is needed for:
 
 ## Later parity work
 
-Only after the preview is validated: camera/meeting suppression if reliable, startup registration, richer monthly/comparison charts and summary notifications, state-specific sounds, installer/signing and an explicit update strategy. Never silently turn on network access or broaden permissions to gain parity.
+Only after the preview is validated: camera/meeting suppression if reliable, startup registration, richer monthly/comparison charts and summary notifications, state-specific sounds, installer/signing, Microsoft runtime/SDK binary distribution review and an explicit update strategy. Never silently turn on network access or broaden permissions to gain parity.
 
 ## References
 
