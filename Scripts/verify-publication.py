@@ -5,7 +5,7 @@ import re
 import sys
 import subprocess
 
-ROOT_FILES = {'.gitignore', 'Package.swift', 'LICENSE', 'README.md', 'CHANGELOG.md',
+ROOT_FILES = {'.gitignore', 'AGENTS.md', 'Package.swift', 'LICENSE', 'README.md', 'CHANGELOG.md',
               'CONTRIBUTING.md', 'SECURITY.md', 'UPSTREAM.md', 'THIRD_PARTY_NOTICES.md', 'VERIFICATION.md'}
 DIRECTORIES = {'Sources', 'Tests', 'docs', '.github'}
 SCRIPT_FILES = {'build-app.sh', 'install-local.sh', 'verify-installation.py', 'make-icon.sh', 'make-icon.swift', 'make-sounds.py', 'verify-security.py', 'verify-publication.py'}
