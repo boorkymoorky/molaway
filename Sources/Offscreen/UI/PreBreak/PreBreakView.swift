@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct PreBreakView: View {
@@ -23,25 +24,37 @@ struct PreBreakView: View {
                     }
                     Spacer(minLength: 0)
                     Button { model.dismissReminder() } label: { Image(systemName: "xmark").frame(width: 24, height: 24) }
-                        .buttonStyle(.plain).accessibilityLabel(L("Close alert"))
+                        .buttonStyle(.plain).accessibilityLabel(L("Close alert")).keyboardShortcut(.cancelAction)
                 }
                 if model.isPreview {
                     HStack { Text(L("Your timers are unchanged.")).font(.caption).foregroundStyle(.secondary); Spacer(); Button(L("Close preview")) { model.dismissReminder() }.keyboardShortcut(.cancelAction) }
                 } else if model.activeRest != nil {
-                    HStack {
+                    HStack(alignment: .center) {
                         Text(Format.clock(model.engine(kind).breakRemaining)).font(.system(size: full ? 64 : 30, weight: .medium, design: .rounded)).monospacedDigit()
                         Spacer()
-                        Button(L("Continue")) { model.cancelRest() }.buttonStyle(.bordered)
+                        skipControl
                     }
                 } else {
-                    HStack {
-                        Button(L("Take a break")) { model.beginRest(kind) }.buttonStyle(.borderedProminent).tint(model.tint)
-                        Button(L("Snooze 5 min")) { model.snoozeReminder() }.buttonStyle(.bordered)
-                        Spacer()
-                        Text("\(BreakScheduleMath.duration(of: kind == .long ? .long : .short, timing: model.breakEngine.timing)) " + L("sec")).font(.caption).foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Button(L("Take a break")) { model.beginRest(kind) }.buttonStyle(.borderedProminent).tint(model.tint)
+                            Button(L("Snooze 5 min")) { model.snoozeReminder() }.buttonStyle(.bordered)
+                            Spacer()
+                        }
+                        HStack {
+                            skipControl
+                            Spacer()
+                            Text("\(BreakScheduleMath.duration(of: kind == .long ? .long : .short, timing: model.breakEngine.timing)) " + L("sec")).font(.caption).foregroundStyle(.secondary)
+                        }
                     }
                 }
-                if full { Text(L("Esc to close · your timers keep running")).font(.caption).foregroundStyle(.secondary) }
+                if full {
+                    HStack {
+                        Text(L("Esc to close · your timers keep running")).font(.caption).foregroundStyle(.secondary)
+                        Spacer()
+                        Button(L("Quit Molaway")) { NSApp.terminate(nil) }.buttonStyle(.plain).font(.caption)
+                    }
+                }
             }
             .padding(full ? 36 : 22)
             }.scrollBounceBehavior(.basedOnSize)
@@ -52,5 +65,15 @@ struct PreBreakView: View {
             .overlay(RoundedRectangle(cornerRadius: 22).stroke(model.tint.opacity(0.15)))
             .onHover(perform: onHover)
         }.frame(maxWidth: full ? .infinity : nil, maxHeight: full ? .infinity : nil)
+    }
+    @ViewBuilder private var skipControl: some View {
+        if model.config.skipMode != .hardcore {
+            Button(model.skipCountdown.map { $0 > 0 ? String(format: L("Skip in %d s"), $0) : L("Skip break") } ?? L("Skip break")) {
+                model.skipBreak()
+            }
+            .buttonStyle(.bordered)
+            .disabled(!model.canSkipBreak)
+            .accessibilityLabel(model.skipCountdown.map { $0 > 0 ? String(format: L("Skip available in %d seconds"), $0) : L("Skip break") } ?? L("Skip break"))
+        }
     }
 }

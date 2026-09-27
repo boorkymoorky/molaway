@@ -322,3 +322,12 @@
 "Overnight shifts belong to the day they start. Equal start and end times mean 24 hours." = "Gece yarısını aşan vardiya başladığı güne aittir. Başlangıç ve bitiş aynıysa süre 24 saattir.";
 "Uses your current local time zone. Outside these hours, work time stops accumulating; manual breaks stay available." = "Geçerli yerel saat diliminizi kullanır. Bu saatler dışında çalışma süresi birikmez; elle mola alınabilir.";
 "Until tomorrow uses the next selected work start when Office Hours is on, or the next local 09:00 when off. Other pause reasons stay active." = "Yarına kadar seçeneği, çalışma saatleri açıkken sonraki seçilmiş başlangıcı, kapalıyken sonraki yerel 09.00’u kullanır. Diğer duraklatma nedenleri sürer.";
+
+"Skipping breaks" = "Molaları atlama";
+"Skip mode" = "Atlama modu";
+"Casual" = "Rahat";
+"Hardcore" = "Katı";
+"Skip break" = "Molayı atla";
+"Skip in %d s" = "%d sn sonra atla";
+"Skip available in %d seconds" = "Atlama %d saniye sonra kullanılabilir";
+"Casual: skip any time. Balanced: skip after a visible 5-second countdown. Hardcore: no skip control; you can still close an alert or quit Molaway. Closing and snoozing never complete a break." = "Rahat: istediğin zaman atla. Dengeli: görünür 5 saniyelik geri sayımdan sonra atla. Katı: atlama düğmesi yok; uyarıyı kapatabilir veya Molaway’den çıkabilirsin. Kapatma ve erteleme molayı tamamlamaz.";

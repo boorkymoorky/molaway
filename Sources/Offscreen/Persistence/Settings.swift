@@ -37,7 +37,6 @@ struct TimingConfig: Codable, Equatable, Sendable {
 
 /// Break-experience behavior separate from timing.
 struct BehaviorConfig: Codable, Equatable, Sendable {
-    var difficulty: DifficultyMode = .balanced
     var skipEnableDelaySeconds: Int = 5 // Balanced mode: skip unlocks after this
     var endEarlyMinimumSeconds: Int? // nil = no "End Break" button
     var cursorPillSeconds: Int = 10 // countdown pill in the last N seconds
@@ -52,9 +51,9 @@ enum DifficultyMode: String, Codable, CaseIterable, Sendable {
 
     var label: String {
         switch self {
-        case .casual: "Casual"
-        case .balanced: "Balanced"
-        case .hardcore: "Hardcore"
+        case .casual: L("Casual")
+        case .balanced: L("Balanced")
+        case .hardcore: L("Hardcore")
         }
     }
 }
@@ -84,6 +83,7 @@ enum SoundChoice: String, Codable, CaseIterable { case none, soft, rise, fall, b
 }
 
 struct AppSettings: Codable, Equatable, Sendable {
+    var skipMode: DifficultyMode = .balanced
     var officeHours = OfficeHours()
     var schemaVersion: Int = 3
     var workMinutes: Int = 20
@@ -127,7 +127,7 @@ struct AppSettings: Codable, Equatable, Sendable {
     var redMinutes = 20
     init() {}
     enum CodingKeys: String, CodingKey, CaseIterable {
-        case officeHours, schemaVersion, workMinutes, shortRestSeconds, longRestMinutes, shortBreaksBeforeLong, cycleShortCount, migrationNoticePending, previousCustomTiming, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
+        case skipMode, officeHours, schemaVersion, workMinutes, shortRestSeconds, longRestMinutes, shortBreaksBeforeLong, cycleShortCount, migrationNoticePending, previousCustomTiming, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
     }
     private enum LegacyKeys: String, CodingKey { case chromeVideoEnabled, reminderSound }
     init(from decoder: Decoder) throws {
@@ -135,6 +135,7 @@ struct AppSettings: Codable, Equatable, Sendable {
         let legacy = try decoder.container(keyedBy: LegacyKeys.self)
         let version = try c.decodeIfPresent(Int.self, forKey: .schemaVersion) ?? 1
         guard (1...3).contains(version) else { throw SettingsError.version }
+        skipMode = try c.decodeIfPresent(DifficultyMode.self, forKey: .skipMode) ?? .balanced
         officeHours = try c.decodeIfPresent(OfficeHours.self, forKey: .officeHours) ?? OfficeHours()
         eyeMinutes = try c.decodeIfPresent(Int.self, forKey: .eyeMinutes) ?? 20
         movementMinutes = try c.decodeIfPresent(Int.self, forKey: .movementMinutes) ?? 50

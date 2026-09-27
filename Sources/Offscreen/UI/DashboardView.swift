@@ -59,8 +59,7 @@ struct DashboardView: View {
             }
 
             if model.activeRest != nil {
-                Button(L("End break and continue")) { model.cancelRest() }
-                    .buttonStyle(.borderedProminent).frame(maxWidth: .infinity)
+                skipControl
             } else {
                 HStack {
                     Button { model.beginRest(model.nextKind) } label: {
@@ -75,6 +74,7 @@ struct DashboardView: View {
                         Label(L("More actions"), systemImage: "ellipsis.circle")
                     }.menuStyle(.borderlessButton)
                 }
+                if !model.reminderKinds.isEmpty && !model.isPreview { skipControl }
             }
 
             if model.isWatching || model.presentationUntil != nil {
@@ -107,6 +107,18 @@ struct DashboardView: View {
         }
         .padding(20).frame(width: 342)
         .background(Color(nsColor: .windowBackgroundColor))
+    }
+
+    @ViewBuilder private var skipControl: some View {
+        if model.config.skipMode != .hardcore {
+            Button(model.skipCountdown.map { $0 > 0 ? String(format: L("Skip in %d s"), $0) : L("Skip break") } ?? L("Skip break")) {
+                model.skipBreak()
+            }
+            .buttonStyle(.bordered)
+            .disabled(!model.canSkipBreak)
+            .frame(maxWidth: .infinity)
+            .accessibilityLabel(model.skipCountdown.map { $0 > 0 ? String(format: L("Skip available in %d seconds"), $0) : L("Skip break") } ?? L("Skip break"))
+        }
     }
 
     private var statusSymbol: String {

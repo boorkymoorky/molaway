@@ -27,6 +27,8 @@ The public macOS release line is **2.2.x**; the latest documented version in thi
 
 Distribution is Apple Silicon, ad hoc signed, and unnotarized. Intel and all player/display combinations are not claimed as verified. Release and security limitations are documented in `README.md`, `SECURITY.md`, and `VERIFICATION.md`.
 
+M1–M5 are stacked macOS review work, not part of the published 2.2.x release line. M5 adds local skip-mode preferences; M6 remains planned and unstarted. Check the PR chain before continuing.
+
 ### Windows
 
 A separate native WPF/.NET Windows 11 preview is being developed under `Windows/` on feature work separate from the macOS release. Mac-side scheduler tests and cross-builds are useful, but a real Windows environment is required before calling it ready for daily use. The physical handoff checklist is authoritative in `Windows/PLAN.md`.

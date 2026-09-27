@@ -10,7 +10,7 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 | M2 | Reconnect the two rings to work/rest and short-break cadence; simplify the menu panel and settings controls. | Implementation in review; not shipped |
 | M3 | A shared pause model with 30-minute, one-hour, tomorrow, and manual-resume options. | Implementation in review; not shipped |
 | M4 | Office Hours, including overnight shifts and tomorrow's next working start. | Implementation in review; not shipped |
-| M5 | Explicit Casual, Balanced, and Hardcore skip behavior across all reminder surfaces. | Planned |
+| M5 | Explicit Casual, Balanced, and Hardcore skip behavior across all reminder surfaces. | Implementation in review; not shipped |
 | M6 | Optional cursor countdown before a break. | Planned |
 | M7 | Unify existing activity signals under Smart Pause and add bounded typing deferral. | Planned |
 | M8 | Evaluate microphone, sharing, fullscreen, and selected focus-app signals within public APIs and current permissions. | Planned |
@@ -34,7 +34,7 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 - M2 will make the outer ring show work or rest progress and the inner ring show completed short breaks toward the next long break. The center will show the next break and remaining time. If long breaks are off, the inner ring will not act as a cadence counter.
 - M3 pause options preserve distinct manual, Office Hours, sleep/lock, and automatic reasons. In M4, “until tomorrow” uses the next selected work start when Office Hours is enabled; otherwise it retains the next local 09:00. Reopening, schedule edits, and local time-zone changes re-evaluate the deadline without clearing other pause reasons.
 - M4 (implemented for review, not shipped): Office Hours defaults off and supports selected weekdays with one shared local start/end time. Overnight shifts belong to their starting day; equal times mean a 24-hour shift. With no days selected, tracking stays paused and no automatic resume is scheduled. Starts are inclusive and ends exclusive. Missing daylight-saving times move to the next valid time; repeated starts use the first occurrence and repeated ends the last. Work progress and snooze time freeze outside the schedule; off-hours absence does not itself complete a break. Manual rests continue across boundaries, with the normal completion/cancellation and short/long cadence rules.
-- M5 skip modes are planned as always available, available after a visible delay, and unavailable in normal break controls. Closing a surface must never mark a break complete, and quitting the app remains possible.
+- M5 (implemented for review, not shipped): Casual allows immediate skip; Balanced unlocks after a visible five-second countdown; Hardcore offers no skip control. The gate applies to due reminders and active rests in panels, the menu dashboard, and notification actions. Closing a surface, snoozing, and returning early do not credit a completed break. Quitting remains available, including from the full-screen alert. A preview does not change the real break state.
 - M6's optional cursor countdown will be click-through and active only while shown; display boundaries, pause, and reduced motion need verification.
 - M7–M8 will distinguish video activity from suppressing breaks. Camera and microphone features may read use state only, not content. Selected focus apps would be local preferences only, never usage history. Signals that cannot be trusted under current sandbox permissions will be documented or deferred.
 - M9's proposed score uses completed real break opportunities rather than a fixed 30-minute expectation. Snoozes should not cause repeated penalties, and extra manual breaks should not inflate it. Insufficient data and days before the new schedule will not receive invented scores. Optional storage stays in bounded daily summaries, with existing retention and deletion controls.
@@ -46,4 +46,10 @@ The project remains local-first, account-free, telemetry-free, and permission-mi
 
 - Automated coverage includes weekday/week/month boundaries, overnight and 24-hour shifts, no selected days, DST gaps/repeated hours, local time-zone changes, preference validation/migration, relaunch, overlapping pause reasons, snooze, manual rest, and natural-rest accounting.
 - Limited English/Turkish preview and time-field keyboard smoke checks passed. Physical checks remain pending: full VoiceOver and keyboard traversal of weekday toggles, pause menus, and the menu panel; real sleep/lock/relaunch around a boundary; and monitor/Space placement. Synthetic clock tests do not establish these physical results.
-- M5 is the next separate implementation milestone. It has not started in M4. Inspect the current PR chain and Git state again before starting it.
+- M5 follows M4 in a separate review change; M4 remains unshipped until its PR chain is merged and verified.
+
+## M5 verification and handoff
+
+- Automated regression coverage checks all three modes, the five-second gate, settings persistence, due and active break skipping, closing, snoozing, preview isolation, completed-short cadence, independent manual pause, and notification suppression at an Office Hours boundary.
+- Local Swift tests, source/publication guards, release build, ad hoc signature, and isolated installation checks passed. These checks do not establish physical notification delivery or accessibility behavior.
+- Physical checks remain pending for notification actions and timing, VoiceOver and keyboard traversal, Escape and close behavior on each panel style, and multi-display/Space placement. M6 remains planned and has not started.

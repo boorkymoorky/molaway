@@ -1,5 +1,12 @@
 # Verification
 
+## M5 break-skip development checks — 2026-09-27 (not shipped)
+
+- 135 Swift tests in 13 suites passed locally, including seven M5 regressions for Casual/Balanced/Hardcore, the five-second gate, closing, snoozing, preview isolation, cadence, persistence, manual pause, and an Office Hours notification boundary.
+- The targeted source security guard, publication guard, release build with ad hoc signature verification, and isolated fresh/update/failure installation checks passed. These are scoped checks, not a security audit.
+- M5 adds one local settings field and no new network, permission, dependency, capture, or activity-history capability. A user-requested settings backup can include the skip mode.
+- Physical checks remain pending: real macOS notification action timing, VoiceOver and keyboard traversal of all alert styles and the menu dashboard, Escape/close behavior, and monitor/Space placement. M1–M4 remain in review; this change is not in the released app.
+
 ## M4 Office Hours development checks — 2026-09-27 (not shipped)
 
 - 128 tests in 12 suites passed locally, including 15 Office Hours regressions. These cover calendar boundaries, overnight ownership, DST gaps/repeated hours, travel, settings migration/validation, relaunch, independent pause reasons, frozen work/snooze time, and manual/natural break cadence. The existing M3 lock test now supplies a deterministic idle sample.
