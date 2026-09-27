@@ -14,6 +14,23 @@ import Foundation
             #expect(DurationInput.parse(text, within: 5...120) == nil)
         }
     }
+    @Test func ringsFollowWorkRestAndCompletedShorts() {
+        let work = RingProgress(workAccrued: 600, workSeconds: 1200,
+                                restRemaining: nil, restDuration: nil,
+                                completedShorts: 1, shortsBeforeLong: 3)
+        #expect(work.outer == 0.5)
+        #expect(abs((work.inner ?? 0) - 1.0 / 3.0) < 0.001)
+        let rest = RingProgress(workAccrued: 1200, workSeconds: 1200,
+                                restRemaining: 15, restDuration: 60,
+                                completedShorts: 3, shortsBeforeLong: 3)
+        #expect(rest.outer == 0.75)
+        #expect(rest.inner == 1)
+        let shortsOnly = RingProgress(workAccrued: 1300, workSeconds: 1200,
+                                      restRemaining: nil, restDuration: nil,
+                                      completedShorts: 5, shortsBeforeLong: 0)
+        #expect(shortsOnly.outer == 1)
+        #expect(shortsOnly.inner == nil)
+    }
     @Test func settingsMigrateWithSurfaceDefaults() throws {
         let old = try SettingsCodec.decode(Data(#"{"schemaVersion":2,"eyeMinutes":35,"displayTarget":"all"}"#.utf8))
         #expect(old.eyeMinutes == 35 && old.displayTarget == .all)

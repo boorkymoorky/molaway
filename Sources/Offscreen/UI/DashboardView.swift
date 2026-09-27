@@ -2,80 +2,105 @@ import SwiftUI
 
 struct DashboardView: View {
     let model: AppContainer
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 16) {
             HStack {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("Molaway").font(.system(size: 25, weight: .semibold, design: .rounded))
-                    Text(L("Small breaks, a better day.")).font(.system(size: 11)).foregroundStyle(.secondary)
-                }
+                Text("Molaway").font(.system(size: 25, weight: .semibold, design: .rounded))
                 Spacer()
-                BrandMark().frame(width: 34, height: 34).foregroundStyle(model.tint)
+                BrandMark().frame(width: 32, height: 32).foregroundStyle(model.tint)
             }
             Label(model.statusText, systemImage: statusSymbol)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(.secondary)
-                .lineLimit(2)
-            Label {
-                Text(L(model.nextReadout.resting ? "Rest time" : "Next reminder") + ": " + model.nextReadout.kind.title + " · " + model.nextReadout.clock)
-                    .monospacedDigit()
-            } icon: { Image(systemName: model.nextReadout.kind.symbol) }
-            .font(.system(size: 11, weight: .medium)).foregroundStyle(model.tint)
-            .fixedSize(horizontal: false, vertical: true)
+                .font(.caption).foregroundStyle(.secondary).lineLimit(2)
+
+            VStack(spacing: 12) {
+                ZStack {
+                    TimerRing(progress: model.ringProgress, color: model.tint)
+                        .frame(width: 184, height: 184)
+                    VStack(spacing: 2) {
+                        Text(model.nextReadout.resting ? L("Rest time") : L(model.nextReadout.deferred ? "Next reminder" : "Next break"))
+                            .font(.caption2).foregroundStyle(.secondary)
+                        Text(model.nextReadout.kind.title)
+                            .font(.caption2.weight(.medium))
+                        Text(model.nextReadout.clock)
+                            .font(.system(size: 23, weight: .semibold, design: .rounded))
+                            .monospacedDigit()
+                    }
+                    .multilineTextAlignment(.center)
+                    .frame(width: 78)
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel((model.nextReadout.resting ? L("Rest time") : L(model.nextReadout.deferred ? "Next reminder" : "Next break")) + ": " + model.nextReadout.kind.title + ", " + model.nextReadout.clock)
+
+                VStack(alignment: .leading, spacing: 5) {
+                    Label(L("Outer ring") + " · " + L(model.activeRest == nil ? "Work progress" : "Rest progress")
+                          + ": \(Int((model.ringProgress.outer * 100).rounded()))%", systemImage: "circle.dotted")
+                    if model.config.shortBreaksBeforeLong > 0 {
+                        Label(L("Inner ring") + " · " + String(format: L("%d of %d short breaks completed"),
+                             min(model.breakEngine.shortBreaksSinceLong, model.config.shortBreaksBeforeLong), model.config.shortBreaksBeforeLong),
+                              systemImage: "circle.circle")
+                    } else {
+                        Label(L("Inner ring") + " · " + L("Long breaks off"), systemImage: "circle.slash")
+                    }
+                }
+                .font(.caption).foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .frame(maxWidth: .infinity)
+
             if model.visibleOverdue != .normal {
-                Label(L("A break is overdue"), systemImage: "exclamationmark.circle").font(.caption).foregroundStyle(model.visibleOverdue == .red ? .red : Theme.amber)
+                Label(L("A break is overdue"), systemImage: "exclamationmark.circle")
+                    .font(.caption).foregroundStyle(model.visibleOverdue == .red ? .red : Theme.amber)
             }
             if model.hasAlertProblem {
                 Button { model.openAlertSettings() } label: {
                     Label(L("Review notification settings"), systemImage: "exclamationmark.triangle")
                 }.buttonStyle(.bordered).controlSize(.small)
             }
-            VStack(spacing: 10) {
-                TimerCard(model: model, kind: model.nextKind)
-            }
+
             if model.activeRest != nil {
                 Button(L("End break and continue")) { model.cancelRest() }
-                    .buttonStyle(.bordered).frame(maxWidth: .infinity)
+                    .buttonStyle(.borderedProminent).frame(maxWidth: .infinity)
             } else {
-                HStack(spacing: 8) {
-                    Button { model.beginRest(model.nextKind) } label: { Label(L("Take a break"), systemImage: "leaf") }
-                    Button { model.beginRest(.long) } label: { Label(L("Long break now"), systemImage: "figure.walk") }
-                }.buttonStyle(.bordered).controlSize(.regular)
-            }
-            HStack {
-                Button(L(model.isWatching ? "End watching" : "Watching mode")) { model.toggleWatching() }
-                Button(L(model.presentationUntil == nil ? "Presentation" : "End presentation")) { model.togglePresentation() }
-            }.buttonStyle(.bordered).controlSize(.small)
-            if let until = model.watchingUntil {
                 HStack {
-                    Label(L("Watching mode"), systemImage: "play.rectangle")
+                    Button { model.beginRest(model.nextKind) } label: {
+                        Label(L("Take a break"), systemImage: "leaf")
+                    }.buttonStyle(.borderedProminent)
                     Spacer()
-                    Text(until, style: .timer).monospacedDigit()
-                    Button(L("Extend")) { model.extendWatching() }.buttonStyle(.bordered)
-                }.font(.caption).controlSize(.small)
+                    Menu {
+                        Button(L("Long break now")) { model.beginRest(.long) }
+                        if !model.isWatching { Button(L("Watching mode")) { model.toggleWatching() } }
+                        if model.presentationUntil == nil { Button(L("Presentation")) { model.togglePresentation() } }
+                    } label: {
+                        Label(L("More actions"), systemImage: "ellipsis.circle")
+                    }.menuStyle(.borderlessButton)
+                }
             }
-            if let until = model.presentationUntil {
+
+            if model.isWatching || model.presentationUntil != nil {
                 HStack {
-                    Label(L("Presentation mode"), systemImage: "bell.slash")
-                    Spacer()
-                    Text(until, style: .timer).monospacedDigit()
-                }.font(.caption)
+                    if model.isWatching {
+                        Button(L("End watching")) { model.toggleWatching() }
+                    }
+                    if model.presentationUntil != nil {
+                        Button(L("End presentation")) { model.togglePresentation() }
+                    }
+                }.buttonStyle(.bordered).controlSize(.small)
             }
-            Button { model.openStatistics() } label: { Label(L("Your overview"), systemImage: "chart.bar.xaxis") }.buttonStyle(.plain).font(.caption).foregroundStyle(model.tint)
+
             Divider()
             HStack {
                 Button(model.isPaused ? L("Resume tracking") : L("Pause 30 min")) { model.togglePause() }
-                    .buttonStyle(.plain).font(.system(size: 12))
                 Spacer()
-                Button { model.openSettingsAction?() } label: { Image(systemName: "gearshape") }
-                    .buttonStyle(.plain).help(L("Settings")).accessibilityLabel(L("Settings"))
-                Button { NSApplication.shared.terminate(nil) } label: { Image(systemName: "power") }
-                    .buttonStyle(.plain).help(L("Quit Molaway")).accessibilityLabel(L("Quit Molaway"))
-            }.foregroundStyle(.secondary)
+                Button { model.openSettingsAction?() } label: {
+                    Label(L("Settings"), systemImage: "gearshape")
+                }
+            }.buttonStyle(.plain).font(.system(size: 12)).foregroundStyle(.secondary)
         }
-        .padding(22).frame(width: 342)
+        .padding(20).frame(width: 342)
         .background(Color(nsColor: .windowBackgroundColor))
     }
+
     private var statusSymbol: String {
         switch model.activity {
         case .video: "play.rectangle"
@@ -83,38 +108,5 @@ struct DashboardView: View {
         case .resting: "leaf"
         default: "circle.dotted"
         }
-    }
-}
-
-struct TimerCard: View {
-    let model: AppContainer
-    let kind: MolaKind
-    private var engine: BreakEngine { model.engine(kind) }
-    private var color: Color { kind == .short ? model.tint : Theme.violet }
-    private var readout: AppContainer.TimerReadout { model.readout(for: kind) }
-    private var inRest: Bool { readout.resting }
-    private var progress: Double {
-        inRest ? 1 - engine.breakProgress : min(1, max(0, engine.workAccrued / Double(engine.timing.workSeconds)))
-    }
-    var body: some View {
-        HStack(spacing: 15) {
-            TimerRing(kind: kind, progress: progress, color: color).frame(width: 42, height: 42)
-            VStack(alignment: .leading, spacing: 3) {
-                Label(kind.title, systemImage: kind.symbol).font(.system(size: 13, weight: .semibold))
-                Text(L(kind == .short ? "Outer ring" : "Inner ring")).font(.system(size: 10)).foregroundStyle(color)
-                Text(inRest ? L("Rest time") : L("Every") + " " + minutes(engine.timing.workSeconds / 60))
-                    .font(.system(size: 11)).foregroundStyle(.secondary)
-            }
-            Spacer(minLength: 2)
-            VStack(alignment: .trailing, spacing: 3) {
-                Text(readout.clock)
-                    .font(.system(size: 20, weight: .medium, design: .rounded)).monospacedDigit()
-                    .foregroundStyle(engine.timeUntilBreak <= 0 && !inRest ? Theme.amber : .primary)
-                Text(inRest ? L("left") : L(readout.deferred ? "until reminder" : "until break")).font(.system(size: 10)).foregroundStyle(.secondary)
-            }
-        }.padding(15)
-            .background(color.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(color.opacity(0.1)))
-            .accessibilityElement(children: .combine)
     }
 }

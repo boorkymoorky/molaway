@@ -101,6 +101,13 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
                             resting: resting, deferred: !resting && timer.timeUntilBreak <= 0 && timer.timeUntilReminder > 0)
     }
     var nextReadout: TimerReadout { readout(for: activeRest ?? nextKind) }
+    var ringProgress: RingProgress {
+        RingProgress(workAccrued: breakEngine.workAccrued, workSeconds: breakEngine.timing.workSeconds,
+                     restRemaining: activeRest == nil ? nil : breakEngine.breakRemaining,
+                     restDuration: activeRest == nil ? nil : breakEngine.breakDuration,
+                     completedShorts: breakEngine.shortBreaksSinceLong,
+                     shortsBeforeLong: config.shortBreaksBeforeLong)
+    }
     var isPaused: Bool { pauseUntil != nil }
     var isWatching: Bool { watchingUntil != nil }
     var suppressionReasons: [String] {
