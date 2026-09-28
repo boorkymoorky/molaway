@@ -27,7 +27,7 @@ The public macOS release line is **2.2.x**; the latest documented version in thi
 
 Distribution is Apple Silicon, ad hoc signed, and unnotarized. Intel and all player/display combinations are not claimed as verified. Release and security limitations are documented in `README.md`, `SECURITY.md`, and `VERIFICATION.md`.
 
-M1–M5 are merged macOS development work, not part of the published 2.2.x release line. M6 adds an optional pointer countdown and is implemented in PR #9, with physical verification pending. M7 has not started.
+M1–M6 are merged macOS development work, not part of the published 2.2.x release line. M6 adds an optional pointer countdown; physical verification remains pending. M7 has not started.
 
 ### Windows
 
