@@ -111,6 +111,12 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
                             resting: resting, deferred: !resting && timer.timeUntilBreak <= 0 && timer.timeUntilReminder > 0)
     }
     var nextReadout: TimerReadout { readout(for: activeRest ?? nextKind) }
+    var cursorCountdownSeconds: Int? {
+        let eligible = !isPreview && reminderKinds.isEmpty && activeRest == nil &&
+            !pause.isPaused && !suppressing && (activity == .active || activity == .video)
+        return CursorCountdownPolicy.seconds(remaining: breakEngine.timeUntilBreak,
+            enabled: config.showCursorCountdown, eligible: eligible)
+    }
     var canSkipBreak: Bool {
         !isPreview && skipCountdown == 0 &&
         (activeRest != nil || (!reminderKinds.isEmpty && breakEngine.timeUntilBreak <= 0))

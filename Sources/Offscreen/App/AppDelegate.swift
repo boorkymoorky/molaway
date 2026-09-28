@@ -4,6 +4,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var container: AppContainer?
     private var status: StatusItemController?
     private var reminder: PreBreakPanelController?
+    private var cursorCountdown: CursorCountdownController?
     private var settingsWindow: SettingsWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -14,6 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         container.openSettingsAction = { [weak settings] in settings?.show() }
         status = StatusItemController(model: container)
         reminder = PreBreakPanelController(model: container)
+        cursorCountdown = CursorCountdownController(model: container)
         container.start()
         if container.config.migrationNoticePending { settings.show() }
         if !container.settings.settings.didFinishWelcome {
@@ -26,5 +28,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
     func applicationDidBecomeActive(_ notification: Notification) { container?.notifications?.refresh() }
-    func applicationWillTerminate(_ notification: Notification) { reminder?.stop(); status?.stop(); settingsWindow?.stop(); container?.stop() }
+    func applicationWillTerminate(_ notification: Notification) { cursorCountdown?.stop(); reminder?.stop(); status?.stop(); settingsWindow?.stop(); container?.stop() }
 }

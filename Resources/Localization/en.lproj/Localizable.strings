@@ -136,6 +136,11 @@
 "Settings imported. Permission features remain off." = "Settings imported. Permission features remain off.";
 "Show on" = "Show on";
 "Show remaining time in menu bar" = "Show remaining time in menu bar";
+"Show countdown beside pointer" = "Show countdown beside pointer";
+"Shows the last 10 seconds before a break. The badge never accepts clicks and follows Reduce Motion." = "Shows the last 10 seconds before a break. The badge never accepts clicks and follows Reduce Motion.";
+"Break countdown" = "Break countdown";
+"Break in %d seconds" = "Break in %d seconds";
+"%d s" = "%d s";
 "Show timers" = "Show timers";
 "Small breaks, a better day." = "Small breaks, a better day.";
 "Small card" = "Small card";

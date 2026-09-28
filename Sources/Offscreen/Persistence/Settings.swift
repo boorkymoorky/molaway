@@ -99,6 +99,7 @@ struct AppSettings: Codable, Equatable, Sendable {
     var movementRestMinutes: Int = 2
     var idlePauseSeconds: Int = 120
     var showCountdownInMenuBar: Bool = true
+    var showCursorCountdown: Bool = false
     var videoEnabled: Bool = true
     var reminderVisibleSeconds: Int = 12
     var didFinishWelcome: Bool = false
@@ -127,7 +128,7 @@ struct AppSettings: Codable, Equatable, Sendable {
     var redMinutes = 20
     init() {}
     enum CodingKeys: String, CodingKey, CaseIterable {
-        case skipMode, officeHours, schemaVersion, workMinutes, shortRestSeconds, longRestMinutes, shortBreaksBeforeLong, cycleShortCount, migrationNoticePending, previousCustomTiming, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
+        case skipMode, officeHours, schemaVersion, workMinutes, shortRestSeconds, longRestMinutes, shortBreaksBeforeLong, cycleShortCount, migrationNoticePending, previousCustomTiming, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, showCursorCountdown, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
     }
     private enum LegacyKeys: String, CodingKey { case chromeVideoEnabled, reminderSound }
     init(from decoder: Decoder) throws {
@@ -163,6 +164,7 @@ struct AppSettings: Codable, Equatable, Sendable {
         }
         idlePauseSeconds = try c.decodeIfPresent(Int.self, forKey: .idlePauseSeconds) ?? 120
         showCountdownInMenuBar = try c.decodeIfPresent(Bool.self, forKey: .showCountdownInMenuBar) ?? true
+        showCursorCountdown = try c.decodeIfPresent(Bool.self, forKey: .showCursorCountdown) ?? false
         videoEnabled = try c.decodeIfPresent(Bool.self, forKey: .videoEnabled) ?? legacy.decodeIfPresent(Bool.self, forKey: .chromeVideoEnabled) ?? true
         reminderVisibleSeconds = try c.decodeIfPresent(Int.self, forKey: .reminderVisibleSeconds) ?? 12
         didFinishWelcome = try c.decodeIfPresent(Bool.self, forKey: .didFinishWelcome) ?? false
