@@ -1,7 +1,22 @@
 import AppKit
 import SwiftUI
 
-private final class CursorCountdownPanel: NSPanel {
+final class CursorCountdownPanel: NSPanel {
+    convenience init(badgeSize: NSSize) {
+        self.init(contentRect: NSRect(origin: .zero, size: badgeSize),
+            styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
+        title = L("Break countdown")
+        setAccessibilitySubrole(.floatingWindow)
+        level = .statusBar
+        collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
+        isFloatingPanel = true
+        hidesOnDeactivate = false
+        isReleasedWhenClosed = false
+        isOpaque = false
+        backgroundColor = .clear
+        hasShadow = true
+        ignoresMouseEvents = true
+    }
     override var canBecomeKey: Bool { false }
     override var canBecomeMain: Bool { false }
 }
@@ -26,11 +41,38 @@ private struct CursorCountdownBadge: View {
     }
 }
 
+/// Keep the read-only accessibility element stable as SwiftUI redraws the badge.
+final class CursorCountdownContentView: NSView {
+    private let host: NSHostingView<CursorCountdownBadge>
+    private var spokenValue: String = ""
+
+    init(seconds: Int, kind: MolaKind, size: NSSize) {
+        host = NSHostingView(rootView: CursorCountdownBadge(seconds: seconds, kind: kind))
+        super.init(frame: NSRect(origin: .zero, size: size))
+        host.frame = bounds
+        host.autoresizingMask = [.width, .height]
+        addSubview(host)
+        update(seconds: seconds, kind: kind)
+    }
+
+    required init?(coder: NSCoder) { nil }
+
+    func update(seconds: Int, kind: MolaKind) {
+        host.rootView = CursorCountdownBadge(seconds: seconds, kind: kind)
+        spokenValue = kind.title + ". " + String(format: L("Break in %d seconds"), seconds)
+    }
+
+    override func isAccessibilityElement() -> Bool { true }
+    override func accessibilityRole() -> NSAccessibility.Role? { .staticText }
+    override func accessibilityValue() -> Any? { spokenValue }
+    override func accessibilityChildren() -> [Any]? { [] }
+}
+
 /// A visual-only window. It never takes focus or intercepts pointer events.
 final class CursorCountdownController {
     private let model: AppContainer
     private var panel: CursorCountdownPanel?
-    private var host: NSHostingView<CursorCountdownBadge>?
+    private var content: CursorCountdownContentView?
     private var pointerTimer: Timer?
     private var displayedSeconds: Int?
     private var displayedKind: MolaKind?
@@ -55,30 +97,19 @@ final class CursorCountdownController {
             hide(); return
         }
         if panel == nil {
-            let panel = CursorCountdownPanel(contentRect: NSRect(origin: .zero, size: badgeSize),
-                styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
-            panel.title = L("Break countdown")
-            panel.level = .statusBar
-            panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
-            panel.isFloatingPanel = true
-            panel.hidesOnDeactivate = false
-            panel.isReleasedWhenClosed = false
-            panel.isOpaque = false
-            panel.backgroundColor = .clear
-            panel.hasShadow = true
-            panel.ignoresMouseEvents = true
+            let panel = CursorCountdownPanel(badgeSize: badgeSize)
             self.panel = panel
             pointerTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
                 MainActor.assumeIsolated { self?.refresh() }
             }
         }
         if displayedSeconds != seconds || displayedKind != model.nextKind || displayedLanguage != Localization.shared.code {
-            let badge = CursorCountdownBadge(seconds: seconds, kind: model.nextKind)
-            if let host { host.rootView = badge }
+            panel?.title = L("Break countdown")
+            if let content { content.update(seconds: seconds, kind: model.nextKind) }
             else {
-                let host = NSHostingView(rootView: badge)
-                self.host = host
-                panel?.contentView = host
+                let content = CursorCountdownContentView(seconds: seconds, kind: model.nextKind, size: badgeSize)
+                self.content = content
+                panel?.contentView = content
             }
             displayedSeconds = seconds
             displayedKind = model.nextKind
@@ -97,7 +128,7 @@ final class CursorCountdownController {
     private func hide() {
         pointerTimer?.invalidate(); pointerTimer = nil
         panel?.orderOut(nil); panel?.contentView = nil; panel?.close()
-        panel = nil; host = nil; displayedSeconds = nil
+        panel = nil; content = nil; displayedSeconds = nil
         displayedKind = nil; displayedLanguage = nil; displayedScreen = nil; displayedVisibleFrame = nil
     }
 

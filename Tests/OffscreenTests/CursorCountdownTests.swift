@@ -89,4 +89,25 @@ import Testing
             #expect(model.cursorCountdownSeconds == nil)
         }
     }
+
+    @Test func accessibleBadgeKeepsOneReadableElementAndNeverTakesInput() {
+        let panel = CursorCountdownPanel(badgeSize: NSSize(width: 116, height: 46))
+        defer { panel.close() }
+        let content = CursorCountdownContentView(seconds: 5, kind: .short,
+            size: NSSize(width: 116, height: 46))
+        panel.contentView = content
+        #expect(panel.accessibilityRole() == .window)
+        #expect(panel.accessibilitySubrole() == .floatingWindow)
+        #expect(panel.accessibilityChildren()?.contains { ($0 as AnyObject) === content } == true)
+        #expect(panel.ignoresMouseEvents)
+        #expect(!panel.canBecomeKey && !panel.canBecomeMain)
+        #expect(content.isAccessibilityElement())
+        #expect(content.accessibilityRole() == .staticText)
+        #expect(content.accessibilityChildren()?.isEmpty == true)
+        #expect(content.accessibilityValue() as? String == MolaKind.short.title + ". " + String(format: L("Break in %d seconds"), 5))
+        content.update(seconds: 4, kind: .long)
+        #expect(content.accessibilityValue() as? String == MolaKind.long.title + ". " + String(format: L("Break in %d seconds"), 4))
+        #expect(panel.contentView === content)
+        #expect(!content.acceptsFirstResponder)
+    }
 }
