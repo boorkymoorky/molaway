@@ -1,6 +1,22 @@
 import AppKit
 import SwiftUI
 
+/// Announce entry into a visible countdown, never each pointer or second update.
+struct CursorCountdownAnnouncement {
+    private var wasVisible = false
+
+    static func label(seconds: Int, kind: MolaKind) -> String {
+        kind.title + ". " + String(format: L("Break in %d seconds"), seconds)
+    }
+
+    mutating func update(seconds: Int?, kind: MolaKind) -> [NSAccessibility.NotificationUserInfoKey: Any]? {
+        defer { wasVisible = seconds != nil }
+        guard let seconds, !wasVisible else { return nil }
+        return [.announcement: Self.label(seconds: seconds, kind: kind),
+                .priority: NSAccessibilityPriorityLevel.low.rawValue]
+    }
+}
+
 final class CursorCountdownPanel: NSPanel {
     convenience init(badgeSize: NSSize) {
         self.init(contentRect: NSRect(origin: .zero, size: badgeSize),
@@ -59,7 +75,7 @@ final class CursorCountdownContentView: NSView {
 
     func update(seconds: Int, kind: MolaKind) {
         host.rootView = CursorCountdownBadge(seconds: seconds, kind: kind)
-        spokenValue = kind.title + ". " + String(format: L("Break in %d seconds"), seconds)
+        spokenValue = CursorCountdownAnnouncement.label(seconds: seconds, kind: kind)
     }
 
     override func isAccessibilityElement() -> Bool { true }
@@ -79,6 +95,7 @@ final class CursorCountdownController {
     private var displayedLanguage: String?
     private var displayedScreen: NSScreen?
     private var displayedVisibleFrame: NSRect?
+    private var announcement = CursorCountdownAnnouncement()
     private let badgeSize = NSSize(width: 116, height: 46)
 
     init(model: AppContainer) {
@@ -123,9 +140,13 @@ final class CursorCountdownController {
         displayedScreen = screen
         displayedVisibleFrame = screen.visibleFrame
         if panel?.isVisible != true { panel?.orderFrontRegardless() }
+        if let userInfo = announcement.update(seconds: seconds, kind: model.nextKind) {
+            NSAccessibility.post(element: NSApp as Any, notification: .announcementRequested, userInfo: userInfo)
+        }
     }
 
     private func hide() {
+        _ = announcement.update(seconds: nil, kind: model.nextKind)
         pointerTimer?.invalidate(); pointerTimer = nil
         panel?.orderOut(nil); panel?.contentView = nil; panel?.close()
         panel = nil; content = nil; displayedSeconds = nil
