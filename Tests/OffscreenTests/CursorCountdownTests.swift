@@ -78,7 +78,8 @@ import Testing
 
     @Test func automaticPauseAndQuietModeHideBadge() throws {
         try withModel { model, _ in
-            model.settings.update { $0.showCursorCountdown = true }
+            // Synthetic idle samples must not depend on live media assertions.
+            model.settings.update { $0.showCursorCountdown = true; $0.videoEnabled = false }
             model.tick(now: 0, idle: 0, deliberateIdle: .infinity)
             model.breakEngine.advance(by: 1195)
             #expect(model.cursorCountdownSeconds == 5)
@@ -87,6 +88,61 @@ import Testing
             model.togglePresentation()
             model.tick(now: 1, idle: 200, deliberateIdle: .infinity)
             #expect(model.cursorCountdownSeconds == nil)
+        }
+    }
+
+    @Test func accessibleBadgeKeepsOneReadableElementAndNeverTakesInput() {
+        let panel = CursorCountdownPanel(badgeSize: NSSize(width: 116, height: 46))
+        defer { panel.close() }
+        let content = CursorCountdownContentView(seconds: 5, kind: .short,
+            size: NSSize(width: 116, height: 46))
+        panel.contentView = content
+        #expect(panel.accessibilityRole() == .window)
+        #expect(panel.accessibilitySubrole() == .floatingWindow)
+        #expect(panel.accessibilityChildren()?.contains { ($0 as AnyObject) === content } == true)
+        #expect(panel.ignoresMouseEvents)
+        #expect(!panel.canBecomeKey && !panel.canBecomeMain)
+        #expect(content.isAccessibilityElement())
+        #expect(content.accessibilityRole() == .staticText)
+        #expect(content.accessibilityChildren()?.isEmpty == true)
+        #expect(content.accessibilityValue() as? String == MolaKind.short.title + ". " + String(format: L("Break in %d seconds"), 5))
+        content.update(seconds: 4, kind: .long)
+        #expect(content.accessibilityValue() as? String == MolaKind.long.title + ". " + String(format: L("Break in %d seconds"), 4))
+        #expect(panel.contentView === content)
+        #expect(!content.acceptsFirstResponder)
+    }
+
+    @Test func announcesOnlyVisibleEntryWithoutRepeatingSecondsOrPreview() throws {
+        try withModel { model, _ in
+            var announcement = CursorCountdownAnnouncement()
+            @MainActor func read() -> [NSAccessibility.NotificationUserInfoKey: Any]? {
+                announcement.update(seconds: model.cursorCountdownSeconds, kind: model.nextKind)
+            }
+            model.tick(now: 0, idle: 0, deliberateIdle: .infinity)
+            model.breakEngine.advance(by: 1195)
+            #expect(read() == nil) // disabled
+            model.settings.update { $0.showCursorCountdown = true }
+            let first = read()
+            #expect(first?[.announcement] as? String == CursorCountdownAnnouncement.label(seconds: 5, kind: .short))
+            #expect(first?[.priority] as? Int == NSAccessibilityPriorityLevel.low.rawValue)
+            #expect(read() == nil) // pointer refresh
+            model.breakEngine.advance(by: 1)
+            #expect(read() == nil) // changed seconds
+            let work = model.breakEngine.workAccrued
+            model.previewReminder()
+            #expect(read() == nil)
+            #expect(model.breakEngine.workAccrued == work)
+            model.dismissReminder()
+            #expect(read()?[.announcement] as? String == CursorCountdownAnnouncement.label(seconds: 4, kind: .short))
+            #expect(read() == nil)
+            model.suspendTracking()
+            #expect(read() == nil)
+            model.resumeTracking(after: 0)
+            model.tick(now: 0, idle: 0, deliberateIdle: .infinity)
+            #expect(read() != nil)
+            #expect(read() == nil)
+            model.breakEngine.advance(by: 4)
+            #expect(read() == nil) // deadline hides
         }
     }
 }
