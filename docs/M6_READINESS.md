@@ -33,16 +33,22 @@ Results below are limited UI automation observations; they do not replace the pe
 - Manual watching mode was ended, and the Turkish “until I resume” pause action produced the expected paused status. The disposable app was left manually paused. This does not establish pause persistence through process relaunch or badge removal during a visible countdown.
 - No application defect was established in these observations. UI automation did not establish visible-badge lifecycle, graceful quit/relaunch, or manual VoiceOver navigation; those remain pending rather than being inferred from the passing model tests.
 
+## User-operated full-app checks — 2026-10-01
+
+- Tested application code: main `5f7d1a9`, using the complete sandboxed app re-signed under its disposable test identity, not the earlier harness. The Turkish UI and pointer countdown were enabled. A real five-minute work period leading to a long break was prepared through the application controls; the completed-short count remained two of two when the preparation skip started that period.
+- Following the final-ten-second observation instructions, the user confirmed that the pointer badge appeared and disappeared on time. This verifies the reported appearance/removal in this one full-app run. No independent onset/deadline measurement was recorded. Subsequent full-app UI inspection still showed the same completed-short count of two of two after the due reminder; showing the reminder did not visibly credit another break in this run.
+- The user subsequently confirmed that the badge did not obstruct anything and normal interaction worked without problems. This supports ordinary pointer/keyboard interaction in that run. It does not establish a direct click inside the badge, every focus path, or Reduce Motion. Direct click-through, Reduce Motion, visibility transitions, quit/relaunch, displays/Spaces, sleep/lock, Turkish VoiceOver and manual text navigation remain pending.
+
 ## Remaining physical checks
 
 Record each row as passed, failed, or not run. Include the tested source commit and whether it was the full app or a harness; omit personal settings, raw logs, screenshots of other apps, and identifying device inventory.
 
 | Check | Full-app acceptance criteria | Current status |
 | --- | --- | --- |
-| Countdown lifecycle | In a real work cycle, badge appears only in the final ten seconds and disappears at the due reminder; it does not change the deadline or short/long count. | Pending |
+| Countdown lifecycle | In a real work cycle, badge appears only in the final ten seconds and disappears at the due reminder; it does not change the deadline or short/long count. | Partial: user confirmed appearance and timely removal in one full-app long-break run on 2026-10-01. Post-reminder UI still showed the starting two-of-two count; independent timing checks remain pending. |
 | Visibility transitions | While visible, disable/re-enable, manual pause/resume, preview open/close, quiet mode, Office Hours closure and active rest hide/show as eligible without orphan panels or duplicate announcements. | Pending; component/model coverage and earlier harness observations only |
 | Quit and reopen | Quit while badge is visible; no badge remains. Reopen creates one app/controller, preserves opt-in and manual pause, and restarts session timers without inventing a completed break. Repeat settings-window close/reopen. | Pending |
-| Pointer and focus | Click through the visible badge in another app; typing/click focus stays there. Repeat with Reduce Motion on/off, restoring the original OS setting afterward. | Pending in full app; earlier harness observation only |
+| Pointer and focus | Click through the visible badge in another app; typing/click focus stays there. Repeat with Reduce Motion on/off, restoring the original OS setting afterward. | Partial: user reported unobstructed ordinary typing/clicking in the full-app run on 2026-10-01. Direct click inside the badge and Reduce Motion repeats remain pending. |
 | Displays | Move across displays and edges with different origins/scales; disconnect/reconnect the display holding the visible badge. Badge stays within the current visible frame with no stranded copy. | Pending in full app; earlier harness geometry/movement observation only |
 | Spaces and full screen | Switch Spaces and enter/exit another app's native full screen while badge is visible. It follows eligible pointer placement without taking focus or changing another Space. | Pending in full app; earlier user observation in harness only |
 | Lock/unlock | Lock during countdown and unlock after a measured short absence below both idle and rest thresholds; no stale badge, work accrual during lock, or false break credit. Repeat with overlapping display/session events and an existing manual pause. Unlock requires the user. | Pending in full app; earlier harness callback check only |
