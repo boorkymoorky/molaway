@@ -3,7 +3,7 @@
 ## M6 readiness review — 2026-09-30 (not shipped)
 
 - Reviewed main commit `5f7d1a9`, which merged PR #12. [Main Verify run 36686346076](https://github.com/boorkymoorky/molaway/actions/runs/36686346076) passed. A fresh local run passed all 141 Swift tests in 14 suites, source/security and tracked publication guards, release build, ad hoc signature verification, and isolated installation/update/failure checks.
-- Limited full-app UI automation used the unchanged release executable with a disposable bundle identity and isolated local data. English/Turkish settings and a real manual short-break completion advancing the cadence were observed. This does not verify every lifecycle transition or physical VoiceOver, display/Space, sleep/lock behavior.
+- Limited full-app UI automation used the same compiled application code, re-signed under a disposable bundle identity with isolated local data. English/Turkish settings and a real manual short-break completion advancing the cadence were observed. This does not verify every lifecycle transition or physical VoiceOver, display/Space, sleep/lock behavior.
 - The remaining physical checks could not be completed with the product owner unavailable. They remain explicitly pending in [M6 readiness](docs/M6_READINESS.md); prior harness observations are not promoted to full-app results. Release readiness remains pending. No M7 work, release, version bump, network access, or permission expansion was performed.
 
 ## M5 break-skip development checks — 2026-09-27 (not shipped)

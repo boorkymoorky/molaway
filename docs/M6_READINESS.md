@@ -10,7 +10,7 @@ The reviewed main commit is `5f7d1a9` (PR #12 merged). GitHub main verification 
 
 Earlier pointer click-through, Reduce Motion, display/Space, sleep/lock, and English announcement observations used a disposable harness with synthetic work time. They remain useful evidence for the components but do not establish full-app physical results. Earlier manual VoiceOver navigation did not establish that the badge text could be read.
 
-This review uses the built, sandboxed application with an unchanged release executable and real elapsed time. Only the disposable copy's bundle name/identifier differs, isolating its preferences and local data from the installed release. It is not a separate model/controller harness. UI automation can inspect accessible text and operate controls; it cannot confirm audible Turkish pronunciation, a physical display disconnect, or user unlocking the screen. The product owner was unavailable for physical checks in this session.
+This review uses the built, sandboxed application with the same compiled application code and real elapsed time. The disposable copy uses a separate bundle name/identifier and is re-signed for that identity, isolating its preferences and local data from the installed release. All 35 compiled Mach-O sections match the standard build; the signed executable files are not byte-identical. It is not a separate model/controller harness. UI automation can inspect accessible text and operate controls; it cannot confirm audible Turkish pronunciation, a physical display disconnect, or user unlocking the screen. The product owner was unavailable for physical checks in this session.
 
 ## Automated and distribution preparation
 
