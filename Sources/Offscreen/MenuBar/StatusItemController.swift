@@ -39,11 +39,13 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         let paused = model.activeRest == nil && (model.pause.isPaused || [.away, .sleeping, .paused, .starting].contains(model.activity))
         let progress = model.ringProgress
         let ringKey = "\(Int(progress.outer * 100))-\(Int((progress.inner ?? -1) * 100))-\(indicator)-\(model.visibleOverdue.rawValue)"
-        if ringKey != lastRingKey { button.image = ringImage(); lastRingKey = ringKey }
+        if ringKey != lastRingKey { button.image = StatusItemImage.make(progress: progress, symbol: indicator, level: model.visibleOverdue); lastRingKey = ringKey }
         let readout = model.nextReadout
         let text = paused ? "" : readout.menuText
         let title = MenuTitle.make(show: model.config.showCountdownInMenuBar, paused: paused, countdown: text)
         if button.title != title { button.title = title }
+        button.imagePosition = title.isEmpty ? .imageOnly : .imageLeft
+        item.length = title.isEmpty ? 28 : NSStatusItem.variableLength
         let cadence = model.config.shortBreaksBeforeLong > 0
             ? String(format: L("%d of %d short breaks completed"),
                      min(model.breakEngine.shortBreaksSinceLong, model.config.shortBreaksBeforeLong), model.config.shortBreaksBeforeLong)
@@ -64,37 +66,6 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         if model.suppressing { return "bell.slash.fill" }
         if model.hasAlertProblem || model.visibleOverdue != .normal { return "exclamationmark" }
         return ""
-    }
-    private func ringImage() -> NSImage {
-        let progress = model.ringProgress
-        let glyph = indicator
-        let level = model.visibleOverdue
-        let ink: NSColor = level == .red ? .systemRed : level == .amber ? .systemOrange : .black
-        let image = NSImage(size: NSSize(width: 20, height: 20), flipped: false) { _ in
-            var rings: [(Double, Double)] = [(8.0, progress.outer)]
-            if let inner = progress.inner { rings.append((4.7, inner)) }
-            for (radius, fraction) in rings {
-                let start = radius == 8 ? 45.0 : 225.0
-                let background = NSBezierPath()
-                background.appendArc(withCenter: NSPoint(x: 10, y: 10), radius: radius, startAngle: start, endAngle: start - 270, clockwise: true)
-                ink.withAlphaComponent(0.3).setStroke()
-                background.lineWidth = 1.6; background.lineCapStyle = .round
-                background.stroke()
-                if fraction > 0 {
-                    let arc = NSBezierPath()
-                    arc.appendArc(withCenter: NSPoint(x: 10, y: 10), radius: radius,
-                                  startAngle: start, endAngle: start - 270 * max(0.02, fraction), clockwise: true)
-                    ink.setStroke(); arc.lineWidth = 1.8; arc.lineCapStyle = .round; arc.stroke()
-                }
-            }
-            if !glyph.isEmpty {
-                let symbol = NSImage(systemSymbolName: glyph, accessibilityDescription: nil)?.withSymbolConfiguration(.init(paletteColors: [ink]))
-                symbol?.draw(in: NSRect(x: 5, y: 5, width: 10, height: 10))
-            }
-            return true
-        }
-        image.isTemplate = level == .normal
-        return image
     }
 
     @objc private func clicked() {

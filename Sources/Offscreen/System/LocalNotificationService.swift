@@ -4,9 +4,10 @@ import UserNotifications
 
 @Observable final class LocalNotificationService: NSObject, UNUserNotificationCenterDelegate {
     private weak var model: AppContainer?
-    private(set) var authorization: UNAuthorizationStatus = .notDetermined
-    private(set) var alertsEnabled = false
-    private let center = UNUserNotificationCenter.current()
+    let permission: NotificationPermission
+    var authorization: UNAuthorizationStatus { permission.authorization }
+    var alertsEnabled: Bool { permission.alertsEnabled }
+    private let center: UNUserNotificationCenter
     private var token: String?
     private(set) var deliveryFailed = false
     var hasProblem: Bool { authorization != .authorized || !alertsEnabled || deliveryFailed }
@@ -14,6 +15,14 @@ import UserNotifications
     private var kind: MolaKind = .short
     init(model: AppContainer) {
         self.model = model
+        let center = UNUserNotificationCenter.current()
+        self.center = center
+        permission = NotificationPermission(read: {
+            let settings = await center.notificationSettings()
+            return .init(authorization: settings.authorizationStatus, alertsEnabled: settings.alertSetting == .enabled)
+        }, authorize: {
+            _ = try await center.requestAuthorization(options: [.alert, .sound])
+        })
         super.init()
         center.delegate = self
         configureActions()
@@ -31,18 +40,15 @@ import UserNotifications
     func refresh() {
         Task { [weak self] in
             guard let self else { return }
-            let settings = await center.notificationSettings()
-            authorization = settings.authorizationStatus
-            alertsEnabled = settings.alertSetting == .enabled
+            await permission.refresh()
             deliveryFailed = false
         }
     }
     func request() {
         Task { [weak self] in
             guard let self else { return }
-            do { _ = try await center.requestAuthorization(options: [.alert, .sound]) }
-            catch { model?.feedback = L("Notification permission is unavailable.") }
-            refresh()
+            await permission.request()
+            model?.feedback = permission.failureKey.map { L($0) }
         }
     }
     func show(kind: MolaKind, combined: Bool, preview: Bool) {

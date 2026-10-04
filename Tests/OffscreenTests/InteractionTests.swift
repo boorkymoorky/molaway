@@ -3,6 +3,16 @@ import Foundation
 @testable import Offscreen
 
 @Suite struct InteractionTests {
+    @Test func menuReadoutUsesOnlyTheClockForBothBreakKinds() {
+        for kind in [MolaKind.short, .long] {
+            for seconds in [0.0, 59, 300, 10_800] {
+                for resting in [false, true] {
+                    let readout = AppContainer.TimerReadout(kind: kind, seconds: seconds, resting: resting, deferred: !resting)
+                    #expect(readout.menuText == Format.clock(seconds))
+                }
+            }
+        }
+    }
     @Test func pauseNeverAddsAnotherSymbolBesideMenuIcon() {
         #expect(MenuTitle.make(show: true, paused: true, countdown: "17:00") == "")
         #expect(MenuTitle.make(show: true, paused: false, countdown: "17:00") == " 17:00")
