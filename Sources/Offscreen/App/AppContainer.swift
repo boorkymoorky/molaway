@@ -22,6 +22,11 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     private(set) var videoPlaying = false
     private(set) var cameraActive: Bool?
     private(set) var focusActive: Bool?
+    private(set) var m8Signals = QuietSignalSnapshot()
+    var audioInputActive: Bool? { m8Signals.audioInputActive }
+    var fullScreenActive: Bool? { m8Signals.fullScreenActive }
+    var selectedAppActive: Bool? { m8Signals.selectedAppActive }
+    private let quietSignalReader: (AppSettings) -> QuietSignalSnapshot
     private(set) var idleSeconds: Double = 0
     private(set) var activeRest: MolaKind?
     private(set) var pause: PauseModel
@@ -63,7 +68,9 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     private var activityToken: NSObjectProtocol?
 
     init(settings: SettingsStore = SettingsStore(), statistics: StatisticsStore = StatisticsStore(),
-         wallClock: @escaping () -> Date = { Date() }, localCalendar: @escaping () -> Calendar = { .autoupdatingCurrent }) {
+         wallClock: @escaping () -> Date = { Date() }, localCalendar: @escaping () -> Calendar = { .autoupdatingCurrent },
+         quietSignalReader: @escaping (AppSettings) -> QuietSignalSnapshot = { QuietSignalMonitor.read(config: $0) }) {
+        self.quietSignalReader = quietSignalReader
         self.wallClock = wallClock
         self.localCalendar = localCalendar
         self.settings = settings
@@ -91,6 +98,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
             Localization.shared.language = value.language
             applyAppearance()
             nextSensorRead = 0
+            refreshQuietSignals()
             if !value.typingDeferralEnabled { typingDeferralRemaining = nil }
             refreshSchedule()
             refreshReminder?()
@@ -177,7 +185,8 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     var isWatching: Bool { watchingUntil != nil }
     var smartPause: SmartPause {
         SmartPause(config: config, videoPlaying: videoPlaying, watching: isWatching,
-                   cameraActive: cameraActive, focusActive: focusActive, presenting: presentationUntil != nil)
+                   cameraActive: cameraActive, focusActive: focusActive, presenting: presentationUntil != nil,
+                   audioInputActive: audioInputActive, fullScreenActive: fullScreenActive, selectedAppActive: selectedAppActive)
     }
     var suppressionReasons: [String] { smartPause.quietReasons.map { L($0.rawValue) } }
     var suppressing: Bool { !suppressionReasons.isEmpty }
@@ -239,6 +248,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         pause.setSleepOrLock(true)
         typingDeferralRemaining = nil
         if activeRest != nil { cancelRest(restartCycle: false) }
+        m8Signals = QuietSignalSnapshot()
         statistics.resetSession(); statistics.flush(); hideReminder?(); sound.stop(); releaseActivity()
     }
     func resumeTracking(after gap: Double) {
@@ -247,6 +257,10 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         applyNaturalRest(gap)
         accounting.resumeAfterSuspension()
         previousTime = nil; nextSensorRead = 0
+    }
+    func refreshQuietSignals() {
+        guard !suspended else { m8Signals = QuietSignalSnapshot(); return }
+        m8Signals = quietSignalReader(config)
     }
     private func readSensors(now: Double) {
         guard !suspended else { return }
@@ -258,6 +272,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         } else { videoPlaying = false; if !config.videoEnabled { videoAvailable = true } }
         cameraActive = config.cameraSuppression ? CameraStateMonitor.read() : nil
         focusActive = config.focusSuppression ? FocusMonitor.read() : nil
+        refreshQuietSignals()
     }
     private func refreshSchedule() {
         let wasPaused = isPaused, wasOutside = outsideOfficeHours

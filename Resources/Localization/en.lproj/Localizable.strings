@@ -351,3 +351,29 @@
 "Typing · reminder delayed briefly" = "Typing · reminder delayed briefly";
 "Keyboard timing available" = "Keyboard timing available";
 "Keyboard timing unavailable" = "Keyboard timing unavailable";
+
+// M8 optional quiet signals
+"More quiet signals" = "More quiet signals";
+"When audio input is in use" = "When audio input is in use";
+"Permission: none. Reads active audio input state only, never sound. This includes microphones and virtual input devices; it does not prove a meeting or a person is present." = "Permission: none. Reads active audio input state only, never sound. This includes microphones and virtual input devices; it does not prove a meeting or a person is present.";
+"Audio input status unavailable" = "Audio input status unavailable";
+"Audio input in use" = "Audio input in use";
+"Audio input idle" = "Audio input idle";
+"In native full screen" = "In native full screen";
+"Full-screen status unavailable" = "Full-screen status unavailable";
+"Native full screen" = "Native full screen";
+"No native full-screen signal" = "No native full-screen signal";
+"These options quiet alerts and sounds only. Timers keep their normal activity and inactivity rules. After quiet mode, wait 60 seconds before a pending reminder." = "These options quiet alerts and sounds only. Timers keep their normal activity and inactivity rules. After quiet mode, wait 60 seconds before a pending reminder.";
+"Automatic screen-sharing detection is deferred. Use Presentation mode while sharing your screen." = "Automatic screen-sharing detection is deferred. Use Presentation mode while sharing your screen.";
+"Selected apps" = "Selected apps";
+"Quiet alerts when a selected app is in front" = "Quiet alerts when a selected app is in front";
+"Remove" = "Remove";
+"Choose app…" = "Choose app…";
+"Up to 32 apps. A background app does not quiet alerts. Unavailable status does not quiet alerts." = "Up to 32 apps. A background app does not quiet alerts. Unavailable status does not quiet alerts.";
+"Selected app status unavailable" = "Selected app status unavailable";
+"Selected app in front" = "Selected app in front";
+"No selected app in front" = "No selected app in front";
+"Preferences stay local. Daily summaries are optional and off by default. No app usage history, URLs or exact activity times are saved. Selected app identifiers are saved only when you choose them. No Accessibility, Input Monitoring or Full Disk Access is required. macOS may keep crash logs." = "Preferences stay local. Daily summaries are optional and off by default. No app usage history, URLs or exact activity times are saved. Selected app identifiers are saved only when you choose them. No Accessibility, Input Monitoring or Full Disk Access is required. macOS may keep crash logs.";
+"Only your chosen app list is saved in preferences and settings backups. No app usage history or file paths are stored." = "Only your chosen app list is saved in preferences and settings backups. No app usage history or file paths are stored.";
+"Could not use that app. Choose another application." = "Could not use that app. Choose another application.";
+"Permission: none. Detects the active macOS full-screen mode without reading screen contents. Maximized windows, borderless games and other displays are not inferred." = "Permission: none. Detects the active macOS full-screen mode without reading screen contents. Maximized windows, borderless games and other displays are not inferred.";
