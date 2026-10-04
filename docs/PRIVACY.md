@@ -28,7 +28,7 @@
 
 ## Signals and permissions
 
-- Idle detection reads elapsed time since input, not keys or text; no Input Monitoring permission.
+- Idle detection reads elapsed time since input, not keys or text; no Input Monitoring permission. The unreleased M7 typing option adds one aggregate keyboard elapsed-time query per timer tick when enabled. It defaults off, stores no key identity, content, event counts or typing history, and delays a pending reminder for at most 30 monotonic seconds per due work cycle. Missing or invalid timing does not delay it.
 - Video detection reads known macOS video power assertions transiently; it does not inspect browser pages or screen pixels. Signals vary by player and playback state.
 - Camera checks query whether a device is running; no capture session is started. Shared Focus uses the public macOS API and may be unavailable.
 - Lock and sleep stop counting. A video playing unattended cannot be distinguished from a person watching it.

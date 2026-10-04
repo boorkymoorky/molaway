@@ -103,7 +103,8 @@ struct SettingsRootView: View {
                 note("Manual pause survives reopening. Other active pause reasons continue after it ends.")
             }
             OfficeHoursSettings(model: model)
-            Section(L("Automatic tracking")) {
+            Section(L("Smart Pause")) {
+                note("Inactivity pauses tracking. Video and Watching mode keep counting; meeting and Presentation settings quiet alerts separately.")
                 Picker(L("Pause after inactivity"), selection: model.settings.binding(\.idlePauseSeconds)) {
                     ForEach([30, 60, 120, 180, 300, 600], id: \.self) { seconds in Text(seconds < 60 ? "30 " + L("sec") : minutes(seconds / 60)).tag(seconds) }
                 }
@@ -111,6 +112,14 @@ struct SettingsRootView: View {
                 Toggle(L("Keep counting during video"), isOn: model.settings.binding(\.videoEnabled))
                 note("Permission: none. Uses video power signals, not screen contents. Some players or small videos may not report a signal.")
                 if model.config.videoEnabled { status(model.videoAvailable ? model.videoPlaying ? "Video detected" : "No video signal" : "Video status unavailable") }
+            }
+            Section(L("While typing")) {
+                Toggle(L("Briefly delay reminders while typing"), isOn: model.settings.binding(\.typingDeferralEnabled))
+                note("Off by default. Waits for a 2-second typing pause, for at most 30 seconds per due work cycle. Tracking continues; no break is credited and snooze counts stay unchanged.")
+                note("Permission: none. Reads only time since keyboard activity, never keys or text. Unavailable timing does not delay reminders.")
+                if model.config.typingDeferralEnabled {
+                    status(model.typingDeferred ? "Typing · reminder delayed briefly" : model.keyboardTimingAvailable ? "Keyboard timing available" : "Keyboard timing unavailable")
+                }
             }
             Section(L("Watching mode")) {
                 HStack {

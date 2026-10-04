@@ -1,5 +1,11 @@
 # Verification
 
+## M7 Smart Pause development checks — 2026-10-04 (not shipped)
+
+- All 166 Swift tests in 17 suites, source/security and tracked publication guards, release build, ad hoc signature verification and isolated installation checks passed. New regressions exercise signal combinations and the bounded typing gate across all reminder styles/modes, fallbacks, repeated delivery, preview, independent pause reasons, completed rest, cadence and snoozes.
+- Typing deferral is off by default and uses only aggregate elapsed keyboard time, with one 30-second budget per due work cycle and release after a two-second typing pause. No keys/content/history, event monitoring, new permission, entitlement, dependency or application networking.
+- Physical typing detection, actual reminder delivery/actions, broader media/system/input cases and full keyboard/VoiceOver traversal remain unverified. Existing M6 behavior is retained; its structured physical checklist remains deferred. See [M7 Smart Pause](docs/M7_SMART_PAUSE.md). No M8 or release.
+
 ## M6 usability follow-up — 2026-10-04 (not shipped)
 
 - 150 Swift tests in 16 suites, source/publication guards, release build, ad hoc signature verification and isolated installation checks passed.

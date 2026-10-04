@@ -12,7 +12,7 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 | M4 | Office Hours, including overnight shifts and tomorrow's next working start. | Merged to main; not shipped |
 | M5 | Explicit Casual, Balanced, and Hardcore skip behavior across all reminder surfaces. | Merged to main; not shipped |
 | M6 | Optional cursor countdown before a break. | Merged to main; not shipped; physical checks pending |
-| M7 | Unify existing activity signals under Smart Pause and add bounded typing deferral. | Planned |
+| M7 | Unify existing activity signals under Smart Pause and add bounded typing deferral. | Implemented; not shipped; physical behavior unverified |
 | M8 | Evaluate microphone, sharing, fullscreen, and selected focus-app signals within public APIs and current permissions. | Planned |
 | M9 | An explainable Screen Score based on actual break opportunities and bounded optional daily summaries. | Planned |
 | M10 | Verified direct macOS download and a Molaway-owned Homebrew tap. | Planned |
@@ -70,3 +70,10 @@ The project remains local-first, account-free, telemetry-free, and permission-mi
 - Main PR #12 is merged and main CI passed. A fresh main-source run passed 141 tests in 14 suites, source/publication guards, release build, ad hoc signature verification, and isolated installation checks.
 - The full application was launched with the same compiled application code, re-signed under a disposable bundle identity to isolate local data. English/Turkish settings, real timer progression, and one completed manual short-break/cadence transition were observed through UI automation. These observations do not close visible-badge lifecycle or physical display, Space, sleep/lock, and VoiceOver checks.
 - The product owner was initially unavailable for the remaining physical checks. Later full-app user observations and PR #14 usability fixes are recorded separately in [the M6 readiness report](M6_READINESS.md), including the 150-test follow-up. On 2026-10-04 the owner deferred structured physical checks in favor of daily-use feedback; unperformed checks stay unverified. The report records their acceptance criteria, evidence limits, and distribution preparation that remains necessary before any future release. M6 remains unshipped and readiness remains pending. The accepted one-announcement VoiceOver policy is unchanged; M7 has not started and no release is authorized by this review.
+
+## M7 implementation and verification (not shipped)
+
+- Existing video, manual Watching, camera, shared Focus and Presentation signals share one Smart Pause decision. Activity counting stays distinct from quiet alerts. Idle, manual pause, Office Hours and sleep/lock retain their independent rules; no new microphone, sharing, fullscreen or focus-app detection is added.
+- Typing deferral defaults off. Once a reminder is pending and otherwise eligible, recent keyboard activity can delay it until a two-second typing pause, for at most 30 monotonic seconds per due work cycle. Retries, snoozes, previews or overlapping pause/quiet periods do not restart an active budget. Work counting continues; it never credits a break or increments deliberate snoozes. A completed/natural rest or skipped/reset cycle allows a new budget.
+- The signal is a public aggregate elapsed-time query, not an event monitor. Missing/invalid timing does not delay a reminder; stale signals simply provide no deferral. No new permissions, entitlements, dependencies, network access or typing history. Only the off-by-default preference is saved/exported.
+- See [M7 Smart Pause](M7_SMART_PAUSE.md) for automated evidence and explicit physical limits. M8 and publishing remain outside this work. M6's existing countdown remains enabled only by its own opt-in; structured physical checks stay deferred in favor of daily-use feedback.
