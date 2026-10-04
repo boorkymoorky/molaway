@@ -1,5 +1,12 @@
 # Verification
 
+## M9 Screen Score development checks — 2026-10-04 (not shipped)
+
+- 199 Swift tests in 19 suites passed locally, including retained M1–M8 coverage and 15 Screen Score regressions for calculation, sample threshold, weighted periods, migration, hostile counts/types, full-cycle eligibility, provisional rollback, duplicate outcomes, cadence, early/extra breaks, snoozes/retries/early returns, quiet/preview, pause/sleep, opt-out/deletion, retention, relaunch, resolution-day attribution and clock discontinuity.
+- Source/publication guards, English/Turkish localization syntax, release build and ad hoc signature verification passed. No entitlement, dependency, sensor, network capability or release metadata change. Local isolated installation checks stop at their running-app guard while the personal M8 app remains open; the PR workflow supplies isolated checks.
+- Limited English/Turkish layout inspection used a disposable AppKit rendering harness with the compiled settings view and synthetic daily totals. It showed the explanatory score and counts, preserved legacy totals, and the narrow layout. This does not establish complete app, keyboard/chart selection or VoiceOver behavior.
+- Real multi-day use and physical lifecycle/notification transitions remain unverified. M6 structured physical checks remain deferred in favor of daily-use feedback. See [M9 Screen Score](docs/M9_SCREEN_SCORE.md). No release was published.
+
 ## M8 development checks — 2026-10-04 (not shipped)
 
 - 184 Swift tests in 18 suites passed locally, including retained M1–M7 coverage and new optional audio-input, native-fullscreen and selected-frontmost-app policies, settings attacks, quiet return and lifecycle interactions.

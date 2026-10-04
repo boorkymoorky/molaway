@@ -377,3 +377,12 @@
 "Only your chosen app list is saved in preferences and settings backups. No app usage history or file paths are stored." = "Yalnızca seçtiğiniz uygulama listesi tercihlerde ve ayar yedeklerinde saklanır. Uygulama kullanım geçmişi veya dosya yolları kaydedilmez.";
 "Could not use that app. Choose another application." = "Bu uygulama kullanılamadı. Başka bir uygulama seçin.";
 "Permission: none. Detects the active macOS full-screen mode without reading screen contents. Maximized windows, borderless games and other displays are not inferred." = "İzin: gerekmez. Ekran içeriğini okumadan aktif macOS tam ekran modunu algılar. Büyütülmüş pencereler, çerçevesiz oyunlar ve diğer ekranlar için çıkarım yapmaz.";
+
+// M9 Screen Score
+"Screen Score" = "Ekran Puanı";
+"Selected period" = "Seçili dönem";
+"%d completed · %d resolved opportunities" = "%d tamamlandı · %d sonuçlanan mola fırsatı";
+"At least 3 resolved opportunities are needed for a score." = "Puan için en az 3 sonuçlanan mola fırsatı gerekir.";
+"No score data. Earlier days are not reconstructed." = "Puan verisi yok. Önceki günler yeniden hesaplanmaz.";
+"Completed ÷ resolved opportunities × 100. A full recorded work cycle must become due. Completion or Skip resolves it once; snoozes, early returns and pending breaks do not lower the score. Extra early breaks add no points." = "Tamamlanan ÷ sonuçlanan mola fırsatları × 100. Baştan kaydedilen bir çalışma döngüsünün mola zamanı gelmelidir. Tamamlama veya Atla seçimi fırsatı bir kez sonuçlandırır; ertelemeler, erken dönüşler ve bekleyen molalar puanı düşürmez. Fazladan erken molalar puan eklemez.";
+"Only cycles recorded from their start count. Outcomes belong to the day they resolve. Period scores combine opportunities, not daily percentages. This describes break completion, not health or productivity." = "Yalnızca başından itibaren kaydedilen döngüler sayılır. Sonuçlar sonuçlandıkları güne aittir. Dönem puanı günlük yüzdelerden değil, mola fırsatlarından hesaplanır. Bu puan molaların tamamlanmasını gösterir; sağlık veya verimlilik ölçümü değildir.";

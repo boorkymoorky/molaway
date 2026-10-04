@@ -80,11 +80,12 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         breakEngine.restoreCadence(settings.settings.cycleShortCount)
         Localization.shared.language = settings.settings.language
         applyAppearance()
+        statistics.startScoreCycle(fromBeginning: true)
         breakEngine.gentleReminders = true
         breakEngine.addListener { [weak self] event in
             guard let self else { return }
             switch event {
-            case .reminderDue: pendingDue.insert(nextKind)
+            case .reminderDue: pendingDue.insert(nextKind); observeScoreOpportunity()
             case .breakEnded(_, .completed, let duration):
                 if activeRest != nil { finishRest(duration: duration) }
             default: break
@@ -92,7 +93,12 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         }
         settings.addListener { [weak self] value in
             guard let self else { return }
-            if activeRest == nil { breakEngine.timing = value.timing }
+            if activeRest == nil {
+                if breakEngine.timing != value.timing {
+                    statistics.startScoreCycle(fromBeginning: breakEngine.workAccrued == 0)
+                }
+                breakEngine.timing = value.timing
+            }
             updateSkipCountdown(at: time)
             breakEngine.restoreCadence(value.cycleShortCount)
             Localization.shared.language = value.language
@@ -210,7 +216,11 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         return String(format: L("%@ has been waiting for %d minutes. Take a short break when you can."), kind.title, minutes)
     }
     func openStatistics() { settingsTab = 5; openSettingsAction?() }
-    func setStatisticsEnabled(_ value: Bool) { statistics.setEnabled(value); if !value { notifications?.clearWeekly() } }
+    func setStatisticsEnabled(_ value: Bool) {
+        statistics.setEnabled(value, now: wallClock())
+        statistics.startScoreCycle(fromBeginning: breakEngine.workAccrued == 0 && activeRest == nil)
+        if !value { notifications?.clearWeekly() }
+    }
     func setWeeklySummary(_ value: Bool) {
         statistics.setWeekly(value)
         if value { notifications?.request() } else { notifications?.clearWeekly() }
@@ -333,7 +343,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
             } else { activity = .resting; engine(kind).advance(by: delta) }
             updateUI?(); return
         }
-        statistics.sample(now: Date(), uptime: now, active: decision.activeSeconds, rollback: decision.rollback,
+        statistics.sample(now: wallClock(), uptime: now, active: decision.activeSeconds, rollback: decision.rollback,
             provisional: accounting.unconfirmedSeconds,
             observed: isPaused || pause.reasons.contains(.officeHours) || activity == .starting ? 0 : delta,
             video: config.videoEnabled && videoPlaying, watching: isWatching)
@@ -345,6 +355,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
             if timer != nil && activityToken == nil { activityToken = ProcessInfo.processInfo.beginActivity(options: .userInitiatedAllowingIdleSystemSleep, reason: "Local break timer") }
             breakEngine.advance(by: decision.activeSeconds)
         } else { releaseActivity(); if !isPreview { hideReminder?(); reminderKinds.removeAll() } }
+        observeScoreOpportunity()
         keyboardTimingAvailable = keyboardIdle.map { $0.isFinite && $0 >= 0 } ?? false
         typingDeferralRemaining = typingDeferral.update(now: now, cycleDue: breakEngine.timeUntilBreak <= 0,
             pending: !pendingDue.isEmpty || !policy.pending.isEmpty,
@@ -371,6 +382,10 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         }
         updateUI?()
     }
+    private func observeScoreOpportunity() {
+        statistics.observeScoreOpportunity(confirmedDue:
+            breakEngine.workAccrued - accounting.unconfirmedSeconds >= Double(breakEngine.timing.workSeconds))
+    }
     private func applyNaturalRest(_ duration: Double) {
         guard !credited else { return }
         var duration = duration
@@ -383,7 +398,9 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         let kind = nextKind
         let target = Double(BreakScheduleMath.duration(of: breakEngine.nextBreakKind, timing: breakEngine.timing))
         guard duration >= target else { return }
-        if !suspended { statistics.naturalCycle(kind: kind, target: target) }
+        observeScoreOpportunity()
+        statistics.resolveScoreOpportunity(completed: true, now: wallClock())
+        if !suspended { statistics.naturalCycle(kind: kind, target: target, now: wallClock()) }
         breakEngine.accountForNaturalRest(duration)
         settings.update { $0.cycleShortCount = breakEngine.shortBreaksSinceLong }; settings.flush()
         typingDeferral.reset(); typingDeferralRemaining = nil
@@ -392,6 +409,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     func beginRest(_ kind: MolaKind, now: Double? = nil) {
         guard !suspended else { return }
         if activeRest != nil { cancelRest() }
+        observeScoreOpportunity()
         statistics.beginManual()
         let selected = kind == .long ? MolaKind.long : nextKind
         activeRest = selected; restStarted = now ?? time; restReturn.reset()
@@ -407,7 +425,10 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     func cancelRest(restartCycle: Bool = false) {
         guard let kind = activeRest else { return }
         statistics.cancelManual()
-        if restartCycle { breakEngine.restartWorkCycle() }
+        if restartCycle {
+            statistics.startScoreCycle(fromBeginning: true)
+            breakEngine.restartWorkCycle()
+        }
         else { breakEngine.cancelBreakKeepingProgress() }
         policy.clear(kind); pendingDue.remove(kind)
         activeRest = nil
@@ -418,7 +439,8 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     }
     private func finishRest(duration: Double) {
         guard let kind = activeRest else { return }
-        statistics.completeCycle(kind: kind, duration: duration)
+        statistics.resolveScoreOpportunity(completed: true, now: wallClock())
+        statistics.completeCycle(kind: kind, duration: duration, now: wallClock())
         typingDeferral.reset(); typingDeferralRemaining = nil
         settings.update { $0.cycleShortCount = breakEngine.shortBreaksSinceLong }; settings.flush()
         policy.clear(kind); pendingDue.remove(kind)
@@ -434,6 +456,8 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     @discardableResult func skipBreak(now: Double? = nil) -> Bool {
         updateSkipCountdown(at: now ?? time)
         guard canSkipBreak else { return false }
+        if activeRest == nil { observeScoreOpportunity() }
+        statistics.resolveScoreOpportunity(completed: false, now: wallClock())
         if activeRest != nil { statistics.cancelManual() }
         let kind = activeRest ?? nextKind
         breakEngine.skipBreak()

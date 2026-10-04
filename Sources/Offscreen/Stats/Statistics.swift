@@ -14,13 +14,14 @@ struct DailySummary: Codable, Equatable, Identifiable, Sendable {
     var longBreaks: Int = 0
     var natural: Int = 0
     var rest: Double = 0
+    var score: ScreenScoreTotals?
     enum CodingKeys: String, CodingKey {
-        case day, active, video, watching, observed, breaks, eyes, movement, shortBreaks, longBreaks, natural, rest
+        case day, active, video, watching, observed, breaks, eyes, movement, shortBreaks, longBreaks, natural, rest, score
     }
-    init(day: String, active: Double = 0, video: Double = 0, watching: Double = 0, observed: Double = 0, breaks: Int = 0, eyes: Int = 0, movement: Int = 0, shortBreaks: Int = 0, longBreaks: Int = 0, natural: Int = 0, rest: Double = 0) {
+    init(day: String, active: Double = 0, video: Double = 0, watching: Double = 0, observed: Double = 0, breaks: Int = 0, eyes: Int = 0, movement: Int = 0, shortBreaks: Int = 0, longBreaks: Int = 0, natural: Int = 0, rest: Double = 0, score: ScreenScoreTotals? = nil) {
         self.day = day; self.active = active; self.video = video; self.watching = watching; self.observed = observed
         self.breaks = breaks; self.eyes = eyes; self.movement = movement; self.shortBreaks = shortBreaks; self.longBreaks = longBreaks
-        self.natural = natural; self.rest = rest
+        self.natural = natural; self.rest = rest; self.score = score
     }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -36,12 +37,13 @@ struct DailySummary: Codable, Equatable, Identifiable, Sendable {
         longBreaks = try c.decodeIfPresent(Int.self, forKey: .longBreaks) ?? 0
         natural = try c.decode(Int.self, forKey: .natural)
         rest = try c.decode(Double.self, forKey: .rest)
+        score = try c.decodeIfPresent(ScreenScoreTotals.self, forKey: .score)
     }
     var id: String { day }
     var valid: Bool {
         StatsCalendar.date(day) != nil && [active, video, watching, observed, rest].allSatisfy { $0.isFinite && (0...86_400).contains($0) }
         && video + watching <= active + 0.01 && [breaks, eyes, movement, shortBreaks, longBreaks, natural].allSatisfy { (0...8640).contains($0) }
-        && eyes <= breaks && movement <= breaks && shortBreaks + longBreaks <= breaks && natural <= breaks
+        && eyes <= breaks && movement <= breaks && shortBreaks + longBreaks <= breaks && natural <= breaks && (score?.valid ?? true)
     }
 }
 struct StatisticsDocument: Codable, Sendable {
@@ -162,6 +164,16 @@ struct StatisticsLedger {
         }
         // Defensive memory bound; gaps and inconsistent signals must not grow a log.
         if pending.count > 1200 { pending.removeAll() }
+    }
+    mutating func recordScore(day: String, completed: Bool) {
+        guard document.enabled else { return }
+        edit(day) { row in
+            var score = row.score ?? ScreenScoreTotals()
+            guard score.opportunities < 8640 else { return }
+            score.opportunities += 1
+            if completed { score.completed += 1 }
+            row.score = score
+        }
     }
     mutating func beginManual() { manualStarted = document.enabled; pending.removeAll(); eligibleNatural = false; naturalKinds.removeAll(); naturalSeconds = 0 }
     mutating func cancelManual() { manualStarted = false }

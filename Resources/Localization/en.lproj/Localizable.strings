@@ -377,3 +377,12 @@
 "Only your chosen app list is saved in preferences and settings backups. No app usage history or file paths are stored." = "Only your chosen app list is saved in preferences and settings backups. No app usage history or file paths are stored.";
 "Could not use that app. Choose another application." = "Could not use that app. Choose another application.";
 "Permission: none. Detects the active macOS full-screen mode without reading screen contents. Maximized windows, borderless games and other displays are not inferred." = "Permission: none. Detects the active macOS full-screen mode without reading screen contents. Maximized windows, borderless games and other displays are not inferred.";
+
+// M9 Screen Score
+"Screen Score" = "Screen Score";
+"Selected period" = "Selected period";
+"%d completed · %d resolved opportunities" = "%d completed · %d resolved opportunities";
+"At least 3 resolved opportunities are needed for a score." = "At least 3 resolved opportunities are needed for a score.";
+"No score data. Earlier days are not reconstructed." = "No score data. Earlier days are not reconstructed.";
+"Completed ÷ resolved opportunities × 100. A full recorded work cycle must become due. Completion or Skip resolves it once; snoozes, early returns and pending breaks do not lower the score. Extra early breaks add no points." = "Completed ÷ resolved opportunities × 100. A full recorded work cycle must become due. Completion or Skip resolves it once; snoozes, early returns and pending breaks do not lower the score. Extra early breaks add no points.";
+"Only cycles recorded from their start count. Outcomes belong to the day they resolve. Period scores combine opportunities, not daily percentages. This describes break completion, not health or productivity." = "Only cycles recorded from their start count. Outcomes belong to the day they resolve. Period scores combine opportunities, not daily percentages. This describes break completion, not health or productivity.";
