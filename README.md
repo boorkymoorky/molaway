@@ -30,7 +30,7 @@ The direct download and [SHA256](docs/INSTALL.md#check-download-integrity-option
 
 **Signing:** Molaway is locally (ad hoc) signed, **not Apple Developer ID signed or notarized**. macOS may ask you to approve the app. Follow the app-specific steps in the [installation guide](docs/INSTALL.md); keep Gatekeeper enabled.
 
-**Terminal alternative:** [build and install locally](docs/INSTALL.md#terminal-install-from-source). No paid Apple Developer membership is needed. A [Molaway-owned Homebrew tap candidate](docs/M10_DISTRIBUTION.md) is prepared; the tap is not yet published or verified for end-user installation.
+**Terminal alternative:** [build and install locally](docs/INSTALL.md#terminal-install-from-source). No paid Apple Developer membership is needed. The [Molaway-owned Homebrew tap](https://github.com/boorkymoorky/homebrew-molaway) is published and its isolated installation lifecycle is verified. End-user tap instructions await first-launch verification under normal Gatekeeper approval; see [M10 evidence and limits](docs/M10_DISTRIBUTION.md).
 
 **Updates are manual:** check [Releases](https://github.com/boorkymoorky/molaway/releases). Molaway does not contact GitHub or check for updates in the background.
 

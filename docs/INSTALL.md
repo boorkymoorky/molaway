@@ -39,9 +39,9 @@ Compare the 64-character hash; Terminal may print a longer file path. If it diff
 
 ## Homebrew status
 
-A cask candidate for a Molaway-maintained tap is [prepared in this repository](homebrew/Casks/molaway.rb), pinned to the same verified 2.2.5 ZIP and SHA256. It supports Apple Silicon and requires macOS 15 or later.
+The [Molaway-maintained tap](https://github.com/boorkymoorky/homebrew-molaway) is published and pins the same verified 2.2.5 ZIP and SHA256. It supports Apple Silicon and requires macOS 15 or later. Its cask matches [the copy in this repository](homebrew/Casks/molaway.rb).
 
-The tap is **not published or verified for end-user installation**. No Homebrew install command is available yet; use the direct download above. [Tap preparation and remaining checks](M10_DISTRIBUTION.md) are separate from a new app release. Homebrew would contact GitHub to fetch packages; Molaway itself remains offline and manually updated.
+The public tap’s installation, fetch, same-version reinstallation and removal passed in a disposable Homebrew environment. **First launch after normal Gatekeeper approval remains unverified**, so end-user Homebrew instructions remain pending; use the direct download above. [Verification evidence and the remaining first-launch gate](M10_DISTRIBUTION.md) state the limits. Homebrew contacts GitHub to fetch packages; Molaway itself remains offline and manually updated. This tap adds no new app release or M1–M9 development features.
 
 ## First launch and macOS security
 

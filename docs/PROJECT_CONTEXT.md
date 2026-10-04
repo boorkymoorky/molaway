@@ -33,7 +33,7 @@ M8 development adds off-by-default audio-input, active native fullscreen and exp
 
 M9 development adds an explainable Screen Score to the optional Overview. Only full opted-in work cycles becoming due can count, once on completion or Skip; pending/snoozed opportunities and extra early breaks do not penalize or inflate it. At least three outcomes are required; old days have no reconstructed score. Only bounded daily completed/resolved totals persist under existing consent/retention/deletion controls. See `docs/M9_SCREEN_SCORE.md`. M9 is merged, remains unshipped and physically unverified.
 
-M10 verifies the direct published 2.2.5 Apple Silicon download and SHA256, and prepares a pinned cask for a Molaway-owned tap. The tap is not published or verified for end-user installation; no Homebrew install command is available. See `docs/M10_DISTRIBUTION.md` for the remaining gate. M1–M9 are still absent from that download; M11 and a new release have not started.
+M10 re-verifies the published 2.2.5 Apple Silicon download/SHA256 and publishes the protected Molaway-owned Homebrew tap. The public cask command and isolated fetch/reinstall/uninstall are verified; first launch after normal Gatekeeper approval remains pending at the owner’s request. End-user tap instructions remain withheld until that gate passes. See `docs/M10_DISTRIBUTION.md` for evidence and limits. M1–M9 are still absent from that download; M11 and a new release have not started.
 
 ### Windows
 
