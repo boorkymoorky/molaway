@@ -1,5 +1,11 @@
 # Verification
 
+## M6 usability follow-up — 2026-10-04 (not shipped)
+
+- 148 Swift tests in 15 suites, source/publication guards, release build, ad hoc signature verification and isolated installation checks passed.
+- Limited full-app TR/EN inspection confirmed the separated dashboard labels and notification error/style-selection flows. Native authorization still fails for the tested application copy; permission prompting and delivery remain unverified.
+- Menu-bar readability, broader physical checks and release readiness remain pending. See [M6 usability checks](docs/M6_USABILITY_CHECKS.md) and the full-app readiness report in [PR #13](https://github.com/boorkymoorky/molaway/pull/13). M7 and publishing are outside this work.
+
 ## M5 break-skip development checks — 2026-09-27 (not shipped)
 
 - 135 Swift tests in 13 suites passed locally, including seven M5 regressions for Casual/Balanced/Hardcore, the five-second gate, closing, snoozing, preview isolation, cadence, persistence, manual pause, and an Office Hours notification boundary.

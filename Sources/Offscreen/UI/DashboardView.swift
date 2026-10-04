@@ -14,20 +14,21 @@ struct DashboardView: View {
                 .font(.caption).foregroundStyle(.secondary).lineLimit(2)
 
             VStack(spacing: 12) {
-                ZStack {
+                VStack(spacing: 12) {
                     TimerRing(progress: model.ringProgress, color: model.tint)
-                        .frame(width: 184, height: 184)
-                    VStack(spacing: 2) {
+                        .frame(width: 144, height: 144)
+                    VStack(spacing: 3) {
                         Text(model.nextReadout.resting ? L("Rest time") : L(model.nextReadout.deferred ? "Next reminder" : "Next break"))
-                            .font(.caption2).foregroundStyle(.secondary)
+                            .font(.caption).foregroundStyle(.secondary)
                         Text(model.nextReadout.kind.title)
-                            .font(.caption2.weight(.medium))
+                            .font(.callout.weight(.medium))
                         Text(model.nextReadout.clock)
-                            .font(.system(size: 23, weight: .semibold, design: .rounded))
+                            .font(.system(size: 28, weight: .semibold, design: .rounded))
                             .monospacedDigit()
                     }
                     .multilineTextAlignment(.center)
-                    .frame(width: 78)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel((model.nextReadout.resting ? L("Rest time") : L(model.nextReadout.deferred ? "Next reminder" : "Next break")) + ": " + model.nextReadout.kind.title + ", " + model.nextReadout.clock)

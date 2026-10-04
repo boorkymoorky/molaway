@@ -70,6 +70,14 @@ final class StatusItemController: NSObject, NSWindowDelegate {
         let glyph = indicator
         let level = model.visibleOverdue
         let ink: NSColor = level == .red ? .systemRed : level == .amber ? .systemOrange : .black
+        if !glyph.isEmpty {
+            // A state symbol replaces the rings; the tiny inner ring cannot contain it legibly.
+            let image = NSImage(systemSymbolName: glyph, accessibilityDescription: nil)?
+                .withSymbolConfiguration(.init(paletteColors: [ink])) ?? NSImage(size: NSSize(width: 18, height: 18))
+            image.size = NSSize(width: 18, height: 18)
+            image.isTemplate = level == .normal
+            return image
+        }
         let image = NSImage(size: NSSize(width: 20, height: 20), flipped: false) { _ in
             var rings: [(Double, Double)] = [(8.0, progress.outer)]
             if let inner = progress.inner { rings.append((4.7, inner)) }
@@ -86,10 +94,6 @@ final class StatusItemController: NSObject, NSWindowDelegate {
                                   startAngle: start, endAngle: start - 270 * max(0.02, fraction), clockwise: true)
                     ink.setStroke(); arc.lineWidth = 1.8; arc.lineCapStyle = .round; arc.stroke()
                 }
-            }
-            if !glyph.isEmpty {
-                let symbol = NSImage(systemSymbolName: glyph, accessibilityDescription: nil)?.withSymbolConfiguration(.init(paletteColors: [ink]))
-                symbol?.draw(in: NSRect(x: 5, y: 5, width: 10, height: 10))
             }
             return true
         }

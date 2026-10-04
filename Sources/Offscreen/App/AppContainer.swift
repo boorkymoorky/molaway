@@ -103,7 +103,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         let resting: Bool
         let deferred: Bool
         var clock: String { Format.clock(seconds) }
-        var menuText: String { kind.shortTitle + " " + clock }
+        var menuText: String { clock }
     }
     func readout(for kind: MolaKind) -> TimerReadout {
         let timer = engine(kind), resting = activeRest == kind

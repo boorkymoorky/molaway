@@ -225,8 +225,17 @@ struct SettingsRootView: View {
     }
     private var notificationPermission: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(L("Status") + ": " + L(model.notifications?.authorization == .authorized ? model.notifications?.alertsEnabled == true ? "Allowed" : "Banners disabled" : model.notifications?.authorization == .denied ? "Denied in System Settings" : "Not requested"))
+            Text(L("Status") + ": " + L(model.notifications?.permission.statusKey ?? "Unavailable"))
             Button(L("Request notification permission")) { model.notifications?.request() }
+                .disabled(model.notifications?.permission.isRequesting == true)
+            if let message = model.notifications?.permission.failureKey {
+                note(message)
+                Button(L("Use Small card alerts")) {
+                    model.settings.update { $0.reminderStyle = .corner }
+                    model.feedback = nil
+                    model.settingsTab = 2
+                }
+            }
             note("If denied, change Notifications for Molaway in System Settings. No push service or network access is used.")
         }
     }
