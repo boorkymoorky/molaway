@@ -28,8 +28,12 @@ Invalid/unavailable timing releases the reminder. A stale reading does not start
 - Source/security and tracked publication guards passed. These are scoped checks, not an independent security audit.
 - Release build, ad hoc signature verification and isolated fresh/update/failure-path installation checks passed. No release metadata, entitlement, dependency or application networking change.
 
+## Limited installed-app UI observation
+
+The normally installed app built from M7 source `51449db` opened successfully. UI automation inspected the Turkish Smart Pause/While typing settings and their visible layout; the new preference remained off and no user timing or signal preferences were changed. Local data files were unchanged immediately after installation, before launch resumed normal app writes. Only one Molaway app remained installed. The app's notification settings reported **Granted** after the update, consistent with the owner's earlier prompt/approval report. This does not establish notification delivery/actions, an English UI layout check, real typing detection or physical accessibility.
+
 ## Physical limits
 
 Automated model/controller tests do not establish real typing detection or notification/panel delivery. Physical behavior during real typing, dictation, secure input, remote sessions, supported video players, camera/Focus, multi-display/Space changes, sleep/lock, keyboard/VoiceOver traversal and prolonged energy use remains unverified. Tests with synthetic time or injected elapsed readings are not full-app physical checks. Turkish/English resources are present; audible pronunciation and full keyboard traversal remain unclaimed.
 
-M6's owner-confirmed notification prompt/approval does not establish notification action/delivery timing. Earlier isolated-copy rejection remains historical with an unknown cause. Release readiness remains pending; no release is authorized by this change.
+M6's owner-confirmed notification prompt/approval and the later installed-app Granted status do not establish notification action/delivery timing. Earlier isolated-copy rejection remains historical with an unknown cause. Release readiness remains pending; no release is authorized by this change.
