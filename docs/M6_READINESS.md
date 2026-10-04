@@ -47,7 +47,7 @@ Results below are limited UI automation observations; they do not replace the pe
 
 In the complete, separately identified test copy, macOS rejected the notification authorization request with `notificationsNotAllowed`; no permission prompt appeared. The new UI explains the failure and explicitly offers the existing Small card style. The style-selection flow and TR/EN dashboard layout were inspected, but native prompt/delivery/action checks remain blocked for that tested copy. The exact signing/registration or system cause is unestablished; no new permission or security bypass was introduced. Release readiness remains pending.
 
-A manual-pause user observation reported the app disappearing. The process remained running and the settings showed the retained manual pause. Clarification of dashboard closure versus menu-bar icon disappearance is pending; the changed menu-bar appearance is not recorded as physically passed.
+The user clarified that the menu-bar icon itself was absent after manual pause in the initial follow-up build `c3575f9`. The process remained running and settings retained the manual pause. PR #14 now includes a fixed drawable pause glyph and an explicit icon-only menu-bar slot. The original standalone bitmap check did not reproduce the absence; the exact cause is unestablished. Updated full-app pause/resume and icon-presence rechecking remains pending, so the initial failure is not recorded as passed.
 
 ## Remaining physical checks
 
