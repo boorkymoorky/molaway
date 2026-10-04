@@ -33,3 +33,11 @@ __pycache__/
 *.pyc
 
 build.noindex/
+
+# Windows/.NET development products
+**/bin/
+**/obj/
+**/.molaway-tests-*/
+*.user
+*.suo
+.vs/

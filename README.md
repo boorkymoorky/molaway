@@ -33,7 +33,7 @@ Molaway is a personal, non-commercial project shared as open source. My version 
 
 **Updates are manual:** check [Releases](https://github.com/boorkymoorky/molaway/releases). Molaway does not contact GitHub or check for updates in the background.
 
-**Windows: coming soon — planned, with no release date yet.** No Windows build is available.
+**Windows: development preview in progress.** The separate [Windows implementation and test plan](Windows/README.md) is not yet validated for daily use. The features and sandbox guarantees below describe the macOS release.
 
 ## Features
 
