@@ -41,6 +41,14 @@ Results below are limited UI automation observations; they do not replace the pe
 
 - In a second full-app run, the user quit through the menu-bar command while the countdown was visible and confirmed that the badge disappeared and the test app reopened. UI inspection afterward showed Turkish language, five-minute work settings, and countdown opt-in retained. However, the completed-short count changed from the prepared two-of-two state to zero-of-two. This is an unresolved observation, not yet an established relaunch defect: qualifying natural absence or a completed long rest must be ruled out before assigning a cause. The existing deterministic reopening/cadence regression passed again, but it does not explain this physical sequence. The quit/relaunch row remains partial while the sequence is clarified. The disposable app was manually paused for investigation.
 
+## Usability follow-up — 2026-10-04
+
+[Draft PR #14](https://github.com/boorkymoorky/molaway/pull/14) addresses user-reported menu-bar/dashboard overlap and misleading notification-permission status on a separate macOS branch. It does not change the accepted cursor announcement policy, start M7 or publish a release. Its detailed verification and limits are in `docs/M6_USABILITY_CHECKS.md` on that branch; it is not yet merged to the reviewed main source.
+
+In the complete, separately identified test copy, macOS rejected the notification authorization request with `notificationsNotAllowed`; no permission prompt appeared. The new UI explains the failure and explicitly offers the existing Small card style. The style-selection flow and TR/EN dashboard layout were inspected, but native prompt/delivery/action checks remain blocked for that tested copy. The exact signing/registration or system cause is unestablished; no new permission or security bypass was introduced. Release readiness remains pending.
+
+A manual-pause user observation reported the app disappearing. The process remained running and the settings showed the retained manual pause. Clarification of dashboard closure versus menu-bar icon disappearance is pending; the changed menu-bar appearance is not recorded as physically passed.
+
 ## Remaining physical checks
 
 Record each row as passed, failed, or not run. Include the tested source commit and whether it was the full app or a harness; omit personal settings, raw logs, screenshots of other apps, and identifying device inventory.
