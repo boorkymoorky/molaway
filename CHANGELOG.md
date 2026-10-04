@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased development — M1–M9 and M11
+
+These changes are merged development work, **not included in the published 2.2.5 download**. No new version or release date is assigned. Physical readiness remains pending; see [M11 verification and release preparation](docs/M11_RELEASE_READINESS.md).
+
+- Use one work/short/long break cycle, with approximate migration from independent eye/movement timing and a reversible Deep Focus preset. Rings show work/rest progress and completed-short cadence.
+- Add shared manual pause options and optional Office Hours, including overnight schedules and independent pause reasons.
+- Add Casual/Balanced/Hardcore skip behavior across reminder surfaces and an optional cursor countdown with one localized announcement per visible countdown.
+- Share Smart Pause decisions, with off-by-default typing deferral capped at 30 seconds. Add optional audio-input, active native fullscreen and explicitly selected foreground-app quiet signals within documented public APIs; automatic sharing and broader detection remain deferred.
+- Add an explainable Screen Score to opted-in bounded daily summaries, resolving each confirmed full-cycle opportunity once. Historical days and unresolved/early breaks do not fabricate outcomes.
+- Add integrated lifecycle/migration regressions and offline built-bundle, signing, permission and English/Turkish resource checks to CI.
+
+The Molaway-owned Homebrew tap currently distributes only the existing 2.2.5 asset. Its isolated installation lifecycle is verified; original first launch after normal Gatekeeper approval remains pending. Molaway stays offline, manually updated and permission-minimal.
+
 ## 2.2.5 — 2026-09-26
 
 - Snooze gives both break reminders at least five active minutes of quiet, so another timer cannot interrupt earlier. Later deadlines stay unchanged.

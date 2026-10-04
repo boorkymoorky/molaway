@@ -4,7 +4,9 @@ Keep Molaway local, small and permission-minimal. Explain the user-visible reaso
 
 Build with Swift 6.2+ and the macOS 26+ SDK (for the availability-guarded glass API); the deployment target remains macOS 15. Run `swift test`, `python3 Scripts/verify-security.py` and `bash Scripts/build-app.sh`. Check Turkish and English, keyboard accessibility, permission-denied states and relevant monitor layouts. CI is supplied but must pass on the actual GitHub repository before claiming CI verification.
 
-After building, quit Molaway and run `python3 Scripts/verify-installation.py`. It exercises the real installer in disposable folders using `MOLAWAY_INSTALL_DIR`; it does not replace your installed app or change your home directory.
+After building, run `python3 Scripts/verify-bundle.py --self-test`. It checks the assembled Apple Silicon app’s metadata, original signature/hardened runtime, exact entitlements, license and EN/TR resource/format parity against reviewed source. Its negative fixtures are disposable; it never launches or installs the app. This targeted guard is not physical verification or release approval. See [M11 readiness and release handoff](docs/M11_RELEASE_READINESS.md).
+
+Quit Molaway before running `python3 Scripts/verify-installation.py`. It exercises the real installer in disposable folders using `MOLAWAY_INSTALL_DIR`; it does not replace your installed app or change your home directory.
 
 For download or tap changes, run `python3 Scripts/verify-distribution.py` to check the pinned cask against the README and installation guide. Download the actual published app ZIP and run `python3 Scripts/verify-distribution.py --archive <downloaded-app.zip>`; also compare its hash with the release checksum file and GitHub asset digest. The offline CI guard does not verify live availability, signing, or Homebrew installation. Follow [M10 distribution verification](docs/M10_DISTRIBUTION.md) before publishing any tap command. Never point a cask at an unreleased main build or bypass Gatekeeper.
 
