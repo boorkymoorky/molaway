@@ -23,7 +23,7 @@ Privacy and security are product features. Molaway should work locally, request 
 
 ### macOS
 
-The public macOS release line is **2.2.x**; the latest documented version in this checkout is **2.2.5**. It includes independent timers, idle/return handling, supported video detection plus manual watching mode, configurable reminder surfaces, multi-monitor placement, localization, sounds, optional local statistics, and overdue escalation. Use `CHANGELOG.md` as the version history and verify GitHub before publishing a newer release.
+The public macOS release line is **2.2.x**; the latest published non-preview version is **2.2.5**. It includes independent timers, idle/return handling, supported video detection plus manual watching mode, configurable reminder surfaces, multi-monitor placement, localization, sounds, optional local statistics, and overdue escalation. Use `CHANGELOG.md` as the version history and verify GitHub before publishing a newer release.
 
 Distribution is Apple Silicon, ad hoc signed, and unnotarized. Intel and all player/display combinations are not claimed as verified. Release and security limitations are documented in `README.md`, `SECURITY.md`, and `VERIFICATION.md`.
 
@@ -35,7 +35,7 @@ M9 development adds an explainable Screen Score to the optional Overview. Only f
 
 M10 re-verifies the published 2.2.5 Apple Silicon download/SHA256 and publishes the protected Molaway-owned Homebrew tap. The public cask command and isolated fetch/reinstall/uninstall are verified; first launch after normal Gatekeeper approval remains pending at the owner’s request. End-user tap instructions remain withheld until that gate passes. See `docs/M10_DISTRIBUTION.md` for evidence and limits. M1–M9 are still absent from that download; no new release has been published.
 
-M11 adds integrated M1–M9 lifecycle/migration regressions and an offline assembled-bundle guard in CI. Automated verification and release preparation are complete within documented limits; physical readiness remains pending under the daily-use policy. No version/tag/release or tap update is created. See `docs/M11_RELEASE_READINESS.md` for the publishing handoff and outstanding gates. The next milestone is the post-M11 publishing decision: `docs/MACOS_RELEASE_DECISION.md` proposes an opt-in `3.0.0-beta.1`/build `11`, with publication on hold and stable readiness pending. The proposal assigns no version and does not change the M6 daily-use policy or M10 first-launch gate.
+M11 adds integrated M1–M9 lifecycle/migration regressions and an offline assembled-bundle guard in CI. Automated verification and release preparation are complete within documented limits; physical readiness remains pending under the daily-use policy. No version/tag/release or tap update is created. See `docs/M11_RELEASE_READINESS.md` for the publishing handoff and outstanding gates. The owner approved preparation only of the opt-in **3.0.0-beta.1**, numeric bundle version **3.0.0**, build **11**. See `docs/MACOS_BETA_PREPARATION.md` for candidate evidence and `docs/MACOS_RELEASE_DECISION.md` for the decision/notes and migration risks. Publication remains on hold; no tag, GitHub release or asset upload is authorized. Stable/RC readiness, the M6 daily-use policy and M10 first-launch gate remain unchanged. The next step is candidate review and a separate publishing decision, not a tap update.
 
 ### Windows
 

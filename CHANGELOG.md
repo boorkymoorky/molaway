@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased development — M1–M9 and M11
+## 3.0.0-beta.1 — preparation only; not published
 
-These changes are merged development work, **not included in the published 2.2.5 download**. No new version or release date is assigned. Physical readiness remains pending; see [M11 verification and release preparation](docs/M11_RELEASE_READINESS.md). The [post-M11 decision and release-notes draft](docs/MACOS_RELEASE_DECISION.md) proposes `3.0.0-beta.1`/build `11` for a separately approved opt-in prerelease; publication remains on hold. This proposal does not assign the version or create a GitHub release draft.
+The owner approved preparation of an opt-in macOS beta with bundle version **3.0.0**, build **11**. This is neither a stable release nor a release candidate. No release date, tag, GitHub release draft or uploaded asset exists. **2.2.5 remains the default non-preview download and Homebrew version.** M1–M9 and M11 below are still absent from that download. See [candidate preparation and remaining gates](docs/MACOS_BETA_PREPARATION.md) and the [release decision, physical gaps and draft notes](docs/MACOS_RELEASE_DECISION.md).
 
 - Use one work/short/long break cycle, with approximate migration from independent eye/movement timing and a reversible Deep Focus preset. Rings show work/rest progress and completed-short cadence.
 - Add shared manual pause options and optional Office Hours, including overnight schedules and independent pause reasons.
