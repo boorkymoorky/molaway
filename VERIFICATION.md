@@ -1,5 +1,12 @@
 # Verification
 
+## M10 distribution preparation checks — 2026-10-04 (no new app release)
+
+- Downloaded the actual public `Molaway-2.2.5-macOS-arm64.zip` (asset ID `591372855`, 1,809,628 bytes). Its computed SHA256 matched the release's exact app entry in `SHA256SUMS.txt` and GitHub's asset digest. Bundle identity/version, arm64 architecture, macOS 15 target, English/Turkish resources, ad hoc hardened-runtime signature and unchanged sandbox/file entitlements were inspected; extracted signature verification passed. This does not verify publisher identity, absence of malware or physical first launch. See [M10 distribution preparation](docs/M10_DISTRIBUTION.md) for the pinned values and limits.
+- The Homebrew candidate was loaded with the native cask DSL, and selected offline source audits passed. The repository guard passed both offline and against the downloaded ZIP; negative checks rejected a missing checksum, foreign release URL, inconsistent documented hash/download, executable install hook and modified ZIP. The CI guard is offline and does not prove live download availability.
+- All 199 Swift tests in 19 suites, source/publication guards, English/Turkish localization syntax, release build and ad hoc signature verification passed locally. Local installation verification stopped at its existing running-app guard; the personal app was left running and unchanged. PR CI includes isolated installation checks.
+- The tap remains unpublished and end-user installation unverified: no Homebrew install command is published. M1–M9 are merged development work, absent from published 2.2.5. No app source, entitlement, local installation, user data, localization text, Windows work or release metadata was changed. M6 structured physical checks remain deferred for daily-use feedback; M11 has not started.
+
 ## M9 Screen Score development checks — 2026-10-04 (not shipped)
 
 - 199 Swift tests in 19 suites passed locally, including retained M1–M8 coverage and 15 Screen Score regressions for calculation, sample threshold, weighted periods, migration, hostile counts/types, full-cycle eligibility, provisional rollback, duplicate outcomes, cadence, early/extra breaks, snoozes/retries/early returns, quiet/preview, pause/sleep, opt-out/deletion, retention, relaunch, resolution-day attribution and clock discontinuity.

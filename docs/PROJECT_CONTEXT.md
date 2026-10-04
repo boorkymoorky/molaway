@@ -31,7 +31,9 @@ M1–M6 are merged macOS development work, not part of the published 2.2.x relea
 
 M8 development adds off-by-default audio-input, active native fullscreen and explicitly selected foreground-app quiet signals within current public APIs/permissions. Automatic sharing, microphone-only classification and broader fullscreen inference are deferred. Selected app identifiers are bounded preferences, never usage history. See `docs/M8_QUIET_SIGNALS.md`. M8 is merged, remains unshipped and physically unverified.
 
-M9 development adds an explainable Screen Score to the optional Overview. Only full opted-in work cycles becoming due can count, once on completion or Skip; pending/snoozed opportunities and extra early breaks do not penalize or inflate it. At least three outcomes are required; old days have no reconstructed score. Only bounded daily completed/resolved totals persist under existing consent/retention/deletion controls. See `docs/M9_SCREEN_SCORE.md`. M9 remains unshipped and physically unverified; M10 has not started.
+M9 development adds an explainable Screen Score to the optional Overview. Only full opted-in work cycles becoming due can count, once on completion or Skip; pending/snoozed opportunities and extra early breaks do not penalize or inflate it. At least three outcomes are required; old days have no reconstructed score. Only bounded daily completed/resolved totals persist under existing consent/retention/deletion controls. See `docs/M9_SCREEN_SCORE.md`. M9 is merged, remains unshipped and physically unverified.
+
+M10 verifies the direct published 2.2.5 Apple Silicon download and SHA256, and prepares a pinned cask for a Molaway-owned tap. The tap is not published or verified for end-user installation; no Homebrew install command is available. See `docs/M10_DISTRIBUTION.md` for the remaining gate. M1–M9 are still absent from that download; M11 and a new release have not started.
 
 ### Windows
 

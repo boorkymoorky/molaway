@@ -21,15 +21,16 @@ Molaway is a personal, non-commercial project shared as open source. My version 
 
 **macOS 15 or later · Apple Silicon download · macOS 26+ for native glass effects**
 
-1. Open [Releases](https://github.com/boorkymoorky/molaway/releases).
-2. Under **Assets**, download the **Molaway** app `.zip`, not “Source code”.
-3. Double-click the ZIP, then drag **Molaway.app** into **Applications**.
-4. Open Molaway and click its two-ring icon in the menu bar.
-5. Choose your eye and movement intervals. Everything works locally.
+1. [Download Molaway 2.2.5 for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/download/v2.2.5/Molaway-2.2.5-macOS-arm64.zip).
+2. Double-click the ZIP, then drag **Molaway.app** into **Applications**.
+3. Open Molaway and click its two-ring icon in the menu bar.
+4. Choose your eye and movement intervals. Everything works locally.
+
+The direct download and [SHA256](docs/INSTALL.md#check-download-integrity-optional) were verified against the actual release asset on 2026-10-04. This README describes the published 2.2.5 app; M1–M9 on `main` are development changes and are not included in that download.
 
 **Signing:** Molaway is locally (ad hoc) signed, **not Apple Developer ID signed or notarized**. macOS may ask you to approve the app. Follow the app-specific steps in the [installation guide](docs/INSTALL.md); keep Gatekeeper enabled.
 
-**Terminal alternative:** [build and install locally](docs/INSTALL.md#terminal-install-from-source). No paid Apple Developer membership is needed. There is no official Homebrew package.
+**Terminal alternative:** [build and install locally](docs/INSTALL.md#terminal-install-from-source). No paid Apple Developer membership is needed. A [Molaway-owned Homebrew tap candidate](docs/M10_DISTRIBUTION.md) is prepared; the tap is not yet published or verified for end-user installation.
 
 **Updates are manual:** check [Releases](https://github.com/boorkymoorky/molaway/releases). Molaway does not contact GitHub or check for updates in the background.
 
