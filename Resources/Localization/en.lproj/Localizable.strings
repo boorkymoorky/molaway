@@ -336,3 +336,7 @@
 "Skip in %d s" = "Skip in %d s";
 "Skip available in %d seconds" = "Skip available in %d seconds";
 "Casual: skip any time. Balanced: skip after a visible 5-second countdown. Hardcore: no skip control; you can still close an alert or quit Molaway. Closing and snoozing never complete a break." = "Casual: skip any time. Balanced: skip after a visible 5-second countdown. Hardcore: no skip control; you can still close an alert or quit Molaway. Closing and snoozing never complete a break.";
+"Could not request permission" = "Could not request permission";
+"Use Small card alerts" = "Use Small card alerts";
+"macOS did not allow this copy of Molaway to request notifications. Choose a panel alert instead." = "macOS did not allow this copy of Molaway to request notifications. Choose a panel alert instead.";
+"macOS could not request notification permission. Try again, or choose a panel alert." = "macOS could not request notification permission. Try again, or choose a panel alert.";

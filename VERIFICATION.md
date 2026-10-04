@@ -1,10 +1,16 @@
 # Verification
 
+## M6 usability follow-up — 2026-10-04 (not shipped)
+
+- 150 Swift tests in 16 suites, source/publication guards, release build, ad hoc signature verification and isolated installation checks passed.
+- Limited full-app TR/EN inspection confirmed the separated dashboard labels and notification error/style-selection flows. Native authorization still fails for the tested application copy; permission prompting and delivery remain unverified.
+- The owner reported the initial paused menu-bar icon missing while the app remained running. A follow-up uses a fixed drawable pause glyph and an explicit icon-only menu-bar slot; the owner confirmed the updated paused icon was visible and opened the dashboard. The owner also confirmed a resume/re-pause repeat with a clock-only active title and an accessible paused icon. Broader checks and release readiness remain pending. See [M6 usability checks](docs/M6_USABILITY_CHECKS.md) and the [full-app readiness report](docs/M6_READINESS.md). M7 and publishing are outside this work.
+
 ## M6 readiness review — 2026-09-30 (not shipped)
 
 - Reviewed main commit `5f7d1a9`, which merged PR #12. [Main Verify run 36686346076](https://github.com/boorkymoorky/molaway/actions/runs/36686346076) passed. A fresh local run passed all 141 Swift tests in 14 suites, source/security and tracked publication guards, release build, ad hoc signature verification, and isolated installation/update/failure checks.
 - Limited full-app UI automation used the same compiled application code, re-signed under a disposable bundle identity with isolated local data. English/Turkish settings and a real manual short-break completion advancing the cadence were observed. This does not verify every lifecycle transition or physical VoiceOver, display/Space, sleep/lock behavior.
-- The remaining physical checks could not be completed with the product owner unavailable. They remain explicitly pending in [M6 readiness](docs/M6_READINESS.md); prior harness observations are not promoted to full-app results. Release readiness remains pending. No M7 work, release, version bump, network access, or permission expansion was performed.
+- The initial remaining physical checks could not be completed with the product owner unavailable. Later user observations are recorded separately; on 2026-10-04 the owner deferred structured physical checks in favor of daily-use feedback. Unperformed checks remain explicitly pending in [M6 readiness](docs/M6_READINESS.md); prior harness observations are not promoted to full-app results. Release readiness remains pending. No M7 work, release, version bump, network access, or permission expansion was performed.
 
 ## M5 break-skip development checks — 2026-09-27 (not shipped)
 

@@ -336,3 +336,7 @@
 "Skip in %d s" = "%d sn sonra atla";
 "Skip available in %d seconds" = "Atlama %d saniye sonra kullanılabilir";
 "Casual: skip any time. Balanced: skip after a visible 5-second countdown. Hardcore: no skip control; you can still close an alert or quit Molaway. Closing and snoozing never complete a break." = "Rahat: istediğin zaman atla. Dengeli: görünür 5 saniyelik geri sayımdan sonra atla. Katı: atlama düğmesi yok; uyarıyı kapatabilir veya Molaway’den çıkabilirsin. Kapatma ve erteleme molayı tamamlamaz.";
+"Could not request permission" = "İzin istenemedi";
+"Use Small card alerts" = "Küçük kart uyarılarını kullan";
+"macOS did not allow this copy of Molaway to request notifications. Choose a panel alert instead." = "macOS, Molaway’in bu kopyasının bildirim izni istemesine izin vermedi. Bunun yerine bir panel uyarısı seçebilirsin.";
+"macOS could not request notification permission. Try again, or choose a panel alert." = "macOS bildirim iznini isteyemedi. Yeniden dene veya bir panel uyarısı seç.";
