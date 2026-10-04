@@ -22,6 +22,7 @@ struct StatisticsView: View {
     private var total: DailySummary { snapshot?.totals ?? DailySummary(day: today) }
     private var selectedRow: DailySummary? { selectedDay.flatMap { snapshot?.byDay[$0] } }
     private var comparison: StatisticsComparison? { snapshot?.comparison }
+    private var score: ScreenScoreTotals? { selectedDay == nil ? snapshot?.score : selectedRow?.score }
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
@@ -47,6 +48,7 @@ struct StatisticsView: View {
                         Text(L("Week")).tag(7); Text(L("Month")).tag(30); Text(L("90 days")).tag(90)
                     }.pickerStyle(.segmented).onChange(of: period) { _, _ in selectedDay = nil }
                     Text(String(format: L("%d days with data · today is still in progress"), rows.count)).font(.caption).foregroundStyle(.secondary)
+                    screenScore
                     ViewThatFits(in: .horizontal) {
                         HStack(spacing: 10) { cards }
                         VStack(spacing: 10) { cards }
@@ -121,6 +123,32 @@ struct StatisticsView: View {
             Button(L("Keep 30 days"), role: .destructive) { stats.setRetention(30) }
             Button(L("Cancel"), role: .cancel) {}
         }
+    }
+    private var screenScore: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(L("Screen Score")).font(.headline)
+                Spacer()
+                Text(score?.percent.map { "\($0) / 100" } ?? "—")
+                    .font(.system(.title2, design: .rounded).weight(.semibold)).monospacedDigit()
+            }
+            Text(selectedDay.map { dayLabel($0) } ?? L("Selected period"))
+                .font(.caption).foregroundStyle(.secondary)
+            if let score {
+                Text(String(format: L("%d completed · %d resolved opportunities"), score.completed, score.opportunities))
+                    .font(.subheadline)
+                if score.percent == nil {
+                    Text(L("At least 3 resolved opportunities are needed for a score.")).font(.caption).foregroundStyle(.secondary)
+                }
+            } else {
+                Text(L("No score data. Earlier days are not reconstructed.")).font(.caption).foregroundStyle(.secondary)
+            }
+            Text(L("Completed ÷ resolved opportunities × 100. A full recorded work cycle must become due. Completion or Skip resolves it once; snoozes, early returns and pending breaks do not lower the score. Extra early breaks add no points."))
+                .font(.caption).foregroundStyle(.secondary)
+            Text(L("Only cycles recorded from their start count. Outcomes belong to the day they resolve. Period scores combine opportunities, not daily percentages. This describes break completion, not health or productivity."))
+                .font(.caption).foregroundStyle(.secondary)
+        }.padding(16).background(model.tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 16))
+            .accessibilityElement(children: .combine)
     }
     @ViewBuilder private var cards: some View {
         card("Active time", value: duration(total.active), symbol: "desktopcomputer")

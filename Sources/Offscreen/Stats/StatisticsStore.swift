@@ -8,6 +8,7 @@ import Observation
     private(set) var retention = 90
     private(set) var failed = false
     @ObservationIgnored private var ledger = StatisticsLedger()
+    @ObservationIgnored private var scoreCycle = ScreenScoreCycle()
     @ObservationIgnored private let url: URL
     @ObservationIgnored private var dirty = false
     @ObservationIgnored private var lastSave = 0.0
@@ -29,6 +30,7 @@ import Observation
     }
     func setEnabled(_ value: Bool, now: Date = Date()) {
         guard !failed else { return }
+        scoreCycle.start(fromBeginning: false)
         ledger.resetSession(); ledger.document.enabled = value
         if !value { ledger.document.weekly = false }
         ledger.document.lastReportDay = StatsCalendar.key(now)
@@ -43,6 +45,7 @@ import Observation
         ledger.document.retention = value; ledger.prune(today: StatsCalendar.key(now)); changed()
     }
     func clear() {
+        scoreCycle.start(fromBeginning: false)
         ledger = StatisticsLedger(); failed = false; lastDate = nil; lastDay = ""; changed()
     }
     private func publish() {
@@ -55,7 +58,7 @@ import Observation
         do {
             try StatisticsCodec.write(ledger.document, to: url)
             dirty = false
-        } catch { failed = true; ledger.resetSession(); publish() }
+        } catch { failed = true; ledger.resetSession(); scoreCycle.start(fromBeginning: false); publish() }
     }
     func sample(now: Date, uptime: Double, active: Double, rollback: Double, provisional: Double, observed: Double, video: Bool, watching: Bool) {
         guard !failed else { return }
@@ -63,7 +66,7 @@ import Observation
         if day != lastDay { ledger.prune(today: day); lastDay = day; dirty = true; publish(); flush() }
         guard enabled else { return }
         if let previous = lastDate, abs(now.timeIntervalSince(previous) - observed) > 60 {
-            ledger.resetSession(); lastDate = now; return
+            ledger.resetSession(); scoreCycle.start(fromBeginning: false); lastDate = now; return
         }
         lastDate = now
         // Attribute a boundary-spanning sample to its start day; uncertainty is at most 5 seconds.
@@ -72,6 +75,21 @@ import Observation
         dirty = true
         if uptime - lastPublish >= 15 { publish(); lastPublish = uptime }
         if uptime - lastSave >= 60 { flush(); lastSave = uptime }
+    }
+    func startScoreCycle(fromBeginning: Bool) {
+        scoreCycle.start(fromBeginning: fromBeginning && enabled && !failed)
+    }
+    func observeScoreOpportunity(confirmedDue: Bool) {
+        guard enabled, !failed else { return }
+        scoreCycle.observe(confirmedDue: confirmedDue)
+    }
+    func resolveScoreOpportunity(completed: Bool, now: Date = Date()) {
+        guard enabled, !failed else { return }
+        guard let result = scoreCycle.resolve(completed: completed) else { return }
+        let day = StatsCalendar.key(now)
+        ledger.prune(today: day)
+        ledger.recordScore(day: day, completed: result)
+        changed()
     }
     func beginManual() { guard !failed else { return }; ledger.beginManual() }
     func cancelManual() { ledger.cancelManual() }

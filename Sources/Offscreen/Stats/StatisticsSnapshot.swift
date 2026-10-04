@@ -9,6 +9,7 @@ struct StatisticsSnapshot {
     let axisKeys: [String]
     let totals: DailySummary
     let comparison: StatisticsComparison?
+    let score: ScreenScoreTotals?
 
     init(days: [DailySummary], period: Int, today: String, language: String) {
         keys = StatsCalendar.recent(period, today: today)
@@ -29,6 +30,7 @@ struct StatisticsSnapshot {
             sum.eyes += row.eyes; sum.movement += row.movement; sum.shortBreaks += row.shortBreaks; sum.longBreaks += row.longBreaks; sum.natural += row.natural
             sum.video += row.video; sum.watching += row.watching
         }
+        score = ScreenScoreTotals.combining(rows)
         comparison = StatisticsComparison.make(days: days, period: period, today: today)
     }
 }
