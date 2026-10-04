@@ -3,7 +3,7 @@
 ## M6 usability follow-up — 2026-10-04 (not shipped)
 
 - 150 Swift tests in 16 suites, source/publication guards, release build, ad hoc signature verification and isolated installation checks passed.
-- Limited full-app TR/EN inspection confirmed the separated dashboard labels and notification error/style-selection flows. Native authorization still fails for the tested application copy; permission prompting and delivery remain unverified.
+- Limited full-app TR/EN inspection confirmed the separated dashboard labels and notification error/style-selection flows. The earlier isolated test copy rejected native authorization. After installing the current development copy, the owner reported that the macOS permission prompt appeared and was approved. Prompt/approval is user-confirmed for that installation; notification delivery and action timing remain unverified.
 - The owner reported the initial paused menu-bar icon missing while the app remained running. A follow-up uses a fixed drawable pause glyph and an explicit icon-only menu-bar slot; the owner confirmed the updated paused icon was visible and opened the dashboard. The owner also confirmed a resume/re-pause repeat with a clock-only active title and an accessible paused icon. Broader checks and release readiness remain pending. See [M6 usability checks](docs/M6_USABILITY_CHECKS.md) and the [full-app readiness report](docs/M6_READINESS.md). M7 and publishing are outside this work.
 
 ## M6 readiness review — 2026-09-30 (not shipped)
