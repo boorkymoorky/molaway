@@ -1,5 +1,12 @@
 # Verification
 
+## M8 development checks — 2026-10-04 (not shipped)
+
+- 184 Swift tests in 18 suites passed locally, including retained M1–M7 coverage and new optional audio-input, native-fullscreen and selected-frontmost-app policies, settings attacks, quiet return and lifecycle interactions.
+- Source/publication guards, TR/EN localization syntax, release build and ad hoc signature verification passed. No entitlement, dependency, network capability or release metadata change. Local installation verification stopped because the personal app was running; the normal PR CI includes isolated installation checks.
+- A same-entitlement signed probe established query availability only. A separately identified complete app copy exposed readable English/Turkish settings, working app choice/removal and available audio/fullscreen status without a permission prompt. These observations do not verify positive microphone/fullscreen/foreground-switch detection or notification delivery.
+- Automatic screen sharing, microphone-only classification and broader fullscreen inference are explicitly deferred. Real device/app transitions, accessibility and energy use remain unverified. M6 structured physical checks stay deferred in favor of daily-use feedback. See [M8 quiet signals](docs/M8_QUIET_SIGNALS.md).
+
 ## M7 Smart Pause development checks — 2026-10-04 (not shipped)
 
 - All 166 Swift tests in 17 suites, source/security and tracked publication guards, release build, ad hoc signature verification and isolated installation checks passed. New regressions exercise signal combinations and the bounded typing gate across all reminder styles/modes, fallbacks, repeated delivery, preview, independent pause reasons, completed rest, cadence and snoozes.

@@ -143,6 +143,17 @@ struct SettingsRootView: View {
                 note("Permission: Focus status sharing. Availability depends on macOS and app capabilities. Use Presentation mode if unavailable; native notifications follow macOS Focus rules.")
                 if model.config.focusSuppression { status(model.focusActive == nil ? "Focus status unavailable" : model.focusActive == true ? "Focus active" : "Focus allows alerts") }
             }
+            Section(L("More quiet signals")) {
+                Toggle(L("When audio input is in use"), isOn: model.settings.binding(\.audioInputSuppression))
+                note("Permission: none. Reads active audio input state only, never sound. This includes microphones and virtual input devices; it does not prove a meeting or a person is present.")
+                if model.config.audioInputSuppression { status(model.audioInputActive == nil ? "Audio input status unavailable" : model.audioInputActive == true ? "Audio input in use" : "Audio input idle") }
+                Toggle(L("In native full screen"), isOn: model.settings.binding(\.fullScreenSuppression))
+                note("Permission: none. Detects the active macOS full-screen mode without reading screen contents. Maximized windows, borderless games and other displays are not inferred.")
+                if model.config.fullScreenSuppression { status(model.fullScreenActive == nil ? "Full-screen status unavailable" : model.fullScreenActive == true ? "Native full screen" : "No native full-screen signal") }
+                note("These options quiet alerts and sounds only. Timers keep their normal activity and inactivity rules. After quiet mode, wait 60 seconds before a pending reminder.")
+                note("Automatic screen-sharing detection is deferred. Use Presentation mode while sharing your screen.")
+            }
+            SelectedAppsSettings(model: model)
             Section(L("Presentation mode")) {
                 DurationField(title: "Duration", value: model.settings.binding(\.presentationMinutes), range: 5...240, unit: "min", step: 5)
                 Button(L(model.presentationUntil == nil ? "Start presentation mode" : "End presentation mode")) { model.togglePresentation() }
@@ -217,7 +228,7 @@ struct SettingsRootView: View {
                 Label(L("Network access blocked by App Sandbox"), systemImage: "network.slash")
                 Label(L("No accounts, analytics or network connections"), systemImage: "person.crop.circle.badge.checkmark")
                 Label(L("No screen, camera or microphone recording"), systemImage: "video.slash")
-                note("Preferences stay local. Daily summaries are optional and off by default. No apps, URLs or exact activity times are saved. No Accessibility, Input Monitoring or Full Disk Access is required. macOS may keep crash logs.")
+                note("Preferences stay local. Daily summaries are optional and off by default. No app usage history, URLs or exact activity times are saved. Selected app identifiers are saved only when you choose them. No Accessibility, Input Monitoring or Full Disk Access is required. macOS may keep crash logs.")
             }
             Section(L("Notifications")) { notificationPermission }
             Section(L("Optional permissions")) {

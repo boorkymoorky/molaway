@@ -351,3 +351,29 @@
 "Typing · reminder delayed briefly" = "Yazıyorsunuz · hatırlatma kısa süre ertelendi";
 "Keyboard timing available" = "Klavye etkinliği süresi alınabiliyor";
 "Keyboard timing unavailable" = "Klavye etkinliği süresi alınamıyor";
+
+// M8 optional quiet signals
+"More quiet signals" = "Ek sessizlik sinyalleri";
+"When audio input is in use" = "Ses girişi kullanımdayken";
+"Permission: none. Reads active audio input state only, never sound. This includes microphones and virtual input devices; it does not prove a meeting or a person is present." = "İzin: gerekmez. Yalnızca aktif ses girişi durumunu okur, sesi okumaz. Mikrofonları ve sanal giriş aygıtlarını kapsar; toplantı veya kişinin varlığını kanıtlamaz.";
+"Audio input status unavailable" = "Ses girişi durumu kullanılamıyor";
+"Audio input in use" = "Ses girişi kullanımda";
+"Audio input idle" = "Ses girişi boşta";
+"In native full screen" = "macOS tam ekran modundayken";
+"Full-screen status unavailable" = "Tam ekran durumu kullanılamıyor";
+"Native full screen" = "macOS tam ekran modu";
+"No native full-screen signal" = "macOS tam ekran sinyali yok";
+"These options quiet alerts and sounds only. Timers keep their normal activity and inactivity rules. After quiet mode, wait 60 seconds before a pending reminder." = "Bu seçenekler yalnızca uyarıları ve sesleri susturur. Zamanlayıcılar normal etkinlik ve hareketsizlik kurallarını korur. Sessizlik bitince bekleyen hatırlatma için 60 saniye beklenir.";
+"Automatic screen-sharing detection is deferred. Use Presentation mode while sharing your screen." = "Otomatik ekran paylaşımı algılama ertelendi. Ekranınızı paylaşırken Sunum modunu kullanın.";
+"Selected apps" = "Seçili uygulamalar";
+"Quiet alerts when a selected app is in front" = "Seçili uygulama ön plandayken uyarıları sustur";
+"Remove" = "Kaldır";
+"Choose app…" = "Uygulama seç…";
+"Up to 32 apps. A background app does not quiet alerts. Unavailable status does not quiet alerts." = "En fazla 32 uygulama. Arka plandaki uygulamalar uyarıları susturmaz. Durum kullanılamıyorsa uyarılar susturulmaz.";
+"Selected app status unavailable" = "Seçili uygulama durumu kullanılamıyor";
+"Selected app in front" = "Seçili uygulama ön planda";
+"No selected app in front" = "Ön planda seçili uygulama yok";
+"Preferences stay local. Daily summaries are optional and off by default. No app usage history, URLs or exact activity times are saved. Selected app identifiers are saved only when you choose them. No Accessibility, Input Monitoring or Full Disk Access is required. macOS may keep crash logs." = "Tercihler yerelde kalır. Günlük özetler isteğe bağlıdır ve varsayılan olarak kapalıdır. Uygulama kullanım geçmişi, URL veya kesin etkinlik zamanları kaydedilmez. Seçili uygulama kimlikleri yalnızca siz seçtiğinizde kaydedilir. Erişilebilirlik, Giriş İzleme veya Tam Disk Erişimi gerekmez. macOS çökme günlükleri tutabilir.";
+"Only your chosen app list is saved in preferences and settings backups. No app usage history or file paths are stored." = "Yalnızca seçtiğiniz uygulama listesi tercihlerde ve ayar yedeklerinde saklanır. Uygulama kullanım geçmişi veya dosya yolları kaydedilmez.";
+"Could not use that app. Choose another application." = "Bu uygulama kullanılamadı. Başka bir uygulama seçin.";
+"Permission: none. Detects the active macOS full-screen mode without reading screen contents. Maximized windows, borderless games and other displays are not inferred." = "İzin: gerekmez. Ekran içeriğini okumadan aktif macOS tam ekran modunu algılar. Büyütülmüş pencereler, çerçevesiz oyunlar ve diğer ekranlar için çıkarım yapmaz.";

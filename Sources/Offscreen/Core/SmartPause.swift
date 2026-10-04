@@ -4,22 +4,29 @@ enum QuietReason: String {
     case presentation = "Presentation mode"
     case camera = "Camera in use"
     case focus = "Focus"
+    case audioInput = "Audio input in use"
+    case fullScreen = "Native full screen"
+    case selectedApp = "Selected app in front"
 }
 
-/// Existing signals have separate activity and quiet-alert effects. Video and
-/// watching keep counting; only opted-in quiet sources mute reminders.
+/// Activity and quiet-alert effects remain separate. M8 signals only quiet
+/// alerts; they never infer presence, prevent idle, or credit a break.
 struct SmartPause {
     let keepsCounting: Bool
     let quietReasons: [QuietReason]
 
     init(config: AppSettings, videoPlaying: Bool, watching: Bool,
-         cameraActive: Bool?, focusActive: Bool?, presenting: Bool) {
+         cameraActive: Bool?, focusActive: Bool?, presenting: Bool,
+         audioInputActive: Bool? = nil, fullScreenActive: Bool? = nil, selectedAppActive: Bool? = nil) {
         let camera = config.cameraSuppression && cameraActive == true
         keepsCounting = (config.videoEnabled && videoPlaying) || watching || camera
         var reasons: [QuietReason] = []
         if presenting { reasons.append(.presentation) }
         if camera { reasons.append(.camera) }
         if config.focusSuppression && focusActive == true { reasons.append(.focus) }
+        if config.audioInputSuppression && audioInputActive == true { reasons.append(.audioInput) }
+        if config.fullScreenSuppression && fullScreenActive == true { reasons.append(.fullScreen) }
+        if config.selectedAppSuppression && !config.selectedAppBundleIDs.isEmpty && selectedAppActive == true { reasons.append(.selectedApp) }
         quietReasons = reasons
     }
 }

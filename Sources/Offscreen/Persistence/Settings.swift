@@ -114,6 +114,10 @@ struct AppSettings: Codable, Equatable, Sendable {
     var mergeBreaks: Bool = true
     var cameraSuppression: Bool = false
     var focusSuppression: Bool = false
+    var audioInputSuppression: Bool = false
+    var fullScreenSuppression: Bool = false
+    var selectedAppSuppression: Bool = false
+    var selectedAppBundleIDs: [String] = []
     var reminderTone: SoundChoice = .none
     var startTone: SoundChoice = .none
     var pauseTone: SoundChoice = .none
@@ -129,7 +133,7 @@ struct AppSettings: Codable, Equatable, Sendable {
     var redMinutes = 20
     init() {}
     enum CodingKeys: String, CodingKey, CaseIterable {
-        case typingDeferralEnabled, skipMode, officeHours, schemaVersion, workMinutes, shortRestSeconds, longRestMinutes, shortBreaksBeforeLong, cycleShortCount, migrationNoticePending, previousCustomTiming, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, showCursorCountdown, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
+        case audioInputSuppression, fullScreenSuppression, selectedAppSuppression, selectedAppBundleIDs, typingDeferralEnabled, skipMode, officeHours, schemaVersion, workMinutes, shortRestSeconds, longRestMinutes, shortBreaksBeforeLong, cycleShortCount, migrationNoticePending, previousCustomTiming, eyeMinutes, movementMinutes, eyeRestSeconds, movementRestMinutes, idlePauseSeconds, showCountdownInMenuBar, showCursorCountdown, videoEnabled, reminderVisibleSeconds, didFinishWelcome, reminderStyle, displayTarget, language, appearance, accent, watchingMinutes, presentationMinutes, mergeBreaks, cameraSuppression, focusSuppression, reminderTone, startTone, pauseTone, resumeTone, breakTone, endTone, soundVolume, alertSurface, surfaceDensity, fullScreenDim, overdueEnabled, amberMinutes, redMinutes
     }
     private enum LegacyKeys: String, CodingKey { case chromeVideoEnabled, reminderSound }
     init(from decoder: Decoder) throws {
@@ -180,6 +184,11 @@ struct AppSettings: Codable, Equatable, Sendable {
         mergeBreaks = try c.decodeIfPresent(Bool.self, forKey: .mergeBreaks) ?? true
         cameraSuppression = try c.decodeIfPresent(Bool.self, forKey: .cameraSuppression) ?? false
         focusSuppression = try c.decodeIfPresent(Bool.self, forKey: .focusSuppression) ?? false
+        audioInputSuppression = try c.decodeIfPresent(Bool.self, forKey: .audioInputSuppression) ?? false
+        fullScreenSuppression = try c.decodeIfPresent(Bool.self, forKey: .fullScreenSuppression) ?? false
+        selectedAppSuppression = try c.decodeIfPresent(Bool.self, forKey: .selectedAppSuppression) ?? false
+        selectedAppBundleIDs = try c.decodeIfPresent([String].self, forKey: .selectedAppBundleIDs) ?? []
+        guard SelectedAppPolicy.isValidSelection(selectedAppBundleIDs) else { throw SettingsError.fields }
         reminderTone = try c.decodeIfPresent(SoundChoice.self, forKey: .reminderTone) ?? (legacy.decodeIfPresent(Bool.self, forKey: .reminderSound) == true ? .tink : .none)
         startTone = try c.decodeIfPresent(SoundChoice.self, forKey: .startTone) ?? .none
         pauseTone = try c.decodeIfPresent(SoundChoice.self, forKey: .pauseTone) ?? .none
@@ -218,6 +227,7 @@ struct AppSettings: Codable, Equatable, Sendable {
     var movement: TimingConfig { TimingConfig(workSeconds: min(180, max(10, movementMinutes)) * 60, shortBreakSeconds: min(15, max(1, movementRestMinutes)) * 60, longBreakEvery: 0, leadTimeSeconds: 0) }
     mutating func validate() {
         officeHours.validate()
+        selectedAppBundleIDs = SelectedAppPolicy.normalized(selectedAppBundleIDs)
         schemaVersion = 3
         workMinutes = min(180, max(5, workMinutes))
         shortRestSeconds = min(120, max(10, shortRestSeconds))
