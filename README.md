@@ -117,7 +117,7 @@ python3 Scripts/verify-security.py
 python3 Scripts/verify-publication.py
 ```
 
-The app is created at `build.noindex/Molaway.app`. [Contributing](CONTRIBUTING.md) explains checks and privacy requirements. [Changelog](CHANGELOG.md) lists changes.
+The app is created at `build.noindex/Molaway.app`. Main-source development builds include unshipped changes; [M11 verification and release preparation](docs/M11_RELEASE_READINESS.md) records their automated evidence and remaining physical limits. [Contributing](CONTRIBUTING.md) explains checks and privacy requirements. [Changelog](CHANGELOG.md) lists changes.
 
 ## Credits and license
 

@@ -26,7 +26,7 @@ jobs:
         run: swift test
       - name: Local signed build
         run: bash Scripts/build-app.sh
-      - name: Verify signature
-        run: codesign --verify --deep --strict build.noindex/Molaway.app
+      - name: Built bundle, signing and localization guard
+        run: python3 Scripts/verify-bundle.py --self-test
       - name: Isolated installation and update checks
         run: python3 Scripts/verify-installation.py

@@ -16,7 +16,7 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 | M8 | Evaluate microphone, sharing, fullscreen, and selected focus-app signals within public APIs and current permissions. | Implemented within documented limits; not shipped; broader detection deferred |
 | M9 | An explainable Screen Score based on actual break opportunities and bounded optional daily summaries. | Implemented; not shipped; physical behavior unverified |
 | M10 | Verified direct macOS download and a Molaway-owned Homebrew tap. | Published 2.2.5 download and public tap lifecycle verified; isolated first launch pending |
-| M11 | Integrated macOS verification and release preparation, with physical checks stated separately. | Planned |
+| M11 | Integrated macOS verification and release preparation, with physical checks stated separately. | Automated verification/preparation complete; no release; physical readiness pending |
 
 ## Windows preview, after macOS
 
@@ -83,3 +83,10 @@ The project remains local-first, account-free, telemetry-free, and permission-mi
 - Audio input, active native fullscreen and explicitly selected frontmost apps are supported within the documented scope, with all new options off by default. Unavailable states supply no new quiet reason; existing counting, quiet return, independent pauses and M7 typing limits remain.
 - All 184 Swift tests in 18 suites, source/publication guards, TR/EN localization syntax, release build and signature verification passed locally. A same-entitlement probe and isolated complete-app UI check provide only the narrow observations listed in [M8 quiet signals](M8_QUIET_SIGNALS.md). Local installer verification stopped while the personal app was running; the normal PR CI includes that check.
 - Automatic screen sharing, microphone-only classification and broader fullscreen inference are deferred. Physical transitions, notifications, accessibility and energy use remain unverified; continue daily-use feedback under the M6 policy. M9 and publishing remain outside this work.
+
+## M11 integrated verification and release preparation (not shipped)
+
+- Full local regression coverage passed 202 tests in 20 suites, including three new composition checks for quiet-return/typing/skip/cadence/score, Office Hours/manual pause/overnight suspension, and legacy migration/opt-in/reopen with preserved historical totals.
+- The release-mode development build and new offline bundle guard passed. The guard checks arm64 metadata, original signature/hardened runtime, exact entitlements, MIT attribution and 372 matching EN/TR keys/format placeholders; eight negative fixtures were rejected. CI runs it before the existing isolated installer checks.
+- Local installer verification retained its running-app guard and left the personal app running. Hosted PR checks must pass before merge. These automated checks do not close physical notification, accessibility, device/display, real sleep/lock, older-OS or multi-day-use gaps.
+- Structured physical checks stay deferred under the owner’s daily-use policy. M10’s original first-launch gate is still pending and its end-user command withheld. The published app/tap remain 2.2.5; no version/tag/release was created and Windows PR #2 remains separate. See [M11 readiness and release handoff](M11_RELEASE_READINESS.md).
