@@ -340,3 +340,14 @@
 "Use Small card alerts" = "Küçük kart uyarılarını kullan";
 "macOS did not allow this copy of Molaway to request notifications. Choose a panel alert instead." = "macOS, Molaway’in bu kopyasının bildirim izni istemesine izin vermedi. Bunun yerine bir panel uyarısı seçebilirsin.";
 "macOS could not request notification permission. Try again, or choose a panel alert." = "macOS bildirim iznini isteyemedi. Yeniden dene veya bir panel uyarısı seç.";
+
+// M7 Smart Pause and bounded typing deferral
+"Smart Pause" = "Akıllı Duraklatma";
+"Inactivity pauses tracking. Video and Watching mode keep counting; meeting and Presentation settings quiet alerts separately." = "Hareketsizlik takibi duraklatır. Video ve İzleme modu saymayı sürdürür; toplantı ve Sunum ayarları uyarıları ayrıca sessize alır.";
+"While typing" = "Yazarken";
+"Briefly delay reminders while typing" = "Yazarken hatırlatmaları kısa süre ertele";
+"Off by default. Waits for a 2-second typing pause, for at most 30 seconds per due work cycle. Tracking continues; no break is credited and snooze counts stay unchanged." = "Varsayılan olarak kapalıdır. Mola zamanı geldiğinde yazmaya 2 saniye ara vermenizi bekler; her çalışma döngüsünde en fazla 30 saniye erteler. Takip sürer; mola tamamlanmış sayılmaz ve erteleme sayısı değişmez.";
+"Permission: none. Reads only time since keyboard activity, never keys or text. Unavailable timing does not delay reminders." = "İzin gerekmez. Yalnızca klavye etkinliğinden bu yana geçen süre okunur; tuşlar veya metin okunmaz. Süre bilgisi alınamazsa hatırlatmalar ertelenmez.";
+"Typing · reminder delayed briefly" = "Yazıyorsunuz · hatırlatma kısa süre ertelendi";
+"Keyboard timing available" = "Klavye etkinliği süresi alınabiliyor";
+"Keyboard timing unavailable" = "Klavye etkinliği süresi alınamıyor";

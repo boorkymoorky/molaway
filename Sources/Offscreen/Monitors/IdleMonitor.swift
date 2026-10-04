@@ -26,4 +26,9 @@ final class IdleMonitor {
         let anyInput = CGEventType(rawValue: UInt32.max)!
         return CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: anyInput)
     }
+    /// Aggregate elapsed time only: no event monitor, key identity or text.
+    static func keyboardIdleSeconds() -> Double? {
+        let elapsed = CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: .keyDown)
+        return elapsed.isFinite && elapsed >= 0 ? elapsed : nil
+    }
 }

@@ -54,6 +54,10 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     private(set) var skipCountdown: Int?
     private var accounting = ActivityAccounting()
     private var policy = ReminderPolicy()
+    private var typingDeferral = TypingDeferral()
+    private(set) var typingDeferralRemaining: Double?
+    private(set) var keyboardTimingAvailable = false
+    var typingDeferred: Bool { typingDeferralRemaining != nil }
     private var credited = false
     private var pendingDue: Set<MolaKind> = []
     private var activityToken: NSObjectProtocol?
@@ -87,6 +91,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
             Localization.shared.language = value.language
             applyAppearance()
             nextSensorRead = 0
+            if !value.typingDeferralEnabled { typingDeferralRemaining = nil }
             refreshSchedule()
             refreshReminder?()
             updateUI?()
@@ -107,7 +112,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     }
     func readout(for kind: MolaKind) -> TimerReadout {
         let timer = engine(kind), resting = activeRest == kind
-        return TimerReadout(kind: kind, seconds: resting ? timer.breakRemaining : timer.timeUntilReminder,
+        return TimerReadout(kind: kind, seconds: resting ? timer.breakRemaining : (typingDeferralRemaining ?? timer.timeUntilReminder),
                             resting: resting, deferred: !resting && timer.timeUntilBreak <= 0 && timer.timeUntilReminder > 0)
     }
     var nextReadout: TimerReadout { readout(for: activeRest ?? nextKind) }
@@ -170,15 +175,14 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         return L("Paused until you resume")
     }
     var isWatching: Bool { watchingUntil != nil }
-    var suppressionReasons: [String] {
-        var reasons: [String] = []
-        if presentationUntil != nil { reasons.append(L("Presentation mode")) }
-        if config.cameraSuppression && cameraActive == true { reasons.append(L("Camera in use")) }
-        if config.focusSuppression && focusActive == true { reasons.append(L("Focus")) }
-        return reasons
+    var smartPause: SmartPause {
+        SmartPause(config: config, videoPlaying: videoPlaying, watching: isWatching,
+                   cameraActive: cameraActive, focusActive: focusActive, presenting: presentationUntil != nil)
     }
+    var suppressionReasons: [String] { smartPause.quietReasons.map { L($0.rawValue) } }
     var suppressing: Bool { !suppressionReasons.isEmpty }
-    var canPresent: Bool { !pause.isPaused && !suppressing && activity != .away }
+    private var reminderEligible: Bool { !pause.isPaused && !suppressing && [.active, .video, .resting].contains(activity) }
+    var canPresent: Bool { reminderEligible && !typingDeferred }
     var hasAlertProblem: Bool { config.reminderStyle == .notification && notifications?.hasProblem == true }
     func openAlertSettings() { settingsTab = 2; openSettingsAction?() }
     func notificationDeliveryFailed() { pendingDue.formUnion(reminderKinds); updateUI?() }
@@ -213,6 +217,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if hasAlertProblem { return L("Notifications need attention") }
         if let until = watchingUntil { return L("Watching until") + " " + until.formatted(date: .omitted, time: .shortened) }
         if policy.releaseAt != nil { return L("Alerts resume shortly") }
+        if typingDeferred { return L("Typing · reminder delayed briefly") }
         return activity.title
     }
     func applyAppearance() {
@@ -232,6 +237,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     }
     func suspendTracking() {
         pause.setSleepOrLock(true)
+        typingDeferralRemaining = nil
         if activeRest != nil { cancelRest(restartCycle: false) }
         statistics.resetSession(); statistics.flush(); hideReminder?(); sound.stop(); releaseActivity()
     }
@@ -270,10 +276,11 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         let now = time
         readSensors(now: now)
         tick(now: now, idle: suspended ? idleSeconds : IdleMonitor.idleSeconds(),
-             deliberateIdle: activeRest == nil ? .infinity : IdleMonitor.deliberateIdleSeconds())
+             deliberateIdle: activeRest == nil ? .infinity : IdleMonitor.deliberateIdleSeconds(),
+             keyboardIdle: config.typingDeferralEnabled && !suspended && activeRest == nil ? IdleMonitor.keyboardIdleSeconds() : nil)
     }
     // Sensor-independent entry point also used by deterministic lifecycle regression tests.
-    func tick(now: Double, idle: Double, deliberateIdle: Double) {
+    func tick(now: Double, idle: Double, deliberateIdle: Double, keyboardIdle: Double? = nil) {
         let previousState = activity
         let rawDelta = previousTime.map { now - $0 } ?? 0
         let delta = rawDelta >= 0 && rawDelta <= 5 ? rawDelta : 0
@@ -285,11 +292,11 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
            config.reminderStyle == .notification && activeRest == nil && !reminderKinds.isEmpty && canPresent {
             showReminder?()
         }
-        if let until = watchingUntil, Date() >= until { watchingUntil = nil }
-        if let until = presentationUntil, Date() >= until { presentationUntil = nil }
+        if let until = watchingUntil, wallClock() >= until { watchingUntil = nil }
+        if let until = presentationUntil, wallClock() >= until { presentationUntil = nil }
         idleSeconds = idle
         let decision = accounting.step(now: now, idle: idleSeconds,
-            video: activeRest == nil && ((config.videoEnabled && videoPlaying) || isWatching || (config.cameraSuppression && cameraActive == true)),
+            video: activeRest == nil && smartPause.keepsCounting,
             locked: suspended, paused: isPaused || pause.reasons.contains(.officeHours), resting: activeRest != nil,
             threshold: Double(config.idlePauseSeconds))
         if !suspended { pause.setAutomaticActivity(decision.automaticPause) }
@@ -323,7 +330,12 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
             if timer != nil && activityToken == nil { activityToken = ProcessInfo.processInfo.beginActivity(options: .userInitiatedAllowingIdleSystemSleep, reason: "Local break timer") }
             breakEngine.advance(by: decision.activeSeconds)
         } else { releaseActivity(); if !isPreview { hideReminder?(); reminderKinds.removeAll() } }
-        let ready = policy.update(now: now, suppressed: suppressing, eligible: canPresent && !hasAlertProblem, due: pendingDue)
+        keyboardTimingAvailable = keyboardIdle.map { $0.isFinite && $0 >= 0 } ?? false
+        typingDeferralRemaining = typingDeferral.update(now: now, cycleDue: breakEngine.timeUntilBreak <= 0,
+            pending: !pendingDue.isEmpty || !policy.pending.isEmpty,
+            eligible: reminderEligible && !hasAlertProblem && !isPreview && !policy.held && (policy.releaseAt.map { now >= $0 } ?? true),
+            enabled: config.typingDeferralEnabled, keyboardIdle: keyboardIdle)
+        let ready = policy.update(now: now, suppressed: suppressing, eligible: canPresent && !hasAlertProblem && !isPreview, due: pendingDue)
         pendingDue.removeAll()
         if suppressing { hideReminder?(); sound.stop(); notifications?.clearWeekly() }
         if !ready.isEmpty {
@@ -359,6 +371,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if !suspended { statistics.naturalCycle(kind: kind, target: target) }
         breakEngine.accountForNaturalRest(duration)
         settings.update { $0.cycleShortCount = breakEngine.shortBreaksSinceLong }; settings.flush()
+        typingDeferral.reset(); typingDeferralRemaining = nil
         policy.clear(kind); pendingDue.removeAll(); reminderKinds.removeAll(); credited = true
     }
     func beginRest(_ kind: MolaKind, now: Double? = nil) {
@@ -367,6 +380,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         statistics.beginManual()
         let selected = kind == .long ? MolaKind.long : nextKind
         activeRest = selected; restStarted = now ?? time; restReturn.reset()
+        typingDeferralRemaining = nil
         reminderShownAt = nil
         accounting.clearProvisional(); reminderKinds = [selected]; isPreview = false
         updateSkipCountdown(at: restStarted)
@@ -390,6 +404,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     private func finishRest(duration: Double) {
         guard let kind = activeRest else { return }
         statistics.completeCycle(kind: kind, duration: duration)
+        typingDeferral.reset(); typingDeferralRemaining = nil
         settings.update { $0.cycleShortCount = breakEngine.shortBreaksSinceLong }; settings.flush()
         policy.clear(kind); pendingDue.remove(kind)
         activeRest = nil; breakEngine.timing = config.timing
@@ -407,6 +422,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if activeRest != nil { statistics.cancelManual() }
         let kind = activeRest ?? nextKind
         breakEngine.skipBreak()
+        typingDeferral.reset(); typingDeferralRemaining = nil
         policy.clear(kind); pendingDue.remove(kind)
         activeRest = nil; breakEngine.timing = config.timing
         dismissReminder(); accounting.clearProvisional(); activity = pause.isPaused ? .paused : .active; nextSensorRead = 0
@@ -432,6 +448,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         statistics.resetSession()
         if activeRest != nil { cancelRest() }
         pause.select(option, now: wallClock())
+        typingDeferralRemaining = nil
         dismissReminder()
         tick()
     }
