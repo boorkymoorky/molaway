@@ -16,7 +16,7 @@ This roadmap describes planned work, not shipped features. Each milestone is a s
 | M8 | Evaluate microphone, sharing, fullscreen, and selected focus-app signals within public APIs and current permissions. | Implemented within documented limits; not shipped; broader detection deferred |
 | M9 | An explainable Screen Score based on actual break opportunities and bounded optional daily summaries. | Implemented; not shipped; physical behavior unverified |
 | M10 | Verified direct macOS download and a Molaway-owned Homebrew tap. | Published 2.2.5 download and public tap lifecycle verified; isolated first launch pending |
-| M11 | Integrated macOS verification and release preparation, with physical checks stated separately. | Automated verification/preparation complete; no release; physical readiness pending |
+| M11 | Integrated macOS verification and release preparation, with physical checks stated separately. | Automated verification/preparation complete; post-M11 decision draft prepared; no release; physical readiness pending |
 
 ## Windows preview, after macOS
 
@@ -90,3 +90,7 @@ The project remains local-first, account-free, telemetry-free, and permission-mi
 - The release-mode development build and new offline bundle guard passed. The guard checks arm64 metadata, original signature/hardened runtime, exact entitlements, MIT attribution and 372 matching EN/TR keys/format placeholders; eight negative fixtures were rejected. CI runs it before the existing isolated installer checks.
 - Local installer verification retained its running-app guard and left the personal app running. Hosted PR checks must pass before merge. These automated checks do not close physical notification, accessibility, device/display, real sleep/lock, older-OS or multi-day-use gaps.
 - Structured physical checks stay deferred under the owner’s daily-use policy. M10’s original first-launch gate is still pending and its end-user command withheld. The published app/tap remain 2.2.5; no version/tag/release was created and Windows PR #2 remains separate. See [M11 readiness and release handoff](M11_RELEASE_READINESS.md).
+
+## Post-M11 release decision (proposal only)
+
+The [macOS release decision and notes draft](MACOS_RELEASE_DECISION.md) recommends holding publication now and targeting `3.0.0-beta.1`/build `11` only after a separate opt-in beta decision and candidate verification. Stable/RC claims remain deferred. PR #21's final head and merged main CI passed; these results do not close physical readiness. M6 structured checks remain deferred, M10 original first launch remains pending, and the user-facing tap command stays withheld. Published downloads and the tap remain 2.2.5. No version, tag, GitHub release draft or asset is created by the proposal.

@@ -2,7 +2,7 @@
 
 ## Unreleased development — M1–M9 and M11
 
-These changes are merged development work, **not included in the published 2.2.5 download**. No new version or release date is assigned. Physical readiness remains pending; see [M11 verification and release preparation](docs/M11_RELEASE_READINESS.md).
+These changes are merged development work, **not included in the published 2.2.5 download**. No new version or release date is assigned. Physical readiness remains pending; see [M11 verification and release preparation](docs/M11_RELEASE_READINESS.md). The [post-M11 decision and release-notes draft](docs/MACOS_RELEASE_DECISION.md) proposes `3.0.0-beta.1`/build `11` for a separately approved opt-in prerelease; publication remains on hold. This proposal does not assign the version or create a GitHub release draft.
 
 - Use one work/short/long break cycle, with approximate migration from independent eye/movement timing and a reversible Deep Focus preset. Rings show work/rest progress and completed-short cadence.
 - Add shared manual pause options and optional Office Hours, including overnight schedules and independent pause reasons.
