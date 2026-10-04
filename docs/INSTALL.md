@@ -10,14 +10,38 @@
 
 ## Download the app
 
-1. On the GitHub project page, click **Releases** on the right.
-2. Open the latest release and expand **Assets**.
-3. Download the **Molaway** app ZIP. The automatically generated “Source code” files are for developers, not installers.
-4. Open the ZIP in Downloads. Drag **Molaway.app** to **Applications**.
-5. Open Molaway. It lives in the menu bar, so it does not need a Dock icon.
-6. Click the two rings, then the gear button for Settings.
+**[Download Molaway 2.2.5 for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/download/v2.2.5/Molaway-2.2.5-macOS-arm64.zip)** · [Release notes](https://github.com/boorkymoorky/molaway/releases/tag/v2.2.5) · [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v2.2.5/SHA256SUMS.txt)
+
+This is the published app, verified on 2026-10-04. The M1–M9 changes on `main` are development work and are **not included** in this download. This installation and first-setup guide describes 2.2.5.
+
+1. Download the app ZIP above. The “Source code” files on GitHub are for developers, not installers.
+2. Open the ZIP in Downloads. Drag **Molaway.app** to **Applications**.
+3. Open Molaway. It lives in the menu bar, so it does not need a Dock icon.
+4. Click the two rings, then the gear button for Settings.
 
 No GitHub account or Git knowledge is needed to download a public release. No Molaway account is needed to use the app.
+
+### Check download integrity (optional)
+
+Before extracting, open Terminal and check the downloaded file:
+
+```sh
+shasum -a 256 ~/Downloads/Molaway-2.2.5-macOS-arm64.zip
+```
+
+The SHA256 should be:
+
+```text
+f1430159bdc05ebf141cd6ff583412784b572a0766c90b61254cb942f8bd5882  Molaway-2.2.5-macOS-arm64.zip
+```
+
+Compare the 64-character hash; Terminal may print a longer file path. If it differs, stop and download the ZIP again from the linked release. The downloaded bytes matched both the release's checksum file and GitHub's asset digest during the check. These values come from the same publisher; a matching checksum detects changed bytes, not publisher identity or malware.
+
+## Homebrew status
+
+A cask candidate for a Molaway-maintained tap is [prepared in this repository](homebrew/Casks/molaway.rb), pinned to the same verified 2.2.5 ZIP and SHA256. It supports Apple Silicon and requires macOS 15 or later.
+
+The tap is **not published or verified for end-user installation**. No Homebrew install command is available yet; use the direct download above. [Tap preparation and remaining checks](M10_DISTRIBUTION.md) are separate from a new app release. Homebrew would contact GitHub to fetch packages; Molaway itself remains offline and manually updated.
 
 ## First launch and macOS security
 

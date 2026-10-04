@@ -20,6 +20,8 @@ jobs:
         run: python3 Scripts/verify-security.py
       - name: Publication guard
         run: python3 Scripts/verify-publication.py --tracked
+      - name: Pinned download and cask consistency
+        run: python3 Scripts/verify-distribution.py
       - name: Tests
         run: swift test
       - name: Local signed build
