@@ -56,6 +56,12 @@ The bundle guard reads only the specified built app and reviewed resources. It n
 
 No new physical-test session is requested by this preparation. Daily-use failures should be reproduced and fixed in focused PRs with relevant regressions; update only the evidence actually established. A future distribution decision must address the unresolved readiness items explicitly rather than treating this automated pass as physical verification.
 
+## Post-merge evidence and decision draft — 2026-10-04
+
+[PR #21](https://github.com/boorkymoorky/molaway/pull/21) merged at `39e7d8dbf5089fe04632d5f29aca57e864e1a834`. Its final head `fbda4c203ffee047e42c76726da43a336e0d7af9` passed [Verify run 37226345150](https://github.com/boorkymoorky/molaway/actions/runs/37226345150), and the merged main passed [Verify run 37226551952](https://github.com/boorkymoorky/molaway/actions/runs/37226551952). Both passed every verification step, including isolated installation/update/failure checks. This closes the final-head/main CI follow-up, not the physical readiness gaps.
+
+The [post-M11 decision and release-notes draft](MACOS_RELEASE_DECISION.md) recommends keeping publication on hold, with `3.0.0-beta.1`/build `11` proposed only for a later separately approved opt-in prerelease. It records version rationale, open evidence, migration/downgrade risks and future candidate/publication gates. No version is assigned or GitHub release draft created; stable readiness, M6's deferred checks and M10's independent first-launch gate remain pending.
+
 ## Prepared release handoff
 
 [CHANGELOG.md](../CHANGELOG.md) has a clearly labeled **Unreleased development** section summarizing M1–M9 and M11. README screenshots, download instructions, user-facing feature claims and the tap remain scoped to the actually published 2.2.5 app.

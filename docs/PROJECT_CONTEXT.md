@@ -35,7 +35,7 @@ M9 development adds an explainable Screen Score to the optional Overview. Only f
 
 M10 re-verifies the published 2.2.5 Apple Silicon download/SHA256 and publishes the protected Molaway-owned Homebrew tap. The public cask command and isolated fetch/reinstall/uninstall are verified; first launch after normal Gatekeeper approval remains pending at the owner’s request. End-user tap instructions remain withheld until that gate passes. See `docs/M10_DISTRIBUTION.md` for evidence and limits. M1–M9 are still absent from that download; no new release has been published.
 
-M11 adds integrated M1–M9 lifecycle/migration regressions and an offline assembled-bundle guard in CI. Automated verification and release preparation are complete within documented limits; physical readiness remains pending under the daily-use policy. No version/tag/release or tap update is created. See `docs/M11_RELEASE_READINESS.md` for the publishing handoff and outstanding gates.
+M11 adds integrated M1–M9 lifecycle/migration regressions and an offline assembled-bundle guard in CI. Automated verification and release preparation are complete within documented limits; physical readiness remains pending under the daily-use policy. No version/tag/release or tap update is created. See `docs/M11_RELEASE_READINESS.md` for the publishing handoff and outstanding gates. The next milestone is the post-M11 publishing decision: `docs/MACOS_RELEASE_DECISION.md` proposes an opt-in `3.0.0-beta.1`/build `11`, with publication on hold and stable readiness pending. The proposal assigns no version and does not change the M6 daily-use policy or M10 first-launch gate.
 
 ### Windows
 
