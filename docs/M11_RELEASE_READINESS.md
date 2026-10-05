@@ -1,6 +1,6 @@
 # M11 macOS verification and release preparation
 
-Current follow-up: the owner has approved **beta preparation only**. [3.0.0-beta.1 / build 11 candidate evidence](MACOS_BETA_PREPARATION.md) is recorded separately. The M11 evidence below is historical and used 2.2.5/build 10 development metadata; it is not verification of the new candidate. Publication and physical gates remain open.
+Current follow-up: the owner explicitly authorized regular **3.0.0 / build 11** publication on 2026-10-05, superseding the earlier beta-only decision. See [release authorization and notes](MACOS_3_RELEASE.md). M11 evidence below is historical; the physical gaps remain unverified.
 
 ## Scope and outcome — 2026-10-04
 

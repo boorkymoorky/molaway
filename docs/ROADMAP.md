@@ -1,5 +1,7 @@
 # Planned product roadmap
 
+Current release decision: regular **3.0.0 / build 11** publication is authorized, pending final release checks. See [release authorization](MACOS_3_RELEASE.md). The beta decision below is historical; default download/tap remain 2.2.5 and unperformed physical checks stay unverified.
+
 This roadmap describes planned work, not shipped features. Each milestone is a separate focused change. macOS work comes first; the Windows implementation remains a separate preview until its physical Windows checks pass.
 
 ## macOS

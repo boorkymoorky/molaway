@@ -1,5 +1,7 @@
 # Post-M11 macOS release decision and notes draft
 
+Current decision: on 2026-10-05 the owner explicitly authorized regular **3.0.0 / build 11** publication instead of a beta. See [the current release authorization](MACOS_3_RELEASE.md). The beta proposal, hold decision and verification below are historical; their publishing-status instructions are superseded. The unchanged physical and migration limits still apply. No beta is published.
+
 ## Current decision — preparation approved; publication on hold
 
 The owner approved **3.0.0-beta.1 / build 11, beta preparation only** after reviewing the physical-gap disclosure and migration/downgrade risks. The candidate now assigns numeric bundle version `3.0.0` and build `11`; the app identity and EN/TR text stay unchanged. No stable/RC claim, tag, GitHub draft/published release, asset upload or tap change is authorized. See [candidate preparation and verification](MACOS_BETA_PREPARATION.md).
