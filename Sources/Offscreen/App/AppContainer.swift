@@ -425,6 +425,8 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         statistics.beginManual()
         let selected = kind == .long ? MolaKind.long : nextKind
         activeRest = selected; restStarted = now ?? time; restReturn.reset()
+        // A manual break can begin between polls; only time after its start is rest.
+        previousTime = restStarted
         typingDeferralRemaining = nil
         reminderShownAt = nil
         accounting.clearProvisional(); reminderKinds = [selected]; isPreview = false
