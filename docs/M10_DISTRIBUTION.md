@@ -50,7 +50,7 @@ After that check passes, publish the tested fully qualified command in the tap R
 
 ```sh
 python3 Scripts/verify-distribution.py
-python3 Scripts/verify-distribution.py --archive <downloaded-app.zip>
+python3 Scripts/verify-distribution.py --tap-archive <downloaded-app.zip>
 ```
 
-The first command is an offline CI guard that compares the cask with the README and installation guide. The second checks a previously downloaded ZIP's bytes and bounded bundle metadata without extracting, launching or installing it. Neither contacts the network, checks signatures, proves live availability or verifies Homebrew installation/first launch. Maintainers must separately compare GitHub's live asset metadata and checksum file, inspect the extracted signature/architecture, and repeat the relevant lifecycle checks and complete the first-launch gate above.
+The direct/latest download now uses 3.0.0, independently of this pinned 2.2.5 tap. Use `--archive` for the direct download and `--tap-archive` for this tap. The first command is an offline CI guard that compares the cask with the README and installation guide. The second checks a previously downloaded ZIP's bytes and bounded bundle metadata without extracting, launching or installing it. Neither contacts the network, checks signatures, proves live availability or verifies Homebrew installation/first launch. Maintainers must separately compare GitHub's live asset metadata and checksum file, inspect the extracted signature/architecture, and repeat the relevant lifecycle checks and complete the first-launch gate above.

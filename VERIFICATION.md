@@ -1,10 +1,16 @@
 # Verification
 
+## Latest-download homepage — 2026-10-05
+
+- The owner instructed the homepage to use the latest 3.0.0 release. README and the installation guide now describe its cycle; the static local download button targets GitHub's latest-download route for the verified 3.0.0 app ZIP. Old independent-timer screenshots are not presented as current 3.0.0 UI.
+- The distribution guard checks direct-download version/SHA256 in `docs/download.json` independently of the 2.2.5 tap. Both retained real ZIPs passed their respective checksum/metadata checks; six disposable negative fixtures were rejected. CI runs those fixtures. Live latest routing must resolve to the same public 3.0.0 bytes before this change is delivered.
+- App code, identity, version/build, EN/TR strings, entitlements, release assets/tag, tap cask and personal/Windows work are unchanged. Homebrew status is visible; its command remains withheld while M10 first launch is pending. M6 structured checks are not restarted.
+
 ## 3.0.0 regular release — 2026-10-05
 
 - [PR #24](https://github.com/boorkymoorky/molaway/pull/24) and [merged-main Verify](https://github.com/boorkymoorky/molaway/actions/runs/37271481158) passed all steps for tag source `7d675c40d2819188843209f19901e59481b8931f`. Local tests passed 202 cases in 20 suites; source/publication/distribution guards, release build and bundle guard passed (127 curated files, 372 unchanged EN/TR keys, exact original permissions, eight rejected negative fixtures). Hosted isolated installation checks passed; local verification kept the running-app refusal. No personal app/data was used as a test target.
 - [3.0.0](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0) is a regular release at the owner's explicit request; no beta was published. The actual public app/source ZIPs and checksum file were downloaded, matched byte-for-byte with the reviewed local packages and GitHub digests, and passed tracked-source and extracted original-signature/metadata/arm64/license/resource inspection. See [exact package evidence and migration limits](docs/MACOS_3_RELEASE.md).
-- The default/latest release and tap remain 2.2.5. M6 structured checks are not restarted; M10 original first launch is still pending and the tap command withheld. Complete-app notification/accessibility/display/lifecycle, optional-signal, multi-day/energy, Intel and oldest-supported-OS cases retain their unverified limits. Regular publication does not prove these physical results. No app networking, broader permission or Windows release is added.
+- At initial publication the default/latest release and tap remained 2.2.5. The subsequent homepage decision makes 3.0.0 the latest/direct download; the tap separately stays on 2.2.5. M6 structured checks are not restarted; M10 original first launch is still pending and the tap command withheld. Complete-app notification/accessibility/display/lifecycle, optional-signal, multi-day/energy, Intel and oldest-supported-OS cases retain their unverified limits. Regular publication does not prove these physical results. No app networking, broader permission or Windows release is added.
 - Milestone reports below are historical observations at their stated dates; their then-unshipped status does not describe the now-published 3.0.0 release.
 
 ## M11 integrated verification — 2026-10-04 (development; no app release)
