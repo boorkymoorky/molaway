@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 3.0.1 — 2026-10-05 (release preparation)
 
-- Rephase the existing macOS timer after countdown-second boundaries so normal permitted timer jitter does not repeat a displayed second and then skip the next one. Keep real elapsed-time accounting, pause/rest semantics and the existing sensor gate; genuine main-thread stalls still catch up honestly. This fix is not included in the published 3.0.0 download.
+- Rephase the existing macOS timer after countdown-second boundaries so normal permitted timer jitter does not repeat a displayed second and then skip the next one. Keep real elapsed-time accounting, pause/rest semantics and the existing sensor gate; genuine main-thread stalls still catch up honestly. Build 12 contains the fix; the existing 3.0.0 assets remain unchanged. Publication of 3.0.1 follows the protected release checks.
 
 ## 3.0.0 — 2026-10-05
 
