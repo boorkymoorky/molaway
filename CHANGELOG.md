@@ -1,12 +1,14 @@
 # Changelog
 
-## 3.0.1 — 2026-10-05 (release preparation)
+## 3.0.1 — 2026-10-05
 
-- Rephase the existing macOS timer after countdown-second boundaries so normal permitted timer jitter does not repeat a displayed second and then skip the next one. Keep real elapsed-time accounting, pause/rest semantics and the existing sensor gate; genuine main-thread stalls still catch up honestly. Build 12 contains the fix; the existing 3.0.0 assets remain unchanged. Publication of 3.0.1 follows the protected release checks.
+[3.0.1](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.1), build **12**, is the current regular release and latest direct download. [Release evidence](docs/MACOS_3_0_1_RELEASE.md). Homebrew remains pinned to 2.2.5 with its first-launch gate pending.
+
+- Rephase the existing macOS timer after countdown-second boundaries so normal permitted timer jitter does not repeat a displayed second and then skip the next one. Keep real elapsed-time accounting, pause/rest semantics and the existing sensor gate; genuine main-thread stalls still catch up honestly. Build 12 contains the fix; the existing 3.0.0 assets remain unchanged. Protected release checks and actual public-package verification passed.
 
 ## 3.0.0 — 2026-10-05
 
-[3.0.0](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0), build **11**, is a regular macOS release published at the owner's explicit request. The prepared beta was never published. **3.0.0 is the default direct download and GitHub latest release.** Homebrew separately remains pinned to 2.2.5 with its first-launch gate pending. [Release evidence and notes](docs/MACOS_3_RELEASE.md) retain migration/downgrade and physical verification limits. A regular release does not establish unperformed physical checks.
+[3.0.0](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0), build **11**, is a regular macOS release published at the owner's explicit request. The prepared beta was never published. 3.0.0 became the latest direct download before the subsequent 3.0.1 patch. Homebrew separately remains pinned to 2.2.5 with its first-launch gate pending. [Release evidence and notes](docs/MACOS_3_RELEASE.md) retain migration/downgrade and physical verification limits. A regular release does not establish unperformed physical checks.
 
 - Use one work/short/long break cycle, with approximate migration from independent eye/movement timing and a reversible Deep Focus preset. Rings show work/rest progress and completed-short cadence.
 - Add shared manual pause options and optional Office Hours, including overnight schedules and independent pause reasons.

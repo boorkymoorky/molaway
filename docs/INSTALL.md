@@ -10,9 +10,9 @@
 
 ## Download the app
 
-**[Download latest release for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/latest/download/Molaway-3.0.0-macOS-arm64.zip)** · [Release notes](https://github.com/boorkymoorky/molaway/releases/latest) · [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/SHA256SUMS.txt)
+**[Download latest release for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/latest/download/Molaway-3.0.1-macOS-arm64.zip)** · [Release notes](https://github.com/boorkymoorky/molaway/releases/latest) · [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v3.0.1/SHA256SUMS.txt)
 
-The current regular release is **3.0.0 / build 11**, with one work/short/long cycle. Its actual app/source downloads matched the reviewed files and GitHub digests; original signature and resources passed inspection. This guide describes 3.0.0. [Release evidence and remaining physical limits](MACOS_3_RELEASE.md).
+The current regular release is **3.0.1 / build 12**, with one work/short/long cycle and a fix for uneven countdown steps during normal use. Its actual app/source downloads matched the reviewed files and GitHub digests; original signature and resources passed inspection. This guide describes 3.0.1. [Release evidence and remaining physical limits](MACOS_3_0_1_RELEASE.md).
 
 1. Download the app ZIP above. GitHub's source archives are for developers, not installers.
 2. Quit any running Molaway, open the ZIP and drag **Molaway.app** to **Applications**. Keep one installed copy.
@@ -26,13 +26,13 @@ No GitHub or Molaway account is needed.
 Before extracting, check the downloaded file:
 
 ```sh
-shasum -a 256 ~/Downloads/Molaway-3.0.0-macOS-arm64.zip
+shasum -a 256 ~/Downloads/Molaway-3.0.1-macOS-arm64.zip
 ```
 
 The SHA256 should be:
 
 ```text
-75b7f89d9d3c5b1cdcf56ecfda476994e56d3ffb8df542efcd730645bf6aeec2  Molaway-3.0.0-macOS-arm64.zip
+d7fac265381266da673fb0f960155097ccd360470e3914b031a0af7c1d1e80e2  Molaway-3.0.1-macOS-arm64.zip
 ```
 
 Compare the 64-character hash with the linked checksum file. If it differs, stop and download again from this repository. Matching hashes detect changed bytes; they do not independently authenticate the publisher or prove absence of malware.
@@ -41,13 +41,13 @@ Compare the 64-character hash with the linked checksum file. If it differs, stop
 
 Export your 2.2.5 settings first and keep that file private. Review the migrated schedule: eye interval/rest becomes work/short timing, movement rest becomes long rest, and the old movement interval is approximated by short-break cadence.
 
-2.2.5 cannot read 3.0.0 settings and may fall back to defaults; older summary writers may lose Screen Score fields. Settings export excludes summaries and live pause/cadence. App replacement alone is not a full or lossless rollback. Read [migration/downgrade limits](MACOS_3_RELEASE.md) before switching.
+2.2.5 cannot read 3.x settings and may fall back to defaults; older summary writers may lose Screen Score fields. Settings export excludes summaries and live pause/cadence. App replacement alone is not a full or lossless rollback. Read [migration/downgrade limits](MACOS_3_RELEASE.md) before switching.
 
 ## Homebrew status
 
-The [Molaway-maintained tap](https://github.com/boorkymoorky/homebrew-molaway) is published and still pins the verified **2.2.5** ZIP and SHA256, independently of the 3.0.0 direct download. It supports Apple Silicon and requires macOS 15 or later. Its cask matches [the copy in this repository](homebrew/Casks/molaway.rb).
+The [Molaway-maintained tap](https://github.com/boorkymoorky/homebrew-molaway) is published and still pins the verified **2.2.5** ZIP and SHA256, independently of the 3.0.1 direct download. It supports Apple Silicon and requires macOS 15 or later. Its cask matches [the copy in this repository](homebrew/Casks/molaway.rb).
 
-The public tap’s installation, fetch, same-version reinstallation and removal passed in a disposable Homebrew environment. **First launch after normal Gatekeeper approval remains unverified**, so end-user Homebrew instructions remain pending; use the direct download above. [Verification evidence and the remaining first-launch gate](M10_DISTRIBUTION.md) state the limits. Homebrew contacts GitHub to fetch packages; Molaway itself remains offline and manually updated. The tap does not yet distribute 3.0.0; no tap version change is included in the latest-download update.
+The public tap’s installation, fetch, same-version reinstallation and removal passed in a disposable Homebrew environment. **First launch after normal Gatekeeper approval remains unverified**, so end-user Homebrew instructions remain pending; use the direct download above. [Verification evidence and the remaining first-launch gate](M10_DISTRIBUTION.md) state the limits. Homebrew contacts GitHub to fetch packages; Molaway itself remains offline and manually updated. The tap does not yet distribute 3.x; no tap version change is included in this update.
 
 ## First launch and macOS security
 
@@ -67,7 +67,7 @@ This builds the app on your Mac. It does not download and immediately execute a 
 2. Open **Terminal** and download the versioned source:
 
    ```sh
-   git clone --branch v3.0.0 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
+   git clone --branch v3.0.1 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
    cd Molaway-source
    ```
 

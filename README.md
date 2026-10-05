@@ -9,15 +9,17 @@
 - Choose gentle reminders, shared pause options, Office Hours and optional local summaries.
 - No account, subscription, ads, analytics or app network access.
 
-[![Download latest release](docs/images/download.svg)](https://github.com/boorkymoorky/molaway/releases/latest/download/Molaway-3.0.0-macOS-arm64.zip)
+[![Download latest release](docs/images/download.svg)](https://github.com/boorkymoorky/molaway/releases/latest/download/Molaway-3.0.1-macOS-arm64.zip)
 
-**Current release: 3.0.0 · Apple Silicon · macOS 15 or later**
+**Current release: 3.0.1 · Apple Silicon · macOS 15 or later**
 
-[Release notes](https://github.com/boorkymoorky/molaway/releases/latest) · [Installation guide](docs/INSTALL.md) · [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/SHA256SUMS.txt)
+3.0.1 fixes uneven countdown steps during normal use while preserving elapsed-time accounting.
+
+[Release notes](https://github.com/boorkymoorky/molaway/releases/latest) · [Installation guide](docs/INSTALL.md) · [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v3.0.1/SHA256SUMS.txt)
 
 <p align="center"><img src="docs/images/cycle-3.png" width="342" alt="Molaway 3.0.0 menu bar panel showing work progress and completed short breaks toward a long break"></p>
 
-*Screenshots show the English 3.0.0 interface with example settings and synthetic summaries.*
+*Screenshots show the English 3.0.0 interface with example settings and synthetic summaries; the layout is unchanged in 3.0.1.*
 
 ## Install
 
@@ -30,13 +32,13 @@
 
 **Signing:** Molaway is ad hoc signed, **not Apple Developer ID signed or notarized**. Follow Apple's per-app approval steps in the [installation guide](docs/INSTALL.md); keep Gatekeeper enabled.
 
-**Updates are manual:** check [the latest release](https://github.com/boorkymoorky/molaway/releases/latest). Molaway never contacts GitHub or checks for updates in the background. The current app/source downloads and original signature were verified; [release evidence and physical limits](docs/MACOS_3_RELEASE.md) describe the scope.
+**Updates are manual:** check [the latest release](https://github.com/boorkymoorky/molaway/releases/latest). Molaway never contacts GitHub or checks for updates in the background. The current app/source downloads and original signature were verified; [release evidence and physical limits](docs/MACOS_3_0_1_RELEASE.md) describe the scope.
 
 ## Homebrew
 
 The [Molaway-owned Homebrew tap](https://github.com/boorkymoorky/homebrew-molaway) is published. It currently pins an older verified release; the button above downloads the latest app.
 
-Its isolated install, fetch, reinstall and removal checks passed. **First launch after normal Gatekeeper approval remains pending**, so end-user Homebrew commands are withheld until that check passes. Use the download button for 3.0.0. [Tap verification and remaining gate](docs/M10_DISTRIBUTION.md).
+Its isolated install, fetch, reinstall and removal checks passed. **First launch after normal Gatekeeper approval remains pending**, so end-user Homebrew commands are withheld until that check passes. Use the download button for 3.0.1. [Tap verification and remaining gate](docs/M10_DISTRIBUTION.md).
 
 **Terminal alternative:** [build and install the versioned source](docs/INSTALL.md#terminal-install-from-source). No paid Apple Developer membership is needed.
 
