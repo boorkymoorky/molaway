@@ -1,5 +1,7 @@
 # macOS 3.0.0 / build 11 release record
 
+This is the historical 3.0.0 record. The current release is [3.0.1/build 12](MACOS_3_0_1_RELEASE.md); its countdown fix and package evidence are recorded separately. The authorization and distribution snapshots below describe their respective stages.
+
 ## Latest-download decision — 2026-10-05
 
 The owner subsequently instructed the homepage and download button to use the latest 3.0.0 release instead of 2.2.5. GitHub 3.0.0 is promoted to Latest and the README/installation guide describe its current cycle. The direct-download version/SHA256 are recorded in `download.json`; its latest-download route must resolve to the reviewed 3.0.0 ZIP. The tap remains pinned to 2.2.5 and end-user Homebrew instructions remain withheld. M6/M10 physical gates, release assets, tag/source, app code/permissions and personal/Windows work are unchanged.

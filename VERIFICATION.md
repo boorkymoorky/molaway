@@ -1,14 +1,19 @@
 # Verification
 
-## Countdown cadence fix — 2026-10-05 (unreleased)
+## 3.0.1 regular release — 2026-10-05
+
+- [PR #29](https://github.com/boorkymoorky/molaway/pull/29) and [merged-main Verify](https://github.com/boorkymoorky/molaway/actions/runs/37298207328) passed all steps for tag source `c6ea02b57c29705b4e73e036439fcce3f7a7139e`: 211 tests in 21 suites, source/publication/distribution guards, release build, original signature/entitlements, 372 unchanged EN/TR keys, eight negative bundle fixtures and isolated installer checks. Local isolated installer checks also passed before installation.
+- The actual public app/source ZIPs and checksum file matched reviewed bytes and GitHub digests. The source ZIP equals all 135 tracked tag files; the original extracted app is arm64, version 3.0.1/build 12 and ad hoc signed. [Exact package evidence and remaining limits](docs/MACOS_3_0_1_RELEASE.md). Direct-download metadata now targets 3.0.1; the tap remains 2.2.5. M6 is deferred, M10 original quarantined first launch is pending, and end-user tap commands remain withheld.
+
+## Countdown cadence fix — 2026-10-05 (initial development; shipped in 3.0.1)
 
 - A deterministic regression reproduces `20:00 → 20:00 → 19:58` when a fixed one-second poll's late delivery varies across the rounding boundary. The existing real elapsed-time accounting is correct. The fix rephases that same timer after the next countdown boundary, with a 50 ms margin and the existing 200 ms tolerance. Processing time is subtracted from the next wait; paused/empty counters keep a one-second poll. A bounded short correction can occur after a transition or genuine stall; no continuously faster timer or separate visual clock is added.
 - **211 tests in 21 suites passed**, including nine new regressions: the original symptom, changing allowed lateness and fractional phases, short/long rest completion, manual pause/resume, automatic idle pause, sleep/wake, honest long-stall recovery, snoozed-reminder countdown and bounded scheduling after processing. Synthetic model tests do not establish physical sleep/wake or full-app behavior.
 - An isolated native Foundation timer probe with compiled model code, a distinct identity and temporary synthetic settings reproduced two repeated labels and one double step under the old cadence. The rephased probe produced 17 successive one-second decrements in the same 18-second scenario, without either symptom. No application services or real sensors were started. This is scoped scheduling evidence, not sustained performance, energy or full UI verification.
-- Source/publication/distribution guards, release-mode build and original bundle guard passed locally: Apple Silicon, 372 matching EN/TR keys, unchanged permissions and eight rejected bundle fixtures. Hosted PR checks must pass before merge; local installer checks retain their refusal while the personal Molaway is running.
-- The code fix is not in the public 3.0.0 assets. No version/build bump, tag, release, asset replacement, tap change, personal installation or Windows change is performed. M6 structured checks remain deferred and M10 original first launch remains pending; end-user Homebrew commands stay withheld.
+- Source/publication/distribution guards, release-mode build and original bundle guard passed locally: Apple Silicon, 372 matching EN/TR keys, unchanged permissions and eight rejected bundle fixtures. Protected PR #28 and merged-main checks passed. At initial development, local installer checks retained their refusal while the personal Molaway was running; subsequent release checks are recorded above.
+- The code fix is absent from the unchanged public 3.0.0 assets and ships in 3.0.1/build 12. The initial fix PR did not publish a release; the subsequent owner-authorized publication is recorded above. No tap or Windows change is included. M6 structured checks remain deferred and M10 original first launch remains pending; end-user Homebrew commands stay withheld.
 
-## Latest-download homepage — 2026-10-05
+## Initial 3.0.0 latest-download homepage — 2026-10-05 (historical)
 
 - The owner instructed the homepage to use the latest 3.0.0 release. README and the installation guide now describe its cycle; the static local download button targets GitHub's latest-download route for the verified 3.0.0 app ZIP. Old independent-timer screenshots are not presented as current 3.0.0 UI.
 - The distribution guard checks direct-download version/SHA256 in `docs/download.json` independently of the 2.2.5 tap. Both retained real ZIPs passed their respective checksum/metadata checks; six disposable negative fixtures were rejected. CI runs those fixtures. Live latest routing must resolve to the same public 3.0.0 bytes before this change is delivered.
