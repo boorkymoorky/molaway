@@ -12,8 +12,11 @@ root = Path(__file__).resolve().parents[1]
 source = root / 'build.noindex/Molaway.app'
 assert source.is_dir(), 'Build the release app first.'
 # The production installer refuses any running Molaway. Tests never bypass that check.
-if subprocess.run(['/usr/bin/pgrep', '-x', 'Molaway'], capture_output=True).returncode == 0:
+process_check = subprocess.run(['/usr/bin/pgrep', '-x', 'Molaway'], capture_output=True)
+if process_check.returncode == 0:
     raise SystemExit('Quit Molaway before running installation verification.')
+if process_check.returncode != 1:
+    raise SystemExit('Cannot check whether Molaway is running. Installation verification stopped.')
 
 with tempfile.TemporaryDirectory(prefix='molaway-install-check-', suffix='.noindex') as temp:
     base = Path(temp).resolve()

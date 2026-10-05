@@ -70,7 +70,7 @@ No new physical-check session is initiated here. Document only evidence actually
 
 ## Proposed release notes — not published
 
-The following English text is a draft for a future separately approved prerelease. The proposed version/build has not been assigned, built or packaged yet.
+The following English text is an unpublished draft for the prepared 3.0.0/build 11 candidate. Candidate verification and local packaging are recorded separately; publication still requires an explicit decision.
 
 ### Molaway 3.0.0-beta.1 — macOS preview
 
@@ -83,7 +83,7 @@ Changes prepared on main:
 - An optional pointer countdown provides one localized announcement per visible countdown. Smart Pause shares existing activity/quiet signals, with optional typing deferral capped at 30 seconds.
 - Off-by-default audio-input, active native fullscreen and selected-foreground-app options quiet alerts within the documented public-API limits. Automatic screen sharing, microphone-only classification and broader fullscreen detection remain deferred.
 - Optional local summaries gain Screen Score: completed divided by resolved full-cycle opportunities, shown after at least three outcomes. Snoozes and unresolved/early breaks do not create failures or extra points; earlier days have no invented scores.
-- Integrated lifecycle/migration regressions and offline bundle/signature/permission/EN/TR guards extend automated coverage. Final versioned-candidate results must be added before publication; existing M11 checks cover development source only.
+- Integrated lifecycle/migration regressions and offline bundle/signature/permission/EN/TR guards extend automated coverage. The prepared versioned candidate passed 202 tests in 20 suites and bundle guards for 372 EN/TR keys and eight negative fixtures. Final reviewed-revision CI and archive evidence must pass before publication; these checks do not establish physical readiness.
 
 Before trying a future beta, export settings from 2.2.5 and keep that file private. Review the migrated schedule: the former movement interval is approximated. A beta settings file cannot be read by 2.2.5, and older app versions may discard new score fields. Settings export excludes summaries and is not a full rollback backup.
 
