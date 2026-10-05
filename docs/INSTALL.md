@@ -12,7 +12,7 @@
 
 **[Download Molaway 2.2.5 for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/download/v2.2.5/Molaway-2.2.5-macOS-arm64.zip)** · [Release notes](https://github.com/boorkymoorky/molaway/releases/tag/v2.2.5) · [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v2.2.5/SHA256SUMS.txt)
 
-This is the published app, verified on 2026-10-04. The M1–M9 changes on `main` are development work and are **not included** in this download. This installation and first-setup guide describes 2.2.5.
+This is the published app, verified on 2026-10-04. The work/short/long cycle introduced in 3.0.0 is **not included** in this 2.2.5 download. This installation and first-setup guide describes 2.2.5.
 
 1. Download the app ZIP above. The “Source code” files on GitHub are for developers, not installers.
 2. Open the ZIP in Downloads. Drag **Molaway.app** to **Applications**.
@@ -36,6 +36,14 @@ f1430159bdc05ebf141cd6ff583412784b572a0766c90b61254cb942f8bd5882  Molaway-2.2.5-
 ```
 
 Compare the 64-character hash; Terminal may print a longer file path. If it differs, stop and download the ZIP again from the linked release. The downloaded bytes matched both the release's checksum file and GitHub's asset digest during the check. These values come from the same publisher; a matching checksum detects changed bytes, not publisher identity or malware.
+
+## Separate 3.0.0 release
+
+[Download Molaway 3.0.0 for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/Molaway-3.0.0-macOS-arm64.zip) · [3.0.0 release notes](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0) · [3.0.0 SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/SHA256SUMS.txt)
+
+3.0.0 is a regular release with one work/short/long cycle; its outer ring shows work/rest and inner ring shows completed-short cadence. **2.2.5 remains the default download and tap version.** Read [migration, downgrade and verification limits](MACOS_3_RELEASE.md) before switching. Export 2.2.5 settings first and keep them private, quit Molaway before replacing it, and keep only one installed copy. The old movement interval is approximated; review the migrated schedule. 2.2.5 cannot read 3.0.0 settings, older summary writers may lose score fields, and a settings export is not a complete rollback backup.
+
+The actual 3.0.0 app/source downloads matched their checksum file, local reviewed packages and GitHub asset digests; original signature and resources passed inspection. Both releases remain ad hoc signed and unnotarized. Follow the same per-app approval guidance below and keep Gatekeeper enabled. Complete-app physical coverage remains limited; this separate release does not close M10's first-launch gate or enable end-user tap instructions. First setup below describes the default 2.2.5 app.
 
 ## Homebrew status
 

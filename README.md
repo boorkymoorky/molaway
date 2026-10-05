@@ -26,7 +26,9 @@ Molaway is a personal, non-commercial project shared as open source. My version 
 3. Open Molaway and click its two-ring icon in the menu bar.
 4. Choose your eye and movement intervals. Everything works locally.
 
-The direct download and [SHA256](docs/INSTALL.md#check-download-integrity-optional) were verified against the actual release asset on 2026-10-04. This README describes the published 2.2.5 app; M1–M9 on `main` are development changes and are not included in that download.
+The direct download and [SHA256](docs/INSTALL.md#check-download-integrity-optional) were verified against the actual release asset on 2026-10-04. The default download, features and screenshots in this README describe 2.2.5; the new 3.0.0 cycle features are absent from that older download.
+
+**Separate 3.0.0 release:** [Molaway 3.0.0 for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/Molaway-3.0.0-macOS-arm64.zip) is available as a regular release with a work/short/long cycle and changed ring meanings. Read [release notes, migration/downgrade limits and verification evidence](docs/MACOS_3_RELEASE.md) before switching. Some physical notification, accessibility, display/lifecycle and multi-day checks remain unverified. 2.2.5 stays the default download and tap version by the maintainer's decision.
 
 **Signing:** Molaway is locally (ad hoc) signed, **not Apple Developer ID signed or notarized**. macOS may ask you to approve the app. Follow the app-specific steps in the [installation guide](docs/INSTALL.md); keep Gatekeeper enabled.
 
@@ -117,7 +119,7 @@ python3 Scripts/verify-security.py
 python3 Scripts/verify-publication.py
 ```
 
-The app is created at `build.noindex/Molaway.app`. Main-source development builds include unshipped changes; [M11 verification and release preparation](docs/M11_RELEASE_READINESS.md) records their automated evidence and remaining physical limits. [Contributing](CONTRIBUTING.md) explains checks and privacy requirements. [Changelog](CHANGELOG.md) lists changes.
+The app is created at `build.noindex/Molaway.app`. The 3.0.0 release contains the cycle features; [release verification](docs/MACOS_3_RELEASE.md) records automated evidence and remaining physical limits. Always use a versioned release tag for a reproducible source build. [Contributing](CONTRIBUTING.md) explains checks and privacy requirements. [Changelog](CHANGELOG.md) lists changes.
 
 ## Credits and license
 

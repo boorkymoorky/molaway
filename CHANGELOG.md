@@ -1,8 +1,8 @@
 # Changelog
 
-## 3.0.0 — release authorized; publication pending
+## 3.0.0 — 2026-10-05
 
-On 2026-10-05 the owner instructed publication as a regular 3.0.0 release instead of a beta, retaining numeric bundle version **3.0.0**, build **11**. Publication follows the final protected PR and package verification; see [release authorization and notes](docs/MACOS_3_RELEASE.md). **2.2.5 remains the default download and Homebrew version.** The changes below are absent from that older download. Historical [beta preparation](docs/MACOS_BETA_PREPARATION.md) was never published; unperformed physical checks remain unverified.
+[3.0.0](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0), build **11**, is a regular macOS release published at the owner's explicit request. The prepared beta was never published. **2.2.5 remains the default download and Homebrew version**; choose 3.0.0 separately for the changes below. [Release evidence and notes](docs/MACOS_3_RELEASE.md) retain migration/downgrade and physical verification limits. A regular release does not establish unperformed physical checks.
 
 - Use one work/short/long break cycle, with approximate migration from independent eye/movement timing and a reversible Deep Focus preset. Rings show work/rest progress and completed-short cadence.
 - Add shared manual pause options and optional Office Hours, including overnight schedules and independent pause reasons.

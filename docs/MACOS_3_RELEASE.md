@@ -1,4 +1,17 @@
-# macOS 3.0.0 / build 11 release authorization
+# macOS 3.0.0 / build 11 release record
+
+## Published and downloaded-asset verification — 2026-10-05
+
+[Molaway 3.0.0](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0) is published as a regular release (`prerelease=false`), with latest disabled. Tag `v3.0.0` resolves to `7d675c40d2819188843209f19901e59481b8931f`, the protected merge of [PR #24](https://github.com/boorkymoorky/molaway/pull/24). [Final PR Verify](https://github.com/boorkymoorky/molaway/actions/runs/37271201835) and [merged-main Verify](https://github.com/boorkymoorky/molaway/actions/runs/37271481158) passed every guard, test/build, bundle fixture and isolated installer step. No beta tag or release was created.
+
+| Public asset | SHA256 of actual downloaded bytes |
+| --- | --- |
+| [Molaway-3.0.0-macOS-arm64.zip](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/Molaway-3.0.0-macOS-arm64.zip) | `75b7f89d9d3c5b1cdcf56ecfda476994e56d3ffb8df542efcd730645bf6aeec2` |
+| [Molaway-3.0.0-Source.zip](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/Molaway-3.0.0-Source.zip) | `750e1d44b430fd72afc57d7d5236af959734f376c84e2f7678cedff1be9d2ea7` |
+
+Both downloaded ZIPs and [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/SHA256SUMS.txt) were byte-identical to the reviewed local files and matched GitHub's asset digests. The source ZIP equals all 127 tracked files at the tagged revision; the app ZIP equals the verified release bundle. Extracted original deep/strict signature, ad hoc hardened runtime, arm64, 3.0.0/build 11 metadata, macOS 15 target, MIT license, exact sandbox/file entitlements and 372 unchanged EN/TR keys passed. Eight negative bundle fixtures were rejected. No original app launch, re-signing or personal installation was used for this verification.
+
+GitHub's default/latest release, README/install default download and the live tap remain **2.2.5**. The cask still matches the repository's pinned copy. M6 structured checks remain deferred; M10 first launch remains pending and end-user tap instructions withheld. The physical, migration/downgrade and platform limits below remain unchanged. This is same-publisher byte/signature verification, not independent authentication or a security audit. The authorization/sequence below is the prepublication process record, completed for this release.
 
 ## Owner decision — 2026-10-05
 

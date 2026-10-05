@@ -1,24 +1,24 @@
 # Planned product roadmap
 
-Current release decision: regular **3.0.0 / build 11** publication is authorized, pending final release checks. See [release authorization](MACOS_3_RELEASE.md). The beta decision below is historical; default download/tap remain 2.2.5 and unperformed physical checks stay unverified.
+Current release status: regular **3.0.0 / build 11** is published and its actual app/source downloads verified. See [release record](MACOS_3_RELEASE.md). Default download/tap remain 2.2.5; unperformed physical checks stay unverified. Detailed milestone observations below are historical records at their stated stages, including then-unshipped statements.
 
-This roadmap describes planned work, not shipped features. Each milestone is a separate focused change. macOS work comes first; the Windows implementation remains a separate preview until its physical Windows checks pass.
+This roadmap records shipped milestones and remaining plans. Each milestone is a separate focused change. macOS work comes first; the Windows implementation remains a separate preview until its physical Windows checks pass.
 
 ## macOS
 
 | Milestone | Planned scope | Status |
 | --- | --- | --- |
-| M1 | One work/short/long break cycle, migration from independent eye and movement timers, Deep Focus timing profile, and a minimal usable interface. | Merged to main; not shipped |
-| M2 | Reconnect the two rings to work/rest and short-break cadence; simplify the menu panel and settings controls. | Merged to main; not shipped |
-| M3 | A shared pause model with 30-minute, one-hour, tomorrow, and manual-resume options. | Merged to main; not shipped |
-| M4 | Office Hours, including overnight shifts and tomorrow's next working start. | Merged to main; not shipped |
-| M5 | Explicit Casual, Balanced, and Hardcore skip behavior across all reminder surfaces. | Merged to main; not shipped |
-| M6 | Optional cursor countdown before a break. | Merged to main; not shipped; physical checks pending |
-| M7 | Unify existing activity signals under Smart Pause and add bounded typing deferral. | Merged to main; not shipped; physical behavior unverified |
-| M8 | Evaluate microphone, sharing, fullscreen, and selected focus-app signals within public APIs and current permissions. | Implemented within documented limits; not shipped; broader detection deferred |
-| M9 | An explainable Screen Score based on actual break opportunities and bounded optional daily summaries. | Implemented; not shipped; physical behavior unverified |
+| M1 | One work/short/long break cycle, migration from independent eye and movement timers, Deep Focus timing profile, and a minimal usable interface. | Shipped in 3.0.0 |
+| M2 | Reconnect the two rings to work/rest and short-break cadence; simplify the menu panel and settings controls. | Shipped in 3.0.0 |
+| M3 | A shared pause model with 30-minute, one-hour, tomorrow, and manual-resume options. | Shipped in 3.0.0 |
+| M4 | Office Hours, including overnight shifts and tomorrow's next working start. | Shipped in 3.0.0 |
+| M5 | Explicit Casual, Balanced, and Hardcore skip behavior across all reminder surfaces. | Shipped in 3.0.0 |
+| M6 | Optional cursor countdown before a break. | Shipped in 3.0.0; physical checks pending |
+| M7 | Unify existing activity signals under Smart Pause and add bounded typing deferral. | Shipped in 3.0.0; physical behavior unverified |
+| M8 | Evaluate microphone, sharing, fullscreen, and selected focus-app signals within public APIs and current permissions. | Shipped in 3.0.0 within documented limits; broader detection deferred |
+| M9 | An explainable Screen Score based on actual break opportunities and bounded optional daily summaries. | Shipped in 3.0.0; physical behavior unverified |
 | M10 | Verified direct macOS download and a Molaway-owned Homebrew tap. | Published 2.2.5 download and public tap lifecycle verified; isolated first launch pending |
-| M11 | Integrated macOS verification and release preparation, with physical checks stated separately. | Automated verification/preparation complete; post-M11 decision draft prepared; no release; physical readiness pending |
+| M11 | Integrated macOS verification and release preparation, with physical checks stated separately. | Integrated checks included in 3.0.0; physical gaps remain |
 
 ## Windows preview, after macOS
 

@@ -1,6 +1,6 @@
 # Post-M11 macOS release decision and notes draft
 
-Current decision: on 2026-10-05 the owner explicitly authorized regular **3.0.0 / build 11** publication instead of a beta. See [the current release authorization](MACOS_3_RELEASE.md). The beta proposal, hold decision and verification below are historical; their publishing-status instructions are superseded. The unchanged physical and migration limits still apply. No beta is published.
+Current decision: on 2026-10-05 the owner explicitly authorized regular **3.0.0 / build 11** publication instead of a beta. The regular release is now published; see [the current release record](MACOS_3_RELEASE.md). The beta proposal, hold decision and verification below are historical; their publishing-status instructions are superseded. The unchanged physical and migration limits still apply. No beta is published.
 
 ## Current decision — preparation approved; publication on hold
 

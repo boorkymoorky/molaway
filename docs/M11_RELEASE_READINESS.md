@@ -1,6 +1,6 @@
 # M11 macOS verification and release preparation
 
-Current follow-up: the owner explicitly authorized regular **3.0.0 / build 11** publication on 2026-10-05, superseding the earlier beta-only decision. See [release authorization and notes](MACOS_3_RELEASE.md). M11 evidence below is historical; the physical gaps remain unverified.
+Current follow-up: the owner explicitly authorized regular **3.0.0 / build 11** publication on 2026-10-05, superseding the earlier beta-only decision. The regular release is now published; see [release evidence and notes](MACOS_3_RELEASE.md). M11 evidence below is historical; the physical gaps remain unverified.
 
 ## Scope and outcome — 2026-10-04
 

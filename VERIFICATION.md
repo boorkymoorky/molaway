@@ -1,5 +1,12 @@
 # Verification
 
+## 3.0.0 regular release — 2026-10-05
+
+- [PR #24](https://github.com/boorkymoorky/molaway/pull/24) and [merged-main Verify](https://github.com/boorkymoorky/molaway/actions/runs/37271481158) passed all steps for tag source `7d675c40d2819188843209f19901e59481b8931f`. Local tests passed 202 cases in 20 suites; source/publication/distribution guards, release build and bundle guard passed (127 curated files, 372 unchanged EN/TR keys, exact original permissions, eight rejected negative fixtures). Hosted isolated installation checks passed; local verification kept the running-app refusal. No personal app/data was used as a test target.
+- [3.0.0](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0) is a regular release at the owner's explicit request; no beta was published. The actual public app/source ZIPs and checksum file were downloaded, matched byte-for-byte with the reviewed local packages and GitHub digests, and passed tracked-source and extracted original-signature/metadata/arm64/license/resource inspection. See [exact package evidence and migration limits](docs/MACOS_3_RELEASE.md).
+- The default/latest release and tap remain 2.2.5. M6 structured checks are not restarted; M10 original first launch is still pending and the tap command withheld. Complete-app notification/accessibility/display/lifecycle, optional-signal, multi-day/energy, Intel and oldest-supported-OS cases retain their unverified limits. Regular publication does not prove these physical results. No app networking, broader permission or Windows release is added.
+- Milestone reports below are historical observations at their stated dates; their then-unshipped status does not describe the now-published 3.0.0 release.
+
 ## M11 integrated verification — 2026-10-04 (development; no app release)
 
 - Starting main `7621316` and its GitHub verification passed; the local baseline passed 199 Swift tests in 19 suites. Three new AppContainer composition regressions bring the full successful local suite to **202 tests in 20 suites**. They use synthetic settings/statistics, injected clocks and quiet readings, not personal data or real OS transitions.
