@@ -15,6 +15,10 @@
 
 [Release notes](https://github.com/boorkymoorky/molaway/releases/latest) · [Installation guide](docs/INSTALL.md) · [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/SHA256SUMS.txt)
 
+<p align="center"><img src="docs/images/cycle-3.png" width="342" alt="Molaway 3.0.0 menu bar panel showing work progress and completed short breaks toward a long break"></p>
+
+*Screenshots show the English 3.0.0 interface with example settings and synthetic summaries.*
+
 ## Install
 
 1. Click **Download latest release** above. It downloads the app ZIP, not the source code.
@@ -48,6 +52,8 @@ Its isolated install, fetch, reinstall and removal checks passed. **First launch
 - Automatic idle pause and natural rest follow the current cycle; an unfinished rest is not counted as completed.
 - Optional menu bar and pointer countdowns. The pointer badge gives one localized announcement per visible countdown.
 
+<p align="center"><img src="docs/images/breaks-3.png" width="900" alt="Molaway 3.0.0 Breaks settings with timing presets, work and rest durations, short-break cadence and Skip mode"></p>
+
 ### Smart Pause and reminders
 
 - Supported video playback and manual Watching keep activity counting available; Presentation quiets reminders.
@@ -65,6 +71,8 @@ Its isolated install, fetch, reinstall and removal checks passed. **First launch
 - Screen Score is completed ÷ resolved full-cycle opportunities, shown after at least three outcomes. Snoozes, unresolved opportunities and extra early breaks do not create failures or extra points; old days have no reconstructed score.
 - 30- or 90-day retention, user-controlled deletion and optional quiet weekly summaries.
 - Settings import/export excludes summaries and cannot grant permissions or enable recording.
+
+<p align="center"><img src="docs/images/overview-3.png" width="900" alt="Molaway 3.0.0 Overview with a Screen Score, daily totals and a weekly active-time chart using synthetic data"></p>
 
 ## Privacy and permissions
 
