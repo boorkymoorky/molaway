@@ -1,5 +1,7 @@
 # Molaway 3.0.1 release record
 
+This is the historical 3.0.1 record. The current release is [3.0.2/build 13](MACOS_3_0_2_RELEASE.md); its manual-rest start fix and package evidence are recorded separately. Statements below describe the 3.0.1 publication stages.
+
 ## Published packages — 2026-10-05
 
 [Molaway 3.0.1](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.1) is a regular release, published at 10:46 UTC. Tag `v3.0.1` points to `c6ea02b57c29705b4e73e036439fcce3f7a7139e`, the protected merge of [PR #29](https://github.com/boorkymoorky/molaway/pull/29). [Required PR Verify](https://github.com/boorkymoorky/molaway/actions/runs/37297789981) and [merged-main Verify](https://github.com/boorkymoorky/molaway/actions/runs/37298207328) passed every step. Local checks also passed 211 tests in 21 suites, source/publication/distribution guards, release build, original bundle checks and isolated installation/update/failure checks.

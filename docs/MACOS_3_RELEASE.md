@@ -1,6 +1,6 @@
 # macOS 3.0.0 / build 11 release record
 
-This is the historical 3.0.0 record. The current release is [3.0.1/build 12](MACOS_3_0_1_RELEASE.md); its countdown fix and package evidence are recorded separately. The authorization and distribution snapshots below describe their respective stages.
+This is the historical 3.0.0 record. The current release is [3.0.2/build 13](MACOS_3_0_2_RELEASE.md); its manual-rest start fix and package evidence are recorded separately. The authorization and distribution snapshots below describe their respective stages.
 
 ## Latest-download decision — 2026-10-05
 

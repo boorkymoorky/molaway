@@ -1,10 +1,15 @@
 # Verification
 
-## Daily-use rest-start boundary — 2026-10-05 (unreleased)
+## 3.0.2 regular release — 2026-10-05
+
+- [PR #32](https://github.com/boorkymoorky/molaway/pull/32) and [merged-main Verify](https://github.com/boorkymoorky/molaway/actions/runs/37307859769) passed all steps for tag source `3d6e984a4b613cf36494a711cb978de4fc0c7351`: 213 tests in 21 suites, source/publication/distribution guards, release build, original signature/entitlements, 372 unchanged EN/TR keys, eight rejected bundle fixtures and clean-environment isolated installer checks. Local tests/build/bundle guards passed; local installer checks retained the running-personal-app refusal.
+- Actual public app/source ZIPs and checksum file matched reviewed bytes and GitHub digests. The source ZIP equals all 136 tracked tag files; the extracted original app is arm64, 3.0.2/build 13 and ad hoc signed. [Exact package evidence and limits](docs/MACOS_3_0_2_RELEASE.md). Latest/direct-download promotion is handled by the protected documentation update; tap remains 2.2.5, M6 remains deferred and M10 first launch remains pending. No personal installation or physical full-app/energy claim is made.
+
+## Daily-use rest-start boundary — 2026-10-05 (initial development; shipped in 3.0.2)
 
 - Two deterministic regressions failed on 3.0.1 source: a short/long break started between polls included pre-break time in its first decrement and could complete early; a break started before the first poll lost its initial elapsed interval. The fix resets the rest sample timestamp at the actual manual start. The existing countdown timer, elapsed-time bounds and sensor gate remain unchanged.
 - **213 tests in 21 suites passed** locally with synthetic temporary settings/statistics. The new coverage checks fractional start offsets, the first displayed decrement, no completion before the configured duration and the short/long cadence result. Existing pause, idle, sleep/wake, snooze and genuine-stall regressions also passed. These tests do not establish full-app appearance, physical lifecycle behavior or sustained energy use; daily-use observations remain separate.
-- No version/build bump, release/tag/asset publication, personal installation, Windows change, EN/TR string change, networking capability, permission or dependency is added. The public download remains 3.0.1/build 12; M6 stays deferred, M10 original first launch stays pending and the Homebrew tap remains 2.2.5 with end-user commands withheld.
+- The initial fix PR #31 did not bump the version/build or publish a release. The subsequent owner-authorized 3.0.2/build 13 publication is recorded above. No personal installation, Windows change, EN/TR string change, networking capability, permission or dependency is added. M6 stays deferred, M10 original first launch stays pending and the Homebrew tap remains 2.2.5 with end-user commands withheld.
 
 ## 3.0.1 regular release — 2026-10-05
 
