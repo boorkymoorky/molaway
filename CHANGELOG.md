@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Rephase the existing macOS timer after countdown-second boundaries so normal permitted timer jitter does not repeat a displayed second and then skip the next one. Keep real elapsed-time accounting, pause/rest semantics and the existing sensor gate; genuine main-thread stalls still catch up honestly. This fix is not included in the published 3.0.0 download.
+
 ## 3.0.0 — 2026-10-05
 
 [3.0.0](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0), build **11**, is a regular macOS release published at the owner's explicit request. The prepared beta was never published. **3.0.0 is the default direct download and GitHub latest release.** Homebrew separately remains pinned to 2.2.5 with its first-launch gate pending. [Release evidence and notes](docs/MACOS_3_RELEASE.md) retain migration/downgrade and physical verification limits. A regular release does not establish unperformed physical checks.
