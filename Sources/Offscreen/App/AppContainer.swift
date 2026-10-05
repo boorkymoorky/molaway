@@ -242,6 +242,17 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     func applyAppearance() {
         NSApp?.appearance = config.appearance == .system ? nil : NSAppearance(named: config.appearance == .dark ? .darkAqua : .aqua)
     }
+    func nextTickDelay(sampleAge: Double = 0) -> TimeInterval {
+        let counting = !suspended && (activeRest != nil ||
+            (!pause.isPaused && [.active, .video].contains(activity)))
+        return CountdownCadence.delay(remaining: nextReadout.seconds, counting: counting, sampleAge: sampleAge)
+    }
+
+    private func scheduleNextTick(sampledAt now: Double) {
+        guard let timer, timer.isValid else { return }
+        timer.fireDate = Date().addingTimeInterval(nextTickDelay(sampleAge: max(0, time - now)))
+    }
+
     func start() {
         sleepMonitor = SleepWakeMonitor(onSuspend: { [weak self] in
             guard let self else { return }
@@ -306,6 +317,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
     }
     // Sensor-independent entry point also used by deterministic lifecycle regression tests.
     func tick(now: Double, idle: Double, deliberateIdle: Double, keyboardIdle: Double? = nil) {
+        defer { scheduleNextTick(sampledAt: now) }
         let previousState = activity
         let rawDelta = previousTime.map { now - $0 } ?? 0
         let delta = rawDelta >= 0 && rawDelta <= 5 ? rawDelta : 0
@@ -421,6 +433,7 @@ enum MolaKind: String, CaseIterable, Identifiable, Sendable {
         if selected == .long { breakEngine.startLongBreakNow() } else { breakEngine.startBreakNow() }
         activity = .resting
         showReminder?(); play(config.breakTone); updateUI?()
+        scheduleNextTick(sampledAt: restStarted)
     }
     func cancelRest(restartCycle: Bool = false) {
         guard let kind = activeRest else { return }
