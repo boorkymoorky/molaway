@@ -85,6 +85,43 @@ import Testing
         }
     }
 
+    @Test func restStartedBetweenTicksDoesNotCountTimeBeforeTheBreak() throws {
+        for kind in [MolaKind.short, .long] {
+            for start in [0.01, 0.49, 0.99] {
+                try withModel { model in
+                    model.settings.update { $0.shortRestSeconds = 20; $0.longRestMinutes = 2 }
+                    model.tick(now: 0, idle: 0, deliberateIdle: .infinity)
+                    model.beginRest(kind, now: start)
+                    let duration = model.breakEngine.breakDuration
+                    var now = start + model.nextTickDelay() + 0.19
+                    model.tick(now: now, idle: now - start, deliberateIdle: .infinity)
+                    #expect(abs(model.breakEngine.breakElapsed - (now - start)) < 1e-8)
+                    #expect(Int(ceil(duration)) - Int(ceil(model.nextReadout.seconds)) == 1)
+                    while now + 1 < start + duration {
+                        now += 1
+                        model.tick(now: now, idle: now - start, deliberateIdle: .infinity)
+                    }
+                    model.tick(now: start + duration - 0.001, idle: duration - 0.001, deliberateIdle: .infinity)
+                    #expect(model.activeRest == kind)
+                    #expect(model.breakEngine.shortBreaksSinceLong == 0)
+                    model.tick(now: start + duration + 0.05, idle: duration + 0.05, deliberateIdle: .infinity)
+                    #expect(model.activeRest == nil)
+                    #expect(model.breakEngine.shortBreaksSinceLong == (kind == .short ? 1 : 0))
+                }
+            }
+        }
+    }
+
+    @Test func restBeforeTheFirstPollCountsFromItsActualStart() throws {
+        try withModel { model in
+            let start = 0.73
+            model.beginRest(.short, now: start)
+            model.tick(now: start + 1.05, idle: 1.05, deliberateIdle: .infinity)
+            #expect(abs(model.breakEngine.breakElapsed - 1.05) < 1e-8)
+            #expect(abs(model.nextReadout.seconds - (model.breakEngine.breakDuration - 1.05)) < 1e-8)
+        }
+    }
+
     @Test func manualPauseAndResumeKeepWorkFrozenThenRephase() throws {
         try withModel { model in
             model.tick(now: 0, idle: 0, deliberateIdle: .infinity)

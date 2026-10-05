@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Count a manually started short or long break from its actual start, including when it begins between countdown refreshes or before the first poll. The first rest countdown no longer includes time spent before the break, and the break cannot finish early for that reason. This follow-up is not included in the published 3.0.1/build 12 download.
+
 ## 3.0.1 — 2026-10-05
 
 [3.0.1](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.1), build **12**, is the current regular release and latest direct download. [Release evidence](docs/MACOS_3_0_1_RELEASE.md). Homebrew remains pinned to 2.2.5 with its first-launch gate pending.
