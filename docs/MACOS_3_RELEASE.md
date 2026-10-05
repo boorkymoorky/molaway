@@ -1,5 +1,11 @@
 # macOS 3.0.0 / build 11 release record
 
+## Latest-download decision — 2026-10-05
+
+The owner subsequently instructed the homepage and download button to use the latest 3.0.0 release instead of 2.2.5. GitHub 3.0.0 is promoted to Latest and the README/installation guide describe its current cycle. The direct-download version/SHA256 are recorded in `download.json`; its latest-download route must resolve to the reviewed 3.0.0 ZIP. The tap remains pinned to 2.2.5 and end-user Homebrew instructions remain withheld. M6/M10 physical gates, release assets, tag/source, app code/permissions and personal/Windows work are unchanged.
+
+The initial publication record below describes the earlier latest-disabled/default-2.2.5 decision and is historical on that point. Asset/source/signature evidence and remaining physical/migration limits still apply.
+
 ## Published and downloaded-asset verification — 2026-10-05
 
 [Molaway 3.0.0](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0) is published as a regular release (`prerelease=false`), with latest disabled. Tag `v3.0.0` resolves to `7d675c40d2819188843209f19901e59481b8931f`, the protected merge of [PR #24](https://github.com/boorkymoorky/molaway/pull/24). [Final PR Verify](https://github.com/boorkymoorky/molaway/actions/runs/37271201835) and [merged-main Verify](https://github.com/boorkymoorky/molaway/actions/runs/37271481158) passed every guard, test/build, bundle fixture and isolated installer step. No beta tag or release was created.
@@ -31,7 +37,7 @@ The regular release designation is the owner's distribution decision, not a clai
 4. Download the actual uploaded app/source ZIPs and checksum file. Match both hashes with the local files, checksum entries and GitHub asset digests. Inspect the extracted original signature, architecture, metadata and resources without launching or re-signing the app.
 5. Record live evidence and add separate 3.0.0 guidance through a protected documentation PR. Keep the default README/install download and tap on 2.2.5. Do not advance physical or Windows claims.
 
-## Approved English release notes
+## Approved initial English release notes (publication snapshot)
 
 Molaway 3.0.0 introduces a work/short/long break cycle on macOS. This is a regular release, not a beta or release candidate. **2.2.5 remains the repository's default download and Homebrew version by the maintainer's decision.** Choose 3.0.0 explicitly if you want the new cycle.
 

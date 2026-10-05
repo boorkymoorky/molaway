@@ -1,6 +1,6 @@
 # Planned product roadmap
 
-Current release status: regular **3.0.0 / build 11** is published and its actual app/source downloads verified. See [release record](MACOS_3_RELEASE.md). Default download/tap remain 2.2.5; unperformed physical checks stay unverified. Detailed milestone observations below are historical records at their stated stages, including then-unshipped statements.
+Current release status: regular **3.0.0 / build 11** is published and its actual app/source downloads verified. See [release record](MACOS_3_RELEASE.md). Default direct download/latest is 3.0.0; the tap remains 2.2.5; unperformed physical checks stay unverified. Detailed milestone observations below are historical records at their stated stages, including then-unshipped statements.
 
 This roadmap records shipped milestones and remaining plans. Each milestone is a separate focused change. macOS work comes first; the Windows implementation remains a separate preview until its physical Windows checks pass.
 

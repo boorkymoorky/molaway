@@ -23,7 +23,7 @@ Use **Security → Advisories → Report a vulnerability** on this repository to
 
 If the private reporting button is unavailable, do not post exploit details in a public issue. A public issue may ask the maintainer to enable private reporting, without disclosing the vulnerability. There is no published contact email. This is a personal project; response times are not guaranteed.
 
-Published macOS versions 3.0.0 and 2.2.5 are the current release choices; 2.2.5 remains the default download and tap version. This personal project promises no maintenance window. The regular 3.0.0 designation does not close the physical verification gaps documented in VERIFICATION.md and docs/MACOS_3_RELEASE.md.
+Published macOS versions 3.0.0 and 2.2.5 are the current release choices; 3.0.0 is the default direct download; the tap separately remains on 2.2.5. This personal project promises no maintenance window. The regular 3.0.0 designation does not close the physical verification gaps documented in VERIFICATION.md and docs/MACOS_3_RELEASE.md.
 
 ## Verification
 

@@ -10,46 +10,44 @@
 
 ## Download the app
 
-**[Download Molaway 2.2.5 for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/download/v2.2.5/Molaway-2.2.5-macOS-arm64.zip)** · [Release notes](https://github.com/boorkymoorky/molaway/releases/tag/v2.2.5) · [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v2.2.5/SHA256SUMS.txt)
+**[Download latest release for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/latest/download/Molaway-3.0.0-macOS-arm64.zip)** · [Release notes](https://github.com/boorkymoorky/molaway/releases/latest) · [SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/SHA256SUMS.txt)
 
-This is the published app, verified on 2026-10-04. The work/short/long cycle introduced in 3.0.0 is **not included** in this 2.2.5 download. This installation and first-setup guide describes 2.2.5.
+The current regular release is **3.0.0 / build 11**, with one work/short/long cycle. Its actual app/source downloads matched the reviewed files and GitHub digests; original signature and resources passed inspection. This guide describes 3.0.0. [Release evidence and remaining physical limits](MACOS_3_RELEASE.md).
 
-1. Download the app ZIP above. The “Source code” files on GitHub are for developers, not installers.
-2. Open the ZIP in Downloads. Drag **Molaway.app** to **Applications**.
-3. Open Molaway. It lives in the menu bar, so it does not need a Dock icon.
+1. Download the app ZIP above. GitHub's source archives are for developers, not installers.
+2. Quit any running Molaway, open the ZIP and drag **Molaway.app** to **Applications**. Keep one installed copy.
+3. Open Molaway. It lives in the menu bar and does not need a Dock icon.
 4. Click the two rings, then the gear button for Settings.
 
-No GitHub account or Git knowledge is needed to download a public release. No Molaway account is needed to use the app.
+No GitHub or Molaway account is needed.
 
 ### Check download integrity (optional)
 
-Before extracting, open Terminal and check the downloaded file:
+Before extracting, check the downloaded file:
 
 ```sh
-shasum -a 256 ~/Downloads/Molaway-2.2.5-macOS-arm64.zip
+shasum -a 256 ~/Downloads/Molaway-3.0.0-macOS-arm64.zip
 ```
 
 The SHA256 should be:
 
 ```text
-f1430159bdc05ebf141cd6ff583412784b572a0766c90b61254cb942f8bd5882  Molaway-2.2.5-macOS-arm64.zip
+75b7f89d9d3c5b1cdcf56ecfda476994e56d3ffb8df542efcd730645bf6aeec2  Molaway-3.0.0-macOS-arm64.zip
 ```
 
-Compare the 64-character hash; Terminal may print a longer file path. If it differs, stop and download the ZIP again from the linked release. The downloaded bytes matched both the release's checksum file and GitHub's asset digest during the check. These values come from the same publisher; a matching checksum detects changed bytes, not publisher identity or malware.
+Compare the 64-character hash with the linked checksum file. If it differs, stop and download again from this repository. Matching hashes detect changed bytes; they do not independently authenticate the publisher or prove absence of malware.
 
-## Separate 3.0.0 release
+### Upgrading from 2.2.5
 
-[Download Molaway 3.0.0 for Apple Silicon](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/Molaway-3.0.0-macOS-arm64.zip) · [3.0.0 release notes](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.0) · [3.0.0 SHA256SUMS.txt](https://github.com/boorkymoorky/molaway/releases/download/v3.0.0/SHA256SUMS.txt)
+Export your 2.2.5 settings first and keep that file private. Review the migrated schedule: eye interval/rest becomes work/short timing, movement rest becomes long rest, and the old movement interval is approximated by short-break cadence.
 
-3.0.0 is a regular release with one work/short/long cycle; its outer ring shows work/rest and inner ring shows completed-short cadence. **2.2.5 remains the default download and tap version.** Read [migration, downgrade and verification limits](MACOS_3_RELEASE.md) before switching. Export 2.2.5 settings first and keep them private, quit Molaway before replacing it, and keep only one installed copy. The old movement interval is approximated; review the migrated schedule. 2.2.5 cannot read 3.0.0 settings, older summary writers may lose score fields, and a settings export is not a complete rollback backup.
-
-The actual 3.0.0 app/source downloads matched their checksum file, local reviewed packages and GitHub asset digests; original signature and resources passed inspection. Both releases remain ad hoc signed and unnotarized. Follow the same per-app approval guidance below and keep Gatekeeper enabled. Complete-app physical coverage remains limited; this separate release does not close M10's first-launch gate or enable end-user tap instructions. First setup below describes the default 2.2.5 app.
+2.2.5 cannot read 3.0.0 settings and may fall back to defaults; older summary writers may lose Screen Score fields. Settings export excludes summaries and live pause/cadence. App replacement alone is not a full or lossless rollback. Read [migration/downgrade limits](MACOS_3_RELEASE.md) before switching.
 
 ## Homebrew status
 
-The [Molaway-maintained tap](https://github.com/boorkymoorky/homebrew-molaway) is published and pins the same verified 2.2.5 ZIP and SHA256. It supports Apple Silicon and requires macOS 15 or later. Its cask matches [the copy in this repository](homebrew/Casks/molaway.rb).
+The [Molaway-maintained tap](https://github.com/boorkymoorky/homebrew-molaway) is published and still pins the verified **2.2.5** ZIP and SHA256, independently of the 3.0.0 direct download. It supports Apple Silicon and requires macOS 15 or later. Its cask matches [the copy in this repository](homebrew/Casks/molaway.rb).
 
-The public tap’s installation, fetch, same-version reinstallation and removal passed in a disposable Homebrew environment. **First launch after normal Gatekeeper approval remains unverified**, so end-user Homebrew instructions remain pending; use the direct download above. [Verification evidence and the remaining first-launch gate](M10_DISTRIBUTION.md) state the limits. Homebrew contacts GitHub to fetch packages; Molaway itself remains offline and manually updated. This tap adds no new app release or M1–M9 development features.
+The public tap’s installation, fetch, same-version reinstallation and removal passed in a disposable Homebrew environment. **First launch after normal Gatekeeper approval remains unverified**, so end-user Homebrew instructions remain pending; use the direct download above. [Verification evidence and the remaining first-launch gate](M10_DISTRIBUTION.md) state the limits. Homebrew contacts GitHub to fetch packages; Molaway itself remains offline and manually updated. The tap does not yet distribute 3.0.0; no tap version change is included in the latest-download update.
 
 ## First launch and macOS security
 
@@ -69,7 +67,7 @@ This builds the app on your Mac. It does not download and immediately execute a 
 2. Open **Terminal** and download the versioned source:
 
    ```sh
-   git clone --branch v2.2.5 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
+   git clone --branch v3.0.0 --depth 1 https://github.com/boorkymoorky/molaway.git Molaway-source
    cd Molaway-source
    ```
 
@@ -95,9 +93,10 @@ If you previously installed Molaway in the shared `/Applications` folder, remove
 
 ## First setup
 
-- **Breaks:** choose eye/movement intervals. Outer ring means eyes; inner ring means movement.
-- **Activity:** choose the idle threshold, video handling, and optional meeting suppression. A natural absence resets each timer only if it reaches both the idle threshold and that timer's rest target. A video left playing or active watching mode keeps time running; pause playback/end watching before stepping away.
-- **Alerts:** choose a reminder style and display target. Only native notifications need notification permission.
+- **Breaks:** choose work interval, short/long rest durations and completed-short cadence. Outer ring shows work/rest; inner ring shows progress toward a long break. Deep Focus can restore your prior custom timing.
+- **Activity:** choose the idle threshold, video handling and optional quiet signals. Natural absence follows the current cycle and counts once. A video left playing or active Watching keeps time running; pause playback/end Watching before stepping away. Quiet signals do not prove a meeting or presence.
+- **Pause & schedule:** choose shared manual pause and optional Office Hours, including overnight schedules.
+- **Alerts:** choose a reminder style, Skip mode and display target. Only native notifications need notification permission.
 - **Appearance & sound:** choose language, theme, and optional sounds.
 - **Overview:** enable only if you want local daily summaries. Recording starts from that point, not retroactively.
 
@@ -109,7 +108,7 @@ Molaway does not check for updates automatically. Visit this repository's **Rele
 2. Replace the old app in Applications with the new app.
 3. Reopen it. Keep only one installed version.
 
-The app has no automatic updater. The existing app identifier is retained, so settings survive updates from the earlier Mola builds. Session timers restart when the app exits.
+The app has no automatic updater. The existing app identifier is retained, so the existing data location is retained. Timing migration is approximate; schema-3 settings are incompatible with 2.2.5. Session timers restart when the app exits.
 
 ## Remove
 

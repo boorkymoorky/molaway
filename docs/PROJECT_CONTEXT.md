@@ -4,7 +4,7 @@ This file gives new Codex chats the durable context needed to continue Molaway w
 
 ## Product intent
 
-Molaway helps people follow a planned short/long break cycle without manual timer restarts. The current 2.2.x release still uses independent eye and movement timers. It should recognize active use, pause after real inactivity, continue through supported video playback, and use reminders that can be noticeable without taking over the screen. The experience should feel native, calm, accessible, and predictable across multiple displays.
+Molaway helps people follow a planned short/long break cycle without manual timer restarts. The latest 3.0.0 release uses one work/short/long cycle; legacy 2.2.x used independent eye/movement timers. It should recognize active use, pause after real inactivity, continue through supported video playback, and use reminders that can be noticeable without taking over the screen. The experience should feel native, calm, accessible, and predictable across multiple displays.
 
 Privacy and security are product features. Molaway should work locally, request the least possible access, store only bounded optional summaries, and make limitations clear. It is not a medical device and should not make health or security guarantees that the evidence cannot support.
 
@@ -23,7 +23,7 @@ Privacy and security are product features. Molaway should work locally, request 
 
 ### macOS
 
-The default public download and Homebrew tap remain **2.2.5**, with independent eye/movement timers. A separate regular **3.0.0 / build 11** release is published at the owner's explicit request instead of the prepared beta. Protected PR/main CI and actual downloaded-asset checks passed; see `docs/MACOS_3_RELEASE.md`. No beta has been published. 3.0.0 uses one work/short/long cycle, changed ring meanings, shared pauses/Office Hours, bounded optional quiet signals and Screen Score. Settings migration is approximate; 2.2.5 cannot read schema 3 and app replacement is not a complete rollback. Keep the default download/tap on 2.2.5 unless separately instructed.
+The owner instructed the README/download button and GitHub latest release to use **3.0.0**. The Homebrew tap separately remains **2.2.5** until its independent gate is resolved. A separate regular **3.0.0 / build 11** release is published at the owner's explicit request instead of the prepared beta. Protected PR/main CI and actual downloaded-asset checks passed; see `docs/MACOS_3_RELEASE.md`. No beta has been published. 3.0.0 uses one work/short/long cycle, changed ring meanings, shared pauses/Office Hours, bounded optional quiet signals and Screen Score. Settings migration is approximate; 2.2.5 cannot read schema 3 and app replacement is not a complete rollback. Keep direct latest-download metadata in `docs/download.json` consistent with the actual public asset. The tap version is a separate decision; end-user Homebrew commands stay withheld until M10 first launch passes.
 
 Distribution is Apple Silicon, ad hoc signed and unnotarized. Intel, oldest supported macOS, all player/display/lifecycle combinations and sustained energy use are not claimed verified. The regular release designation does not close physical gaps. M6 structured checks stay deferred under daily-use feedback; M10 original quarantined first launch stays pending and end-user tap instructions remain withheld. Do not launch an original-identity test copy over the personal session. See `VERIFICATION.md`, `docs/M6_READINESS.md` and `docs/M10_DISTRIBUTION.md`.
 

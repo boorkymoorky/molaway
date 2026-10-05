@@ -12,6 +12,8 @@ The scheduler, original tests, native infrastructure, theme foundation derive fr
 
 The two open rings are original vector artwork developed for this project with ChatGPT/Codex assistance, under the project MIT license. Shared geometry: Sources/Offscreen/Support/BrandGeometry.swift; renderer: Scripts/make-icon.swift. AppIcon.icns/AppIcon.png are generated from that geometry without downloaded assets or fonts. The same mark is used in the interface and adapted to timer progress in the menu bar. This is not trademark clearance.
 
+The static download button in docs/images/download.svg is original Molaway artwork created with Codex assistance under the project MIT license. It uses no downloaded image or redistributed font file.
+
 Modifications: Burak Yelkenci, with ChatGPT/Codex assistance. MIT, subject to applicable rights. This project is not endorsed by OpenAI or the original Offscreen author.
 
 Resources/Sounds/{soft,rise,fall,bell}.wav are simple sine-wave compositions generated for Molaway, distributed under the project MIT license. No third-party audio samples are used. The generation script is in Scripts/make-sounds.py.
