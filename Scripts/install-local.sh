@@ -10,8 +10,14 @@ DEST="$APPS/Molaway.app"
 if [[ ! -d "$SOURCE" || -L "$SOURCE" ]]; then
     echo 'Build first: bash Scripts/build-app.sh' >&2; exit 1
 fi
-if /usr/bin/pgrep -x Molaway >/dev/null; then
+if /usr/bin/pgrep -x Molaway >/dev/null 2>&1; then
     echo 'Quit Molaway from its menu panel, then run this installer again.' >&2; exit 1
+else
+    # Only exit 1 establishes that no matching process exists.
+    PROCESS_STATUS=$?
+    if [[ "$PROCESS_STATUS" != 1 ]]; then
+        echo 'Cannot check whether Molaway is running. Installation stopped.' >&2; exit 1
+    fi
 fi
 if [[ -L "$DEST" || -L "$APPS" ]]; then
     echo 'Refusing a symbolic-link installation destination.' >&2; exit 1

@@ -1,6 +1,12 @@
 # Post-M11 macOS release decision and notes draft
 
-## Recommendation — 2026-10-04
+## Current decision — preparation approved; publication on hold
+
+The owner approved **3.0.0-beta.1 / build 11, beta preparation only** after reviewing the physical-gap disclosure and migration/downgrade risks. The candidate now assigns numeric bundle version `3.0.0` and build `11`; the app identity and EN/TR text stay unchanged. No stable/RC claim, tag, GitHub draft/published release, asset upload or tap change is authorized. See [candidate preparation and verification](MACOS_BETA_PREPARATION.md).
+
+The recommendation, baseline and gate list below preserve the **historical PR #22 proposal**; statements about unassigned 2.2.5/build 10 metadata describe that proposal, not the approved candidate. The release-notes text remains an unpublished draft; final candidate evidence is supplied separately. Publication still requires a later explicit instruction.
+
+## Original PR #22 recommendation — 2026-10-04
 
 **Keep publication on hold now. Target `3.0.0-beta.1` (build `11`) for a separately approved, opt-in macOS prerelease; do not call it stable or a release candidate.** This is a repository document for review, not a GitHub draft release, version assignment or publishing authorization. No release date is proposed.
 
@@ -64,7 +70,7 @@ No new physical-check session is initiated here. Document only evidence actually
 
 ## Proposed release notes — not published
 
-The following English text is a draft for a future separately approved prerelease. The proposed version/build has not been assigned, built or packaged yet.
+The following English text is an unpublished draft for the prepared 3.0.0/build 11 candidate. Candidate verification and local packaging are recorded separately; publication still requires an explicit decision.
 
 ### Molaway 3.0.0-beta.1 — macOS preview
 
@@ -77,7 +83,7 @@ Changes prepared on main:
 - An optional pointer countdown provides one localized announcement per visible countdown. Smart Pause shares existing activity/quiet signals, with optional typing deferral capped at 30 seconds.
 - Off-by-default audio-input, active native fullscreen and selected-foreground-app options quiet alerts within the documented public-API limits. Automatic screen sharing, microphone-only classification and broader fullscreen detection remain deferred.
 - Optional local summaries gain Screen Score: completed divided by resolved full-cycle opportunities, shown after at least three outcomes. Snoozes and unresolved/early breaks do not create failures or extra points; earlier days have no invented scores.
-- Integrated lifecycle/migration regressions and offline bundle/signature/permission/EN/TR guards extend automated coverage. Final versioned-candidate results must be added before publication; existing M11 checks cover development source only.
+- Integrated lifecycle/migration regressions and offline bundle/signature/permission/EN/TR guards extend automated coverage. The prepared versioned candidate passed 202 tests in 20 suites and bundle guards for 372 EN/TR keys and eight negative fixtures. Final reviewed-revision CI and archive evidence must pass before publication; these checks do not establish physical readiness.
 
 Before trying a future beta, export settings from 2.2.5 and keep that file private. Review the migrated schedule: the former movement interval is approximated. A beta settings file cannot be read by 2.2.5, and older app versions may discard new score fields. Settings export excludes summaries and is not a full rollback backup.
 

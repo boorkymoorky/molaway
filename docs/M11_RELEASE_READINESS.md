@@ -1,5 +1,7 @@
 # M11 macOS verification and release preparation
 
+Current follow-up: the owner has approved **beta preparation only**. [3.0.0-beta.1 / build 11 candidate evidence](MACOS_BETA_PREPARATION.md) is recorded separately. The M11 evidence below is historical and used 2.2.5/build 10 development metadata; it is not verification of the new candidate. Publication and physical gates remain open.
+
 ## Scope and outcome — 2026-10-04
 
 M11 starts from main `762131604067be20d975dd4e4eb97572db94eca5`, after [M10 PR #20](https://github.com/boorkymoorky/molaway/pull/20) and its [main verification](https://github.com/boorkymoorky/molaway/actions/runs/37224825683) passed. It adds integrated M1–M9 regression coverage and a repeatable offline built-bundle guard, and prepares the release handoff. It changes no application feature, English/Turkish text, entitlement, dependency, version or published asset. Windows PR #2 and local Windows work remain separate.
