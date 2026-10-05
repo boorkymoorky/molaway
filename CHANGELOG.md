@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 3.0.2 — 2026-10-05 (release preparation)
 
-- Count a manually started short or long break from its actual start, including when it begins between countdown refreshes or before the first poll. The first rest countdown no longer includes time spent before the break, and the break cannot finish early for that reason. This follow-up is not included in the published 3.0.1/build 12 download.
+- Count a manually started short or long break from its actual start, including when it begins between countdown refreshes or before the first poll. The first rest countdown no longer includes time spent before the break, and the break cannot finish early for that reason. Build 13 contains this follow-up; the existing 3.0.1 assets remain unchanged. Publication follows protected release and package checks.
 
 ## 3.0.1 — 2026-10-05
 
