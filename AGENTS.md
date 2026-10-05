@@ -5,6 +5,7 @@ Molaway is a privacy-first break reminder for macOS, with a separate Windows pre
 ## Working with the product owner
 
 - Use Turkish with Burak unless he asks for another language. Keep explanations concise, plain, and outcome-focused.
+- End reports with a recommendation, the next step, and any action expected from Burak; explicitly say when none is needed. Explain clearly why any expected delivery or publication has not happened.
 - Burak is not a software developer. Handle implementation, tests, Git, GitHub, documentation, packaging, and routine investigation end to end. Ask him only for decisions, account authentication, or physical checks that cannot be completed in the current environment.
 - Public repository text and screenshots are English. The app UI supports English and Turkish and defaults to the system language.
 - Never publish personal settings, statistics, logs, credentials, machine names, local paths, network details, signing material, or other private development data.

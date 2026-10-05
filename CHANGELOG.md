@@ -1,12 +1,14 @@
 # Changelog
 
-## 3.0.2 — 2026-10-05 (release preparation)
+## 3.0.2 — 2026-10-05
 
-- Count a manually started short or long break from its actual start, including when it begins between countdown refreshes or before the first poll. The first rest countdown no longer includes time spent before the break, and the break cannot finish early for that reason. Build 13 contains this follow-up; the existing 3.0.1 assets remain unchanged. Publication follows protected release and package checks.
+[3.0.2](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.2), build **13**, is the current regular release and latest direct download. [Release evidence](docs/MACOS_3_0_2_RELEASE.md). Homebrew remains pinned to 2.2.5 with its first-launch gate pending.
+
+- Count a manually started short or long break from its actual start, including when it begins between countdown refreshes or before the first poll. The first rest countdown no longer includes time spent before the break, and the break cannot finish early for that reason. Build 13 contains this follow-up; the existing 3.0.1 assets remain unchanged. Protected release checks and actual public-package verification passed.
 
 ## 3.0.1 — 2026-10-05
 
-[3.0.1](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.1), build **12**, is the current regular release and latest direct download. [Release evidence](docs/MACOS_3_0_1_RELEASE.md). Homebrew remains pinned to 2.2.5 with its first-launch gate pending.
+[3.0.1](https://github.com/boorkymoorky/molaway/releases/tag/v3.0.1), build **12**, was the regular release and latest direct download before the 3.0.2 follow-up. [Release evidence](docs/MACOS_3_0_1_RELEASE.md). Homebrew remains pinned to 2.2.5 with its first-launch gate pending.
 
 - Rephase the existing macOS timer after countdown-second boundaries so normal permitted timer jitter does not repeat a displayed second and then skip the next one. Keep real elapsed-time accounting, pause/rest semantics and the existing sensor gate; genuine main-thread stalls still catch up honestly. Build 12 contains the fix; the existing 3.0.0 assets remain unchanged. Protected release checks and actual public-package verification passed.
 
