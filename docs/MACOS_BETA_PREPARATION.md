@@ -1,5 +1,7 @@
 # macOS 3.0.0-beta.1 preparation — not published
 
+Current decision: on 2026-10-05 the owner explicitly authorized regular **3.0.0 / build 11** publication instead of a beta. See [the current release authorization](MACOS_3_RELEASE.md). The beta proposal, hold decision and verification below are historical; their publishing-status instructions are superseded. The unchanged physical and migration limits still apply. No beta is published.
+
 ## Owner decision and scope — 2026-10-04
 
 The owner explicitly approved **3.0.0-beta.1 / build 11, beta preparation only**, acknowledging the physical verification gaps and migration/downgrade risks in the [PR #22 decision and notes](MACOS_RELEASE_DECISION.md). This is an opt-in beta proposal, **not a stable release or release candidate**. Publication remains on hold; no release date is assigned.

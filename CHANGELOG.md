@@ -1,14 +1,15 @@
 # Changelog
 
-## 3.0.0-beta.1 — preparation only; not published
+## 3.0.0 — release authorized; publication pending
 
-The owner approved preparation of an opt-in macOS beta with bundle version **3.0.0**, build **11**. This is neither a stable release nor a release candidate. No release date, tag, GitHub release draft or uploaded asset exists. **2.2.5 remains the default non-preview download and Homebrew version.** M1–M9 and M11 below are still absent from that download. See [candidate preparation and remaining gates](docs/MACOS_BETA_PREPARATION.md) and the [release decision, physical gaps and draft notes](docs/MACOS_RELEASE_DECISION.md).
+On 2026-10-05 the owner instructed publication as a regular 3.0.0 release instead of a beta, retaining numeric bundle version **3.0.0**, build **11**. Publication follows the final protected PR and package verification; see [release authorization and notes](docs/MACOS_3_RELEASE.md). **2.2.5 remains the default download and Homebrew version.** The changes below are absent from that older download. Historical [beta preparation](docs/MACOS_BETA_PREPARATION.md) was never published; unperformed physical checks remain unverified.
 
 - Use one work/short/long break cycle, with approximate migration from independent eye/movement timing and a reversible Deep Focus preset. Rings show work/rest progress and completed-short cadence.
 - Add shared manual pause options and optional Office Hours, including overnight schedules and independent pause reasons.
 - Add Casual/Balanced/Hardcore skip behavior across reminder surfaces and an optional cursor countdown with one localized announcement per visible countdown.
 - Share Smart Pause decisions, with off-by-default typing deferral capped at 30 seconds. Add optional audio-input, active native fullscreen and explicitly selected foreground-app quiet signals within documented public APIs; automatic sharing and broader detection remain deferred.
 - Add an explainable Screen Score to opted-in bounded daily summaries, resolving each confirmed full-cycle opportunity once. Historical days and unresolved/early breaks do not fabricate outcomes.
+- Stop source installation if the running-process query is unavailable.
 - Add integrated lifecycle/migration regressions and offline built-bundle, signing, permission and English/Turkish resource checks to CI.
 
 The Molaway-owned Homebrew tap currently distributes only the existing 2.2.5 asset. Its isolated installation lifecycle is verified; original first launch after normal Gatekeeper approval remains pending. Molaway stays offline, manually updated and permission-minimal.
